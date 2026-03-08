@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/features/shared/StatusBadge";
 import { ApartmentPanel } from "./apartment-panel";
 import { DeleteApartmentDialog } from "./delete-apartment-dialog";
@@ -87,7 +88,8 @@ export function ApartmentsTable({
       </div>
 
       {/* Table */}
-      <div className="mt-4 overflow-x-auto rounded-[12px] border border-[--border-default] bg-[--bg-card]">
+      <Card className="mt-4 overflow-hidden border-[--border-default] bg-[--bg-card]">
+        <div className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="border-[--border-subtle] hover:bg-transparent">
@@ -173,7 +175,8 @@ export function ApartmentsTable({
             )}
           </TableBody>
         </Table>
-      </div>
+        </div>
+      </Card>
 
       {/* Panel */}
       <ApartmentPanel

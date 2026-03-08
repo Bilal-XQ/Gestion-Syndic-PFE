@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 import {
   settingsSchema,
@@ -84,6 +85,8 @@ export function SettingsForm({ defaultValues }: SettingsFormProps) {
           </div>
         </fieldset>
 
+        <Separator />
+
         {/* Syndic contact info */}
         <fieldset className="flex flex-col gap-4">
           <legend className="mb-1 text-sm font-medium text-[--text-primary]">
@@ -121,14 +124,16 @@ export function SettingsForm({ defaultValues }: SettingsFormProps) {
           </div>
         </fieldset>
 
-        <Button
-          type="submit"
-          disabled={mutation.isPending}
-          className="w-fit"
-        >
-          {mutation.isPending && <Loader2 className="size-4 animate-spin" />}
-          Enregistrer
-        </Button>
+        <div className="flex justify-end">
+          <Button
+            type="submit"
+            disabled={mutation.isPending}
+            className="w-fit"
+          >
+            {mutation.isPending && <Loader2 className="size-4 animate-spin" />}
+            Enregistrer
+          </Button>
+        </div>
       </form>
     </Card>
   );

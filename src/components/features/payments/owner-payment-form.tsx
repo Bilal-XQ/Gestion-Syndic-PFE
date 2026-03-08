@@ -21,9 +21,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DatePicker } from "@/components/ui/date-picker";
 
 import { paymentSchema, type PaymentFormValues } from "@/lib/validations/payment";
 import { createPayment } from "@/lib/actions/payments";
+import { formatMAD } from "@/lib/formatters";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -115,23 +117,23 @@ export function OwnerPaymentForm({
   const remaining = charge ? Number(charge.remainingAmount) : 0;
 
   const inputClass =
-    "bg-[#141414] border border-[#2A2A2A] rounded-[10px] h-auto px-[14px] py-[10px] text-[14px] text-white placeholder:text-[#404040] shadow-none focus:border-[#555555] focus:ring-0 focus:outline-none focus:shadow-[0_0_0_3px_rgba(255,255,255,0.06)] focus-visible:ring-0 focus-visible:outline-none transition-[border-color,box-shadow] duration-150 w-full";
+    "h-auto w-full rounded-[10px] border border-[--border-default] bg-[--bg-input] px-[14px] py-[10px] text-[14px] text-[--text-primary] shadow-none placeholder:text-[--text-placeholder] transition-[border-color,box-shadow] duration-150 focus:border-[--border-focus] focus:ring-0 focus:outline-none focus:shadow-[0_0_0_3px_var(--glow-soft)] focus-visible:ring-0 focus-visible:outline-none";
   const labelClass =
-    "text-[12px] font-medium text-[#A0A0A0] uppercase tracking-[0.06em]";
+    "text-[12px] font-medium text-[--text-secondary]";
   const selectTriggerClass =
-    "bg-[#141414] border border-[#2A2A2A] rounded-[10px] h-auto px-[14px] py-[10px] text-[14px] text-white shadow-none focus:border-[#555555] focus:ring-0 focus:outline-none focus:shadow-[0_0_0_3px_rgba(255,255,255,0.06)] focus-visible:ring-0 focus-visible:outline-none transition-[border-color,box-shadow] duration-150 w-full";
+    "h-auto w-full rounded-[10px] border border-[--border-default] bg-[--bg-input] px-[14px] py-[10px] text-[14px] text-[--text-primary] shadow-none transition-[border-color,box-shadow] duration-150 data-[placeholder]:text-[--text-placeholder] focus:border-[--border-focus] focus:ring-0 focus:outline-none focus:shadow-[0_0_0_3px_var(--glow-soft)] focus-visible:ring-0 focus-visible:outline-none";
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="bg-[#1F1F1F] border border-[#2A2A2A] rounded-[16px] max-w-[560px] w-full my-4 p-0 shadow-[0_24px_64px_rgba(0,0,0,0.6),0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.06)] overflow-hidden">
+      <DialogContent className="my-4 w-full max-w-[560px] overflow-hidden rounded-[16px] border border-[--border-default] bg-background p-0 shadow-[var(--shadow-hero-card)]">
         {/* HEADER */}
-        <div className="px-7 pt-7 pb-5 border-b border-[#2A2A2A]">
-          <DialogTitle className="text-[15px] font-semibold text-white tracking-[-0.01em]">
+        <div className="border-b border-[--border-default] px-7 pt-7 pb-5">
+          <DialogTitle className="text-[15px] font-semibold text-[--text-primary] tracking-[-0.01em]">
             Effectuer un paiement
           </DialogTitle>
-          <DialogDescription className="text-[13px] text-[#636363] mt-1 leading-[1.5]">
+          <DialogDescription className="mt-1 text-[13px] leading-[1.5] text-[--text-muted]">
             {charge
-              ? `${charge.title} — Solde restant : ${remaining.toFixed(2)} MAD`
+              ? `${charge.title} — Solde restant : ${formatMAD(remaining)}`
               : "Sélectionnez une charge"}
           </DialogDescription>
         </div>
@@ -143,7 +145,7 @@ export function OwnerPaymentForm({
             {/* Amount */}
             <div className="space-y-1.5">
               <label htmlFor="amount" className={labelClass}>
-                Montant (max {remaining.toFixed(2)} MAD)
+                Montant (max {formatMAD(remaining)})
               </label>
               <Input
                 id="amount"
@@ -166,11 +168,16 @@ export function OwnerPaymentForm({
               <label htmlFor="paymentDate" className={labelClass}>
                 Date de paiement
               </label>
-              <Input
-                id="paymentDate"
-                type="date"
-                className={inputClass}
-                {...form.register("paymentDate")}
+              <DatePicker
+                value={form.watch("paymentDate")}
+                onChange={(value) =>
+                  form.setValue("paymentDate", value, {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                  })
+                }
+                placeholder="Choisir une date"
+                buttonClassName={inputClass}
               />
               {form.formState.errors.paymentDate && (
                 <p className="text-[12px] text-[#EF4444] mt-1">
@@ -191,12 +198,12 @@ export function OwnerPaymentForm({
                 <SelectTrigger className={selectTriggerClass}>
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-[#1F1F1F] border border-[#2A2A2A] rounded-[10px] shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+                <SelectContent className="rounded-[10px] border border-[--border-default] bg-popover text-popover-foreground shadow-[var(--shadow-md)]">
                   {methodOptions.map((opt) => (
                     <SelectItem
                       key={opt.value}
                       value={opt.value}
-                      className="text-[14px] focus:bg-[#2A2A2A] focus:text-white"
+                      className="text-[14px] focus:bg-[--bg-card-hover] focus:text-[--text-primary]"
                     >
                       {opt.label}
                     </SelectItem>
@@ -238,7 +245,7 @@ export function OwnerPaymentForm({
           </div>
 
           {/* FOOTER */}
-          <div className="px-7 pb-7 pt-5 border-t border-[#1E1E1E] flex flex-col gap-2">
+          <div className="flex flex-col gap-2 border-t border-[--border-subtle] px-7 pb-7 pt-5">
             {serverError && (
               <div className="flex items-start gap-2.5 rounded-[10px] bg-[rgba(239,68,68,0.08)] border border-[rgba(239,68,68,0.15)] px-4 py-3">
                 <AlertCircle className="w-4 h-4 text-[#EF4444] mt-[1px] shrink-0" />
@@ -248,7 +255,7 @@ export function OwnerPaymentForm({
             <button
               type="submit"
               disabled={mutation.isPending}
-              className="w-full bg-white text-[#0A0A0A] hover:bg-white/90 active:scale-[0.98] rounded-[10px] px-5 py-[13px] text-[14px] font-medium transition-all duration-150 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center"
+              className="flex w-full items-center justify-center rounded-[10px] bg-[--btn-primary-bg] px-5 py-[13px] text-[14px] font-medium text-[--btn-primary-text] transition-all duration-150 cursor-pointer hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
             >
               {mutation.isPending && (
                 <Loader2 className="w-4 h-4 animate-spin mr-2" />

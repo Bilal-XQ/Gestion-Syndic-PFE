@@ -1,6 +1,7 @@
 # AGENTS.md — Syndic HOA Management App
 
-This file is recognised by GitHub Copilot, Claude Code, and other AI coding agents. Read it in full before making any change to this codebase.
+This file defines the rules and architecture of the repository.  
+GitHub Copilot and other AI coding agents MUST read this file before generating or modifying code.
 
 Full product specification: `docs/PRD.md`
 Design system: `docs/THEME.md`
@@ -62,7 +63,6 @@ docs/ai-lessons.md       Known AI failure patterns — read before starting any 
 |---|---|
 | `.github/skills/drizzle-migration/SKILL.md` | Adding or changing any table, column, index, or constraint |
 | `.github/skills/supabase-rls/SKILL.md` | Writing or auditing RLS policies on any table |
-| `.github/skills/shadcn-component/SKILL.md` | Scaffolding Sheet panels, tables, dialogs, or status badges |
-| `.github/skills/premium-ui/SKILL.md` | Building or polishing any component, page, or layout to match the premium design system |
+| `.github/skills/shadcn/SKILL.md` | Creating or modifying shadcn/ui components |
 
 To use a skill: include the path in your Copilot prompt, e.g. _"Use the drizzle-migration skill in `.github/skills/drizzle-migration/SKILL.md`"_.

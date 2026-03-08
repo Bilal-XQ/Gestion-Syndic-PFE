@@ -28,6 +28,8 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import { DatePicker } from "@/components/ui/date-picker";
+import { TimePicker } from "@/components/ui/time-picker";
 
 import {
   meetingSchema,
@@ -126,19 +128,19 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
   };
 
   const inputClass =
-    "bg-[#141414] border border-[#2A2A2A] rounded-[10px] h-auto px-[14px] py-[10px] text-[14px] text-white placeholder:text-[#404040] shadow-none focus:border-[#555555] focus:ring-0 focus:outline-none focus:shadow-[0_0_0_3px_rgba(255,255,255,0.06)] focus-visible:ring-0 focus-visible:outline-none transition-[border-color,box-shadow] duration-150 w-full";
+    "h-auto w-full rounded-[10px] border border-[--border-default] bg-[--bg-input] px-[14px] py-[10px] text-[14px] text-[--text-primary] shadow-none placeholder:text-[--text-placeholder] transition-[border-color,box-shadow] duration-150 focus:border-[--border-focus] focus:ring-0 focus:outline-none focus:shadow-[0_0_0_3px_var(--glow-soft)] focus-visible:ring-0 focus-visible:outline-none";
   const labelClass =
-    "text-[12px] font-medium text-[#A0A0A0] uppercase tracking-[0.06em]";
+    "text-[12px] font-medium text-[--text-secondary]";
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="bg-[#1F1F1F] border border-[#2A2A2A] rounded-[16px] max-w-[560px] w-full my-4 p-0 shadow-[0_24px_64px_rgba(0,0,0,0.6),0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.06)] max-h-[85vh] overflow-y-auto modal-scroll">
+      <DialogContent className="my-4 max-h-[85vh] w-full max-w-[560px] overflow-y-auto rounded-[16px] border border-[--border-default] bg-background p-0 shadow-[var(--shadow-hero-card)] modal-scroll">
         {/* HEADER */}
-        <div className="px-7 pt-7 pb-5 border-b border-[#2A2A2A]">
-          <DialogTitle className="text-[15px] font-semibold text-white tracking-[-0.01em]">
+        <div className="border-b border-[--border-default] px-7 pt-7 pb-5">
+          <DialogTitle className="text-[15px] font-semibold text-[--text-primary] tracking-[-0.01em]">
             Nouvelle réunion
           </DialogTitle>
-          <DialogDescription className="text-[13px] text-[#636363] mt-1 leading-[1.5]">
+          <DialogDescription className="mt-1 text-[13px] leading-[1.5] text-[--text-muted]">
             Planifiez une assemblée générale et invitez des copropriétaires.
           </DialogDescription>
         </div>
@@ -182,11 +184,16 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
               <label htmlFor="meetingDate" className={labelClass}>
                 Date
               </label>
-              <Input
-                id="meetingDate"
-                type="date"
-                className={inputClass}
-                {...form.register("meetingDate")}
+              <DatePicker
+                value={form.watch("meetingDate")}
+                onChange={(value) =>
+                  form.setValue("meetingDate", value, {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                  })
+                }
+                placeholder="Choisir une date"
+                buttonClassName={inputClass}
               />
               {form.formState.errors.meetingDate && (
                 <p className="text-[12px] text-[#EF4444] mt-1">
@@ -201,11 +208,16 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
                 <label htmlFor="startTime" className={labelClass}>
                   Heure de début
                 </label>
-                <Input
-                  id="startTime"
-                  type="time"
-                  className={inputClass}
-                  {...form.register("startTime")}
+                <TimePicker
+                  value={form.watch("startTime")}
+                  onChange={(value) =>
+                    form.setValue("startTime", value, {
+                      shouldDirty: true,
+                      shouldValidate: true,
+                    })
+                  }
+                  placeholder="Choisir une heure"
+                  buttonClassName={inputClass}
                 />
                 {form.formState.errors.startTime && (
                   <p className="text-[12px] text-[#EF4444] mt-1">
@@ -217,11 +229,16 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
                 <label htmlFor="endTime" className={labelClass}>
                   Heure de fin
                 </label>
-                <Input
-                  id="endTime"
-                  type="time"
-                  className={inputClass}
-                  {...form.register("endTime")}
+                <TimePicker
+                  value={form.watch("endTime")}
+                  onChange={(value) =>
+                    form.setValue("endTime", value, {
+                      shouldDirty: true,
+                      shouldValidate: true,
+                    })
+                  }
+                  placeholder="Choisir une heure"
+                  buttonClassName={inputClass}
                 />
                 {form.formState.errors.endTime && (
                   <p className="text-[12px] text-[#EF4444] mt-1">
@@ -263,9 +280,9 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
                           type="button"
                           role="combobox"
                           aria-expanded={popoverOpen}
-                          className="bg-[#141414] border border-[#2A2A2A] rounded-[10px] px-[14px] py-[10px] text-[14px] focus:border-[#555555] focus:ring-0 focus:outline-none focus:shadow-[0_0_0_3px_rgba(255,255,255,0.06)] transition-[border-color,box-shadow] duration-150 w-full flex items-center justify-between"
+                          className="flex w-full items-center justify-between rounded-[10px] border border-[--border-default] bg-[--bg-input] px-[14px] py-[10px] text-[14px] transition-[border-color,box-shadow] duration-150 focus:border-[--border-focus] focus:ring-0 focus:outline-none focus:shadow-[0_0_0_3px_var(--glow-soft)]"
                         >
-                          <span className={field.value.length > 0 ? "text-white" : "text-[#404040]"}>
+                          <span className={field.value.length > 0 ? "text-[--text-primary]" : "text-[--text-placeholder]"}>
                             {field.value.length > 0
                               ? `${field.value.length} sélectionné${field.value.length > 1 ? "s" : ""}`
                               : "Sélectionner des copropriétaires"}
@@ -273,7 +290,7 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
                           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 bg-[#1F1F1F] border border-[#2A2A2A] rounded-[10px] shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+                      <PopoverContent className="w-[var(--radix-popover-trigger-width)] rounded-[10px] border border-[--border-default] bg-popover p-0 text-popover-foreground shadow-[var(--shadow-md)]">
                         <Command>
                           <CommandInput placeholder="Rechercher…" />
                           <CommandList>
@@ -293,7 +310,7 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
                                         : [...field.value, owner.id];
                                       field.onChange(next);
                                     }}
-                                    className="text-[14px] focus:bg-[#2A2A2A] focus:text-white"
+                                    className="text-[14px]"
                                   >
                                     <Check
                                       className={cn(
@@ -306,7 +323,7 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
                                     <span>
                                       {owner.firstName} {owner.lastName}
                                     </span>
-                                    <span className="ml-auto text-xs text-[#636363]">
+                                    <span className="ml-auto text-xs text-[--text-muted]">
                                       {owner.unitNumber}
                                     </span>
                                   </CommandItem>
@@ -359,7 +376,7 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
           </div>
 
           {/* FOOTER */}
-          <div className="px-7 pb-7 pt-5 border-t border-[#1E1E1E] flex flex-col gap-2">
+          <div className="flex flex-col gap-2 border-t border-[--border-subtle] px-7 pb-7 pt-5">
             {serverError && (
               <div className="flex items-start gap-2.5 rounded-[10px] bg-[rgba(239,68,68,0.08)] border border-[rgba(239,68,68,0.15)] px-4 py-3">
                 <AlertCircle className="w-4 h-4 text-[#EF4444] mt-[1px] shrink-0" />
@@ -369,7 +386,7 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
             <button
               type="submit"
               disabled={mutation.isPending}
-              className="w-full bg-white text-[#0A0A0A] hover:bg-white/90 active:scale-[0.98] rounded-[10px] px-5 py-[13px] text-[14px] font-medium transition-all duration-150 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center"
+              className="flex w-full items-center justify-center rounded-[10px] bg-[--btn-primary-bg] px-5 py-[13px] text-[14px] font-medium text-[--btn-primary-text] transition-all duration-150 cursor-pointer hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
             >
               {mutation.isPending && (
                 <Loader2 className="w-4 h-4 animate-spin mr-2" />

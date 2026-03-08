@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,6 +29,7 @@ import { DeleteMeetingDialog } from "./delete-meeting-dialog";
 
 import { cancelMeeting } from "@/lib/actions/meetings";
 import { useQueryClient } from "@tanstack/react-query";
+import { formatDate, formatTime } from "@/lib/formatters";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -106,7 +108,8 @@ export function MeetingsTable() {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto rounded-[12px] border border-[--border-default] bg-[--bg-card]">
+      <Card className="overflow-hidden border-[--border-default] bg-[--bg-card]">
+        <div className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="border-[--border-default] hover:bg-transparent">
@@ -162,10 +165,10 @@ export function MeetingsTable() {
                     {meeting.title}
                   </TableCell>
                   <TableCell className="font-mono text-sm text-[--text-secondary]">
-                    {meeting.meetingDate}
+                    {formatDate(meeting.meetingDate)}
                   </TableCell>
                   <TableCell className="font-mono text-sm text-[--text-secondary]">
-                    {meeting.startTime?.slice(0, 5)} — {meeting.endTime?.slice(0, 5)}
+                    {formatTime(meeting.startTime)} — {formatTime(meeting.endTime)}
                   </TableCell>
                   <TableCell className="text-[--text-secondary]">
                     {meeting.location}
@@ -239,7 +242,8 @@ export function MeetingsTable() {
             )}
           </TableBody>
         </Table>
-      </div>
+        </div>
+      </Card>
 
       {/* Panels / Dialogs */}
       <MeetingPanel open={panelOpen} onOpenChange={setPanelOpen} />

@@ -14,7 +14,7 @@ export default async function DashboardPage() {
   } = await supabase.auth.getUser();
 
   const syndicId = user?.id ?? "";
-  const syndicFirstName = user?.user_metadata?.first_name ?? user?.email ?? "";
+  const syndicFirstName = user?.user_metadata?.first_name?.trim() || "Syndic";
 
   const emptyMetrics = {
     totalOwners: 0,

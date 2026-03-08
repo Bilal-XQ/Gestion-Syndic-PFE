@@ -100,9 +100,9 @@ export function NotificationsList() {
       {/* Header actions */}
       <div className="flex items-center justify-between">
         <p className="text-sm text-[--text-secondary]">
-          {unreadCount > 0
-            ? `${unreadCount} non lue${unreadCount > 1 ? "s" : ""}`
-            : "Aucune notification non lue"}
+          {unreadCount === 0
+            ? "0 notification non lue"
+            : `${unreadCount} notification${unreadCount > 1 ? "s" : ""} non lue${unreadCount > 1 ? "s" : ""}`}
         </p>
         {unreadCount > 0 && (
           <Button

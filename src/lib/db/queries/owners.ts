@@ -70,6 +70,21 @@ export async function getOwnerByUserId(userId: string) {
 }
 
 /**
+ * Fetch first and last name from public.users by auth/user ID.
+ * Used by layout files to display the current user's name in the sidebar.
+ */
+export async function getUserNameById(
+  userId: string
+): Promise<{ firstName: string; lastName: string } | null> {
+  const [row] = await db
+    .select({ firstName: users.firstName, lastName: users.lastName })
+    .from(users)
+    .where(eq(users.id, userId))
+    .limit(1);
+  return row ?? null;
+}
+
+/**
  * Check if an active owner is assigned to a given apartment.
  * Used as a guard before apartment deletion.
  */

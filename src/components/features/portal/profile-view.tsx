@@ -18,6 +18,7 @@ import {
   type ChangePasswordFormValues,
 } from "@/lib/validations/profile";
 import { updatePhone, changePassword } from "@/lib/actions/portal";
+import { formatDate } from "@/lib/formatters";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -124,51 +125,51 @@ export function ProfileView() {
       <Card className="border-[--border-default] bg-[--bg-elevated] p-6">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {/* Personal info */}
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div className="flex items-center gap-2 text-sm font-medium text-[--text-primary]">
               <User className="h-4 w-4" /> Informations personnelles
             </div>
-            <dl className="space-y-1 text-sm">
-              <div>
+            <dl className="space-y-3 text-sm">
+              <div className="space-y-1.5">
                 <dt className="text-[--text-secondary]">Nom</dt>
                 <dd className="text-[--text-primary]">
                   {owner.firstName} {owner.lastName}
                 </dd>
               </div>
-              <div>
+              <div className="space-y-1.5">
                 <dt className="text-[--text-secondary]">Email</dt>
                 <dd className="text-[--text-primary]">{owner.email}</dd>
               </div>
-              <div>
+              <div className="space-y-1.5">
                 <dt className="text-[--text-secondary]">Date de propriété</dt>
-                <dd className="text-[--text-primary]">{owner.ownershipDate}</dd>
+                <dd className="text-[--text-primary]">{formatDate(owner.ownershipDate)}</dd>
               </div>
             </dl>
           </div>
 
           {/* Apartment info */}
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div className="flex items-center gap-2 text-sm font-medium text-[--text-primary]">
               <Home className="h-4 w-4" /> Appartement
             </div>
-            <dl className="space-y-1 text-sm">
-              <div>
+            <dl className="space-y-3 text-sm">
+              <div className="space-y-1.5">
                 <dt className="text-[--text-secondary]">Unité</dt>
                 <dd className="text-[--text-primary]">
                   {apartment.unitNumber}
                 </dd>
               </div>
-              <div>
+              <div className="space-y-1.5">
                 <dt className="text-[--text-secondary]">Étage</dt>
                 <dd className="text-[--text-primary]">{apartment.floor}</dd>
               </div>
-              <div>
+              <div className="space-y-1.5">
                 <dt className="text-[--text-secondary]">Surface</dt>
                 <dd className="text-[--text-primary]">
                   {apartment.surfaceArea} m²
                 </dd>
               </div>
-              <div>
+              <div className="space-y-1.5">
                 <dt className="text-[--text-secondary]">Pièces</dt>
                 <dd className="text-[--text-primary]">
                   {apartment.roomCount}
@@ -179,16 +180,16 @@ export function ProfileView() {
 
           {/* Building info */}
           {building && (
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div className="flex items-center gap-2 text-sm font-medium text-[--text-primary]">
                 <Building2 className="h-4 w-4" /> Immeuble
               </div>
-              <dl className="space-y-1 text-sm">
-                <div>
+              <dl className="space-y-3 text-sm">
+                <div className="space-y-1.5">
                   <dt className="text-[--text-secondary]">Nom</dt>
                   <dd className="text-[--text-primary]">{building.name}</dd>
                 </div>
-                <div>
+                <div className="space-y-1.5">
                   <dt className="text-[--text-secondary]">Adresse</dt>
                   <dd className="text-[--text-primary]">{building.address}</dd>
                 </div>
@@ -206,28 +207,31 @@ export function ProfileView() {
           </Label>
 
           {editingPhone ? (
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <Input
                 value={phoneValue}
                 onChange={(e) => setPhoneValue(e.target.value)}
                 placeholder="06 12 34 56 78"
                 className="max-w-xs"
               />
+              <div className="flex items-center gap-2">
               <Button
-                size="icon"
-                variant="ghost"
+                size="sm"
                 onClick={() => phoneMutation.mutate(phoneValue)}
                 disabled={phoneMutation.isPending}
               >
                 <Check className="h-4 w-4" />
+                Enregistrer
               </Button>
               <Button
-                size="icon"
-                variant="ghost"
+                size="sm"
+                variant="outline"
                 onClick={() => setEditingPhone(false)}
               >
                 <X className="h-4 w-4" />
+                Annuler
               </Button>
+              </div>
             </div>
           ) : (
             <div className="flex items-center gap-2">
@@ -235,14 +239,15 @@ export function ProfileView() {
                 {owner.phone || "Non renseigné"}
               </span>
               <Button
-                size="icon"
-                variant="ghost"
+                size="sm"
+                variant="outline"
                 onClick={() => {
                   setPhoneValue(owner.phone || "");
                   setEditingPhone(true);
                 }}
               >
                 <Pencil className="h-4 w-4" />
+                Modifier
               </Button>
             </div>
           )}

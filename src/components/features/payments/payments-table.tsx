@@ -22,6 +22,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
+import { DatePicker } from "@/components/ui/date-picker";
+import { formatDate, formatMAD } from "@/lib/formatters";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -140,7 +142,7 @@ export function PaymentsTable() {
             Total charges
           </p>
           <p className="mt-1 font-mono text-xl font-semibold text-[--text-primary]">
-            {Number(summary.totalChargesIssued).toFixed(2)} MAD
+            {formatMAD(summary.totalChargesIssued)}
           </p>
         </Card>
         <Card className="border-[--border-default] bg-[--bg-card] p-5">
@@ -148,7 +150,7 @@ export function PaymentsTable() {
             Total encaissé
           </p>
           <p className="mt-1 font-mono text-xl font-semibold text-[--status-success]">
-            {Number(summary.totalCollected).toFixed(2)} MAD
+            {formatMAD(summary.totalCollected)}
           </p>
         </Card>
         <Card className="border-[--border-default] bg-[--bg-card] p-5">
@@ -156,7 +158,7 @@ export function PaymentsTable() {
             Solde restant
           </p>
           <p className="mt-1 font-mono text-xl font-semibold text-[--status-error]">
-            {Number(summary.totalOutstanding).toFixed(2)} MAD
+            {formatMAD(summary.totalOutstanding)}
           </p>
         </Card>
       </div>
@@ -165,20 +167,22 @@ export function PaymentsTable() {
       <div className="flex flex-wrap items-end gap-4">
         <div className="space-y-1">
           <Label className="text-xs text-[--text-muted]">Du</Label>
-          <Input
-            type="date"
+          <DatePicker
             value={dateFrom}
-            onChange={(e) => setDateFrom(e.target.value)}
-            className="w-full sm:w-40"
+            onChange={setDateFrom}
+            allowClear
+            placeholder="Choisir une date"
+            buttonClassName="w-full sm:w-40"
           />
         </div>
         <div className="space-y-1">
           <Label className="text-xs text-[--text-muted]">Au</Label>
-          <Input
-            type="date"
+          <DatePicker
             value={dateTo}
-            onChange={(e) => setDateTo(e.target.value)}
-            className="w-full sm:w-40"
+            onChange={setDateTo}
+            allowClear
+            placeholder="Choisir une date"
+            buttonClassName="w-full sm:w-40"
           />
         </div>
         <div className="space-y-1">
@@ -215,7 +219,8 @@ export function PaymentsTable() {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto rounded-[12px] border border-[--border-default] bg-[--bg-card]">
+      <Card className="overflow-hidden border-[--border-default] bg-[--bg-card]">
+        <div className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="border-[--border-subtle] hover:bg-transparent">
@@ -265,10 +270,10 @@ export function PaymentsTable() {
                     {p.chargeTitle}
                   </TableCell>
                   <TableCell className="font-mono text-[--text-secondary]">
-                    {Number(p.amount).toFixed(2)} MAD
+                    {formatMAD(p.amount)}
                   </TableCell>
                   <TableCell className="text-[--text-secondary]">
-                    {p.paymentDate}
+                    {formatDate(p.paymentDate)}
                   </TableCell>
                   <TableCell className="text-[--text-secondary]">
                     {methodLabels[p.method] ?? p.method}
@@ -281,7 +286,8 @@ export function PaymentsTable() {
             )}
           </TableBody>
         </Table>
-      </div>
+        </div>
+      </Card>
     </>
   );
 }

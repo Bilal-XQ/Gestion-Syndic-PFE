@@ -12,6 +12,7 @@ import { Card } from "@/components/ui/card"
 import { format, parseISO } from "date-fns"
 import { fr } from "date-fns/locale"
 import { motion } from "motion/react"
+import { formatMAD } from "@/lib/formatters"
 
 interface PaymentChartProps {
   data: { month: string; total: number }[]
@@ -33,9 +34,7 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
   return (
     <div className="bg-card border border-border rounded-lg shadow-sm px-3 py-2 text-sm">
       <p className="font-medium capitalize">{monthLabel}</p>
-      <p className="text-muted-foreground mt-0.5">
-        {payload[0].value.toLocaleString("fr-MA")} MAD
-      </p>
+      <p className="text-muted-foreground mt-0.5">{formatMAD(payload[0].value)}</p>
     </div>
   )
 }

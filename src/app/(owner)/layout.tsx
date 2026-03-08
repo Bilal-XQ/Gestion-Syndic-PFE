@@ -4,6 +4,7 @@ import { TopBar } from "@/components/layout/top-bar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { RealtimeProvider } from "@/components/providers/realtime-provider";
 import { createClient } from "@/utils/supabase/server";
+import { getUserNameById } from "@/lib/db/queries/owners";
 
 export default async function OwnerLayout({
   children,
@@ -19,9 +20,13 @@ export default async function OwnerLayout({
   } = await supabase.auth.getUser();
   const userId = user?.id ?? "";
 
+  const nameRow = userId ? await getUserNameById(userId) : null;
+  const firstName = nameRow?.firstName ?? "";
+  const lastName = nameRow?.lastName ?? "";
+
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
-      <OwnerSidebar />
+      <OwnerSidebar firstName={firstName} lastName={lastName} />
       <SidebarInset className="bg-[--bg-base]">
         <TopBar />
         <main className="flex-1 overflow-y-auto p-4 md:p-6">{children}</main>

@@ -1,9 +1,10 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
+import { createServerClient } from "@supabase/ssr";
 import { loginSchema, resetPasswordSchema, updatePasswordSchema } from "@/lib/validations/auth";
 import { redirect } from "next/navigation";
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -28,7 +29,31 @@ export async function login(
     return { success: false, error: parsed.error.issues[0].message };
   }
 
-  const supabase = await createClient();
+  const rememberMe = formData.get("rememberMe") !== "false";
+
+  const cookieStore = await cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      auth: { persistSession: rememberMe },
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            );
+          } catch {
+            // Intentionally ignored in Server Actions
+          }
+        },
+      },
+    }
+  );
+
   const { error } = await supabase.auth.signInWithPassword({
     email: parsed.data.email,
     password: parsed.data.password,

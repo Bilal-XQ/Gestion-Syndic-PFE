@@ -8,6 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import type { getOverdueCharges } from "@/lib/db/queries/charges"
+import { formatDate, formatMAD } from "@/lib/formatters"
 
 type OverdueChargesTableProps = {
   charges: Awaited<ReturnType<typeof getOverdueCharges>>
@@ -55,9 +56,9 @@ export function OverdueChargesTable({ charges }: OverdueChargesTableProps) {
                 <TableCell className="text-muted-foreground">{c.title}</TableCell>
                 <TableCell className="text-muted-foreground">{c.unitNumber}</TableCell>
                 <TableCell className="font-mono text-destructive">
-                  {Number(c.remainingAmount).toFixed(2)} MAD
+                  {formatMAD(c.remainingAmount)}
                 </TableCell>
-                <TableCell className="text-destructive">{c.dueDate}</TableCell>
+                <TableCell className="text-destructive">{formatDate(c.dueDate)}</TableCell>
               </TableRow>
             ))
           )}

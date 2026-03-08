@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
 import type { getActiveOwners } from "@/lib/db/queries/owners";
 import { OwnerPanel } from "./owner-panel";
 import { DeleteOwnerDialog } from "./delete-owner-dialog";
@@ -70,7 +71,8 @@ export function OwnersTable({ initialData }: { initialData: Owner[] }) {
       </div>
 
       {/* Table */}
-      <div className="mt-4 overflow-x-auto rounded-[12px] border border-[--border-default] bg-[--bg-card]">
+      <Card className="mt-4 overflow-hidden border-[--border-default] bg-[--bg-card]">
+        <div className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="border-[--border-subtle] hover:bg-transparent">
@@ -150,7 +152,8 @@ export function OwnersTable({ initialData }: { initialData: Owner[] }) {
             )}
           </TableBody>
         </Table>
-      </div>
+        </div>
+      </Card>
 
       {/* Panel */}
       <OwnerPanel

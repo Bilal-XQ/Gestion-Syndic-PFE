@@ -10,6 +10,7 @@ import {
 } from "lucide-react"
 import { AnimatedMetricCard } from "./animated-metric-card"
 import type { DashboardMetrics } from "@/lib/db/queries/dashboard"
+import { formatMAD } from "@/lib/formatters"
 
 interface MetricCardsGridProps {
   metrics: DashboardMetrics
@@ -21,8 +22,7 @@ interface MetricCardsGridProps {
 }
 
 export function MetricCardsGrid({ metrics, financialSummary }: MetricCardsGridProps) {
-  const totalCollectedFormatted =
-    Number(financialSummary.totalCollected).toLocaleString("fr-MA") + " MAD"
+  const totalCollectedFormatted = formatMAD(financialSummary.totalCollected)
 
   const cards = [
     {

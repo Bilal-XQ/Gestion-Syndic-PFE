@@ -21,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DatePicker } from "@/components/ui/date-picker";
 
 import { chargeSchema, type ChargeFormValues } from "@/lib/validations/charge";
 import { createCharge } from "@/lib/actions/charges";
@@ -74,8 +75,6 @@ export function ChargePanel({ open, onOpenChange }: ChargePanelProps) {
     defaultValues: {
       title: "",
       description: "",
-      category: "maintenance",
-      totalAmount: 0,
       dueDate: "",
       apartmentId: "",
     },
@@ -108,8 +107,6 @@ export function ChargePanel({ open, onOpenChange }: ChargePanelProps) {
       form.reset({
         title: "",
         description: "",
-        category: "maintenance",
-        totalAmount: 0,
         dueDate: "",
         apartmentId: "",
       });
@@ -118,21 +115,21 @@ export function ChargePanel({ open, onOpenChange }: ChargePanelProps) {
   };
 
   const inputClass =
-    "bg-[#141414] border border-[#2A2A2A] rounded-[10px] h-auto px-[14px] py-[10px] text-[14px] text-white placeholder:text-[#404040] shadow-none focus:border-[#555555] focus:ring-0 focus:outline-none focus:shadow-[0_0_0_3px_rgba(255,255,255,0.06)] focus-visible:ring-0 focus-visible:outline-none transition-[border-color,box-shadow] duration-150 w-full";
+    "h-auto w-full rounded-[10px] border border-[--border-default] bg-[--bg-input] px-[14px] py-[10px] text-[14px] text-[--text-primary] shadow-none placeholder:text-[--text-placeholder] transition-[border-color,box-shadow] duration-150 focus:border-[--border-focus] focus:ring-0 focus:outline-none focus:shadow-[0_0_0_3px_var(--glow-soft)] focus-visible:ring-0 focus-visible:outline-none";
   const labelClass =
-    "text-[12px] font-medium text-[#A0A0A0] uppercase tracking-[0.06em]";
+    "text-[12px] font-medium text-[--text-secondary]";
   const selectTriggerClass =
-    "bg-[#141414] border border-[#2A2A2A] rounded-[10px] h-auto px-[14px] py-[10px] text-[14px] text-white shadow-none focus:border-[#555555] focus:ring-0 focus:outline-none focus:shadow-[0_0_0_3px_rgba(255,255,255,0.06)] focus-visible:ring-0 focus-visible:outline-none transition-[border-color,box-shadow] duration-150 w-full";
+    "h-auto w-full rounded-[10px] border border-[--border-default] bg-[--bg-input] px-[14px] py-[10px] text-[14px] text-[--text-primary] shadow-none transition-[border-color,box-shadow] duration-150 data-[placeholder]:text-[--text-placeholder] focus:border-[--border-focus] focus:ring-0 focus:outline-none focus:shadow-[0_0_0_3px_var(--glow-soft)] focus-visible:ring-0 focus-visible:outline-none";
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="bg-[#1F1F1F] border border-[#2A2A2A] rounded-[16px] max-w-[560px] w-full my-4 p-0 shadow-[0_24px_64px_rgba(0,0,0,0.6),0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.06)] max-h-[calc(100vh-2rem)] overflow-y-auto modal-scroll">
+      <DialogContent className="my-4 max-h-[calc(100vh-2rem)] w-full max-w-[560px] overflow-y-auto rounded-[16px] border border-[--border-default] bg-background p-0 shadow-[var(--shadow-hero-card)] modal-scroll">
         {/* HEADER */}
-        <div className="px-7 pt-7 pb-5 border-b border-[#2A2A2A]">
-          <DialogTitle className="text-[15px] font-semibold text-white tracking-[-0.01em]">
+        <div className="border-b border-[--border-default] px-7 pt-7 pb-5">
+          <DialogTitle className="text-[15px] font-semibold text-[--text-primary] tracking-[-0.01em]">
             Nouvelle charge
           </DialogTitle>
-          <DialogDescription className="text-[13px] text-[#636363] mt-1 leading-[1.5]">
+          <DialogDescription className="mt-1 text-[13px] leading-[1.5] text-[--text-muted]">
             Créez une charge pour un appartement.
           </DialogDescription>
         </div>
@@ -175,7 +172,7 @@ export function ChargePanel({ open, onOpenChange }: ChargePanelProps) {
             <div className="space-y-1.5">
               <label className={labelClass}>Catégorie</label>
               <Select
-                value={form.watch("category")}
+                value={form.watch("category") ?? ""}
                 onValueChange={(val) =>
                   form.setValue(
                     "category",
@@ -187,12 +184,15 @@ export function ChargePanel({ open, onOpenChange }: ChargePanelProps) {
                 <SelectTrigger className={selectTriggerClass}>
                   <SelectValue placeholder="Choisir une catégorie" />
                 </SelectTrigger>
-                <SelectContent className="bg-[#1F1F1F] border border-[#2A2A2A] rounded-[10px] shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+                <SelectContent className="rounded-[10px] border border-[--border-default] bg-popover text-popover-foreground shadow-[var(--shadow-md)]">
+                  <SelectItem value="placeholder" disabled>
+                    Choisir une catégorie
+                  </SelectItem>
                   {categoryOptions.map((opt) => (
                     <SelectItem
                       key={opt.value}
                       value={opt.value}
-                      className="text-[14px] focus:bg-[#2A2A2A] focus:text-white"
+                      className="text-[14px] focus:bg-[--bg-card-hover] focus:text-[--text-primary]"
                     >
                       {opt.label}
                     </SelectItem>
@@ -232,11 +232,16 @@ export function ChargePanel({ open, onOpenChange }: ChargePanelProps) {
               <label htmlFor="dueDate" className={labelClass}>
                 Date d&apos;échéance
               </label>
-              <Input
-                id="dueDate"
-                type="date"
-                className={inputClass}
-                {...form.register("dueDate")}
+              <DatePicker
+                value={form.watch("dueDate")}
+                onChange={(value) =>
+                  form.setValue("dueDate", value, {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                  })
+                }
+                placeholder="Choisir une date"
+                buttonClassName={inputClass}
               />
               {form.formState.errors.dueDate && (
                 <p className="text-[12px] text-[#EF4444] mt-1">
@@ -257,12 +262,12 @@ export function ChargePanel({ open, onOpenChange }: ChargePanelProps) {
                 <SelectTrigger className={selectTriggerClass}>
                   <SelectValue placeholder="Choisir un appartement" />
                 </SelectTrigger>
-                <SelectContent className="bg-[#1F1F1F] border border-[#2A2A2A] rounded-[10px] shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+                <SelectContent className="rounded-[10px] border border-[--border-default] bg-popover text-popover-foreground shadow-[var(--shadow-md)]">
                   {apartments.map((apt) => (
                     <SelectItem
                       key={apt.id}
                       value={apt.id}
-                      className="text-[14px] focus:bg-[#2A2A2A] focus:text-white"
+                      className="text-[14px] focus:bg-[--bg-card-hover] focus:text-[--text-primary]"
                     >
                       {apt.unitNumber} — Étage {apt.floor}
                     </SelectItem>
@@ -278,7 +283,7 @@ export function ChargePanel({ open, onOpenChange }: ChargePanelProps) {
           </div>
 
           {/* FOOTER */}
-          <div className="px-7 pb-7 pt-5 border-t border-[#1E1E1E] flex flex-col gap-2">
+          <div className="flex flex-col gap-2 border-t border-[--border-subtle] px-7 pb-7 pt-5">
             {serverError && (
               <div className="flex items-start gap-2.5 rounded-[10px] bg-[rgba(239,68,68,0.08)] border border-[rgba(239,68,68,0.15)] px-4 py-3">
                 <AlertCircle className="w-4 h-4 text-[#EF4444] mt-[1px] shrink-0" />
@@ -288,7 +293,7 @@ export function ChargePanel({ open, onOpenChange }: ChargePanelProps) {
             <button
               type="submit"
               disabled={mutation.isPending}
-              className="w-full bg-white text-[#0A0A0A] hover:bg-white/90 active:scale-[0.98] rounded-[10px] px-5 py-[13px] text-[14px] font-medium transition-all duration-150 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center"
+              className="flex w-full items-center justify-center rounded-[10px] bg-[--btn-primary-bg] px-5 py-[13px] text-[14px] font-medium text-[--btn-primary-text] transition-all duration-150 cursor-pointer hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
             >
               {mutation.isPending && (
                 <Loader2 className="w-4 h-4 animate-spin mr-2" />

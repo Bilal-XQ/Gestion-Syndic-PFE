@@ -4,8 +4,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, MapPin, Clock, Calendar, Users } from "lucide-react";
 import { toast } from "sonner";
-import { format } from "date-fns";
-import { fr } from "date-fns/locale";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,6 +18,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatusBadge } from "@/components/features/shared/StatusBadge";
 import { cancelMeeting } from "@/lib/actions/meetings";
+import { formatDateLong, formatDateTime, formatTime } from "@/lib/formatters";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -102,15 +101,7 @@ export function MeetingDetail({ meetingId }: { meetingId: string }) {
 
   const { meeting, invitations } = data;
 
-  const formattedDate = (() => {
-    try {
-      return format(new Date(meeting.meetingDate), "EEEE d MMMM yyyy", {
-        locale: fr,
-      });
-    } catch {
-      return meeting.meetingDate;
-    }
-  })();
+  const formattedDate = formatDateLong(meeting.meetingDate);
 
   return (
     <div className="flex flex-col gap-6">
@@ -165,7 +156,7 @@ export function MeetingDetail({ meetingId }: { meetingId: string }) {
             <div>
               <p className="text-xs text-[--text-muted]">Horaire</p>
               <p className="text-sm font-medium font-mono text-[--text-primary]">
-                {meeting.startTime} – {meeting.endTime}
+                {formatTime(meeting.startTime)} – {formatTime(meeting.endTime)}
               </p>
             </div>
           </div>
@@ -256,7 +247,7 @@ export function MeetingDetail({ meetingId }: { meetingId: string }) {
                     </TableCell>
                     <TableCell className="text-[--text-muted] font-mono text-xs">
                       {inv.respondedAt
-                        ? format(new Date(inv.respondedAt), "dd/MM/yyyy HH:mm")
+                        ? formatDateTime(inv.respondedAt)
                         : "—"}
                     </TableCell>
                   </TableRow>

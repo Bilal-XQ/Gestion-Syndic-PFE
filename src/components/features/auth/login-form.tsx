@@ -1,13 +1,16 @@
 "use client";
 
-import { useActionState } from "react";
+import { useState, useActionState } from "react";
 import { login } from "@/lib/actions/auth";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/features/auth/password-input";
 import Link from "next/link";
 
 export function LoginForm() {
+  const [rememberMe, setRememberMe] = useState(true);
   const [state, formAction, isPending] = useActionState(
     async (_prev: { error: string } | null, formData: FormData) => {
       const result = await login(formData);
@@ -58,16 +61,27 @@ export function LoginForm() {
             Mot de passe oublié ?
           </Link>
         </div>
-        <Input
+        <PasswordInput
           id="password"
           name="password"
-          type="password"
           placeholder="••••••••"
           autoComplete="current-password"
           required
           className="h-11 rounded-[10px] border-[--border-default] bg-[--bg-input] text-[--text-primary] placeholder:text-[--text-placeholder] focus:border-[--border-focus] focus:ring-2 focus:ring-white/[0.06]"
         />
       </div>
+
+      <div className="flex items-center gap-2">
+        <Checkbox
+          id="rememberMe"
+          checked={rememberMe}
+          onCheckedChange={(checked) => setRememberMe(checked === true)}
+        />
+        <Label htmlFor="rememberMe" className="text-sm text-[--text-secondary] cursor-pointer">
+          Se souvenir de moi
+        </Label>
+      </div>
+      <input type="hidden" name="rememberMe" value={rememberMe ? "true" : "false"} />
 
       <Button
         type="submit"

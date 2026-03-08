@@ -47,9 +47,9 @@ export function ApartmentPanel({
     resolver: zodResolver(apartmentSchema) as any,
     defaultValues: {
       unitNumber: apartment?.unitNumber ?? "",
-      floor: apartment?.floor ?? 0,
-      surfaceArea: apartment ? Number(apartment.surfaceArea) : 0,
-      roomCount: apartment?.roomCount ?? 1,
+      floor: apartment?.floor,
+      surfaceArea: apartment ? Number(apartment.surfaceArea) : undefined,
+      roomCount: apartment?.roomCount,
     },
   });
 
@@ -87,28 +87,28 @@ export function ApartmentPanel({
       setServerError("");
       form.reset({
         unitNumber: apartment?.unitNumber ?? "",
-        floor: apartment?.floor ?? 0,
-        surfaceArea: apartment ? Number(apartment.surfaceArea) : 0,
-        roomCount: apartment?.roomCount ?? 1,
+        floor: apartment?.floor,
+        surfaceArea: apartment ? Number(apartment.surfaceArea) : undefined,
+        roomCount: apartment?.roomCount,
       });
     }
     onOpenChange(v);
   };
 
   const inputClass =
-    "bg-[#141414] border border-[#2A2A2A] rounded-[10px] h-auto px-[14px] py-[10px] text-[14px] text-white placeholder:text-[#404040] shadow-none focus:border-[#555555] focus:ring-0 focus:outline-none focus:shadow-[0_0_0_3px_rgba(255,255,255,0.06)] focus-visible:ring-0 focus-visible:outline-none transition-[border-color,box-shadow] duration-150 w-full";
+    "h-auto w-full rounded-[10px] border border-[--border-default] bg-[--bg-input] px-[14px] py-[10px] text-[14px] text-[--text-primary] shadow-none placeholder:text-[--text-placeholder] transition-[border-color,box-shadow] duration-150 focus:border-[--border-focus] focus:ring-0 focus:outline-none focus:shadow-[0_0_0_3px_var(--glow-soft)] focus-visible:ring-0 focus-visible:outline-none";
   const labelClass =
-    "text-[12px] font-medium text-[#A0A0A0] uppercase tracking-[0.06em]";
+    "text-[12px] font-medium text-[--text-secondary]";
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="bg-[#1F1F1F] border border-[#2A2A2A] rounded-[16px] max-w-[560px] w-full my-4 p-0 shadow-[0_24px_64px_rgba(0,0,0,0.6),0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.06)] overflow-hidden">
+      <DialogContent className="my-4 w-full max-w-[560px] overflow-hidden rounded-[16px] border border-[--border-default] bg-background p-0 shadow-[var(--shadow-hero-card)]">
         {/* HEADER */}
-        <div className="px-7 pt-7 pb-5 border-b border-[#2A2A2A]">
-          <DialogTitle className="text-[15px] font-semibold text-white tracking-[-0.01em]">
+        <div className="border-b border-[--border-default] px-7 pt-7 pb-5">
+          <DialogTitle className="text-[15px] font-semibold text-[--text-primary] tracking-[-0.01em]">
             {isEdit ? "Modifier l'appartement" : "Ajouter un appartement"}
           </DialogTitle>
-          <DialogDescription className="text-[13px] text-[#636363] mt-1 leading-[1.5]">
+          <DialogDescription className="mt-1 text-[13px] leading-[1.5] text-[--text-muted]">
             {isEdit
               ? "Modifiez les informations de l'appartement."
               : "Remplissez les informations du nouvel appartement."}
@@ -143,6 +143,7 @@ export function ApartmentPanel({
                 <Input
                   id="floor"
                   type="number"
+                  placeholder="0"
                   className={inputClass}
                   {...form.register("floor")}
                 />
@@ -163,6 +164,7 @@ export function ApartmentPanel({
                   id="surfaceArea"
                   type="number"
                   step="0.01"
+                  placeholder="85"
                   className={inputClass}
                   {...form.register("surfaceArea")}
                 />
@@ -181,6 +183,7 @@ export function ApartmentPanel({
                   id="roomCount"
                   type="number"
                   min={1}
+                  placeholder="3"
                   className={inputClass}
                   {...form.register("roomCount")}
                 />
@@ -194,7 +197,7 @@ export function ApartmentPanel({
           </div>
 
           {/* FOOTER */}
-          <div className="px-7 pb-7 pt-5 border-t border-[#1E1E1E] flex flex-col gap-2">
+          <div className="flex flex-col gap-2 border-t border-[--border-subtle] px-7 pb-7 pt-5">
             {serverError && (
               <div className="flex items-start gap-2.5 rounded-[10px] bg-[rgba(239,68,68,0.08)] border border-[rgba(239,68,68,0.15)] px-4 py-3">
                 <AlertCircle className="w-4 h-4 text-[#EF4444] mt-[1px] shrink-0" />
@@ -204,7 +207,7 @@ export function ApartmentPanel({
             <button
               type="submit"
               disabled={mutation.isPending}
-              className="w-full bg-white text-[#0A0A0A] hover:bg-white/90 active:scale-[0.98] rounded-[10px] px-5 py-[13px] text-[14px] font-medium transition-all duration-150 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center"
+              className="flex w-full items-center justify-center rounded-[10px] bg-[--btn-primary-bg] px-5 py-[13px] text-[14px] font-medium text-[--btn-primary-text] transition-all duration-150 cursor-pointer hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
             >
               {mutation.isPending && (
                 <Loader2 className="w-4 h-4 animate-spin mr-2" />

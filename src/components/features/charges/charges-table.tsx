@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,6 +27,7 @@ import { ChargePanel } from "./charge-panel";
 import { DeleteChargeDialog } from "./delete-charge-dialog";
 
 import { sendPaymentReminder, downloadPaymentNotice } from "@/lib/actions/charges";
+import { formatDate, formatMAD } from "@/lib/formatters";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -134,7 +136,8 @@ export function ChargesTable() {
       </div>
 
       {/* Table */}
-      <div className="mt-4 overflow-x-auto rounded-[12px] border border-[--border-default] bg-[--bg-card]">
+      <Card className="mt-4 overflow-hidden border-[--border-default] bg-[--bg-card]">
+        <div className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="border-[--border-subtle] hover:bg-transparent">
@@ -196,16 +199,16 @@ export function ChargesTable() {
                     {categoryLabels[charge.category] ?? charge.category}
                   </TableCell>
                   <TableCell className="font-mono text-[--text-secondary]">
-                    {Number(charge.totalAmount).toFixed(2)}
+                    {formatMAD(charge.totalAmount)}
                   </TableCell>
                   <TableCell className="font-mono text-[--text-secondary]">
-                    {Number(charge.amountPaid).toFixed(2)}
+                    {formatMAD(charge.amountPaid)}
                   </TableCell>
                   <TableCell className="font-mono text-[--text-secondary]">
-                    {Number(charge.remainingAmount).toFixed(2)}
+                    {formatMAD(charge.remainingAmount)}
                   </TableCell>
                   <TableCell className="text-[--text-secondary]">
-                    {charge.dueDate}
+                    {formatDate(charge.dueDate)}
                   </TableCell>
                   <TableCell>
                     <StatusBadge
@@ -245,7 +248,8 @@ export function ChargesTable() {
             )}
           </TableBody>
         </Table>
-      </div>
+        </div>
+      </Card>
 
       {/* Add charge panel */}
       <ChargePanel open={panelOpen} onOpenChange={setPanelOpen} />

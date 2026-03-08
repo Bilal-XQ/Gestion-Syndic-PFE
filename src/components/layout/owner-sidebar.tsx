@@ -4,9 +4,10 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { Home, CreditCard, Bell, LogOut } from "lucide-react";
-import { signOut } from "@/lib/actions/auth";
+import { Home, CreditCard, Bell } from "lucide-react";
 import { useSidebarStore } from "@/lib/stores/sidebar";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { SidebarUserMenu } from "@/components/layout/sidebar-user-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -34,7 +35,16 @@ async function fetchUnreadCount(): Promise<number> {
   return data.unreadCount ?? 0;
 }
 
-export function OwnerSidebar(props: React.ComponentProps<typeof Sidebar>) {
+interface OwnerSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  firstName?: string;
+  lastName?: string;
+}
+
+export function OwnerSidebar({
+  firstName = "",
+  lastName = "",
+  ...props
+}: OwnerSidebarProps) {
   const pathname = usePathname();
   const { open } = useSidebar();
   const setCollapsed = useSidebarStore((s) => s.setCollapsed);
@@ -52,29 +62,31 @@ export function OwnerSidebar(props: React.ComponentProps<typeof Sidebar>) {
 
   return (
     <Sidebar collapsible="icon" {...props}>
-      {/* Brand */}
+      {/* Brand + Theme Toggle */}
       <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <Link href="/portal">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-[8px] border border-[--border-default] bg-[--bg-card]">
-                  <span className="text-sm font-semibold text-[--text-primary]">
-                    S
-                  </span>
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold text-[--text-primary]">
-                    Syndic
-                  </span>
-                  <span className="truncate text-xs text-[--text-muted]">
-                    Portail
-                  </span>
-                </div>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <div className="flex items-center gap-1">
+          <SidebarMenu className="flex-1">
+            <SidebarMenuItem>
+              <SidebarMenuButton size="lg" asChild tooltip="Mon espace">
+                <Link href="/portal">
+                  <div className="flex aspect-square size-8 items-center justify-center rounded-[8px] border border-[--border-default] bg-[--bg-card]">
+                    <span className="text-sm font-semibold text-[--text-primary]">
+                      S
+                    </span>
+                  </div>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-semibold text-[--text-primary]">
+                      Syndic
+                    </span>
+                  </div>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+          <div className="shrink-0 group-data-[collapsible=icon]:hidden">
+            <ThemeToggle />
+          </div>
+        </div>
       </SidebarHeader>
 
       {/* Navigation */}
@@ -114,21 +126,14 @@ export function OwnerSidebar(props: React.ComponentProps<typeof Sidebar>) {
         </SidebarGroup>
       </SidebarContent>
 
-      {/* Footer — sign out */}
+      {/* Footer — user identity + logout */}
       <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              tooltip="Déconnexion"
-              onClick={async () => {
-                await signOut();
-              }}
-            >
-              <LogOut />
-              <span>Déconnexion</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <SidebarUserMenu
+          firstName={firstName}
+          lastName={lastName}
+          roleLabel="Copropriétaire"
+          profileHref="/portal"
+        />
       </SidebarFooter>
 
       <SidebarRail />

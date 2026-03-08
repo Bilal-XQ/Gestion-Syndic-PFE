@@ -21,6 +21,7 @@ import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/features/shared/StatusBadge";
 import { OwnerPaymentForm } from "@/components/features/payments/owner-payment-form";
 import { downloadPaymentNotice } from "@/lib/actions/charges";
+import { formatDate, formatMAD } from "@/lib/formatters";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -161,26 +162,26 @@ export function OwnerPaymentsView() {
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
-                        {Number(charge.totalAmount).toFixed(2)}
+                        {formatMAD(charge.totalAmount)}
                       </TableCell>
                       <TableCell className="text-right">
-                        {Number(charge.amountPaid).toFixed(2)}
+                        {formatMAD(charge.amountPaid)}
                       </TableCell>
                       <TableCell className="text-right">
-                        {Number(charge.remainingAmount).toFixed(2)}
+                        {formatMAD(charge.remainingAmount)}
                       </TableCell>
                       <TableCell>
                         <StatusBadge
                           status={charge.status as "paid" | "partial" | "unpaid"}
                         />
                       </TableCell>
-                      <TableCell>{charge.dueDate}</TableCell>
+                      <TableCell>{formatDate(charge.dueDate)}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-1">
                           {charge.status !== "paid" && (
                             <Button
                               size="sm"
-                              variant="ghost"
+                              variant="default"
                               onClick={() => {
                                 setSelectedCharge(charge);
                                 setPaymentOpen(true);
@@ -239,7 +240,7 @@ export function OwnerPaymentsView() {
                 <TableBody>
                   {payments.map((payment) => (
                     <TableRow key={payment.id}>
-                      <TableCell>{payment.paymentDate}</TableCell>
+                      <TableCell>{formatDate(payment.paymentDate)}</TableCell>
                       <TableCell className="font-medium text-[--text-primary]">
                         {payment.chargeTitle}
                       </TableCell>
@@ -250,7 +251,7 @@ export function OwnerPaymentsView() {
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
-                        {Number(payment.amount).toFixed(2)}
+                        {formatMAD(payment.amount)}
                       </TableCell>
                       <TableCell>
                         <Badge variant="secondary">

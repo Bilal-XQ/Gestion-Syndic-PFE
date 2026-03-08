@@ -1,8 +1,7 @@
 import { Card } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { format } from "date-fns"
-import { fr } from "date-fns/locale"
 import type { getPaymentsGlobal } from "@/lib/db/queries/payments"
+import { formatDate, formatMAD } from "@/lib/formatters"
 
 type RecentPaymentsProps = {
   payments: Awaited<ReturnType<typeof getPaymentsGlobal>>
@@ -47,10 +46,10 @@ export function RecentPayments({ payments }: RecentPaymentsProps) {
 
                 <div className="text-right shrink-0">
                   <p className="text-sm font-mono font-medium leading-none">
-                    +{Number(payment.amount).toLocaleString("fr-MA")} MAD
+                    +{formatMAD(payment.amount)}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {format(new Date(payment.paymentDate), "d MMM", { locale: fr })}
+                    {formatDate(payment.paymentDate)}
                   </p>
                 </div>
               </div>
