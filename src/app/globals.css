@@ -1,0 +1,457 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * ─── THEME TOKENS (from docs/THEME.md) ───────────────────────────────
+ * Dark mode is the default. Toggle via .dark / .light class on <html>.
+ * shadcn variables are mapped below to preserve component compatibility.
+ */
+
+@theme inline {
+  /* shadcn required mappings */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* Font families */
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* Radius scale (shadcn) */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+/* ─── Dark Mode (Default) ──────────────────────────────────────────── */
+:root {
+  --radius: 0.625rem;
+
+  /* Backgrounds */
+  --bg-base: #0A0A0A;
+  --bg-subtle: #111111;
+  --bg-card: #161616;
+  --bg-card-hover: #1C1C1C;
+  --bg-elevated: #1F1F1F;
+  --bg-overlay: rgba(10, 10, 10, 0.85);
+  --bg-input: #141414;
+
+  /* Borders */
+  --border-subtle: #1E1E1E;
+  --border-default: #2A2A2A;
+  --border-strong: #3A3A3A;
+  --border-focus: #555555;
+
+  /* Text */
+  --text-primary: #FFFFFF;
+  --text-secondary: #A0A0A0;
+  --text-muted: #636363;
+  --text-placeholder: #404040;
+  --text-disabled: #333333;
+
+  /* Buttons */
+  --btn-primary-bg: #FFFFFF;
+  --btn-primary-text: #0A0A0A;
+  --btn-primary-hover: rgba(255, 255, 255, 0.92);
+  --btn-secondary-bg: transparent;
+  --btn-secondary-border: #2A2A2A;
+  --btn-secondary-hover-bg: rgba(255, 255, 255, 0.04);
+  --btn-secondary-hover-border: #3A3A3A;
+
+  /* Status & Semantic */
+  --status-success: #22C55E;
+  --status-success-bg: rgba(34, 197, 94, 0.10);
+  --status-success-border: rgba(34, 197, 94, 0.20);
+  --status-warning: #F59E0B;
+  --status-warning-bg: rgba(245, 158, 11, 0.10);
+  --status-error: #EF4444;
+  --status-error-bg: rgba(239, 68, 68, 0.10);
+  --status-neutral: #888888;
+  --status-neutral-bg: rgba(136, 136, 136, 0.12);
+
+  /* Data Visualization */
+  --chart-line: rgba(255, 255, 255, 0.50);
+  --chart-fill-top: rgba(255, 255, 255, 0.15);
+  --chart-fill-bottom: transparent;
+  --chart-grid: rgba(255, 255, 255, 0.05);
+  --chart-tooltip-bg: #1F1F1F;
+  --chart-tooltip-border: #2A2A2A;
+  --chart-series-1: #FFFFFF;
+  --chart-series-2: #636363;
+
+  /* Decorative / Glow */
+  --glow-soft: rgba(255, 255, 255, 0.06);
+  --glow-faint: rgba(255, 255, 255, 0.03);
+  --grid-line: rgba(255, 255, 255, 0.03);
+  --noise-opacity: 0.025;
+
+  /* Gradients */
+  --grad-hero-top: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 255, 255, 0.08), transparent 60%);
+  --grad-hero-side: radial-gradient(ellipse 60% 40% at 80% 80%, rgba(255, 255, 255, 0.03), transparent 50%);
+  --grad-shimmer-text: linear-gradient(90deg, #FFF, #888, #FFF, #888, #FFF);
+  --grad-card-shine: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, transparent 60%);
+
+  /* Shadows */
+  --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 24px 64px rgba(0, 0, 0, 0.6);
+  --shadow-hero-card: 0 40px 120px rgba(0, 0, 0, 0.8), 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+
+  /* Animation */
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-slow: 400ms;
+  --duration-enter: 650ms;
+  --duration-float: 6000ms;
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+
+  /* shadcn colour mapping (dark) */
+  --background: #0A0A0A;
+  --foreground: #FFFFFF;
+  --card: #161616;
+  --card-foreground: #FFFFFF;
+  --popover: #1F1F1F;
+  --popover-foreground: #FFFFFF;
+  --primary: #FFFFFF;
+  --primary-foreground: #0A0A0A;
+  --secondary: #1F1F1F;
+  --secondary-foreground: #A0A0A0;
+  --muted: #111111;
+  --muted-foreground: #636363;
+  --accent: #1C1C1C;
+  --accent-foreground: #FFFFFF;
+  --destructive: #EF4444;
+  --border: #2A2A2A;
+  --input: #141414;
+  --ring: #555555;
+  --chart-1: #FFFFFF;
+  --chart-2: #636363;
+  --chart-3: #A0A0A0;
+  --chart-4: #333333;
+  --chart-5: #888888;
+  --sidebar: #111111;
+  --sidebar-foreground: #A0A0A0;
+  --sidebar-primary: #FFFFFF;
+  --sidebar-primary-foreground: #0A0A0A;
+  --sidebar-accent: #161616;
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border: #1E1E1E;
+  --sidebar-ring: #555555;
+}
+
+/* ─── Light Mode ───────────────────────────────────────────────────── */
+.light {
+  /* Backgrounds */
+  --bg-base: #F7F7F5;
+  --bg-subtle: #EFEFED;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #FAFAF9;
+  --bg-elevated: #FFFFFF;
+  --bg-overlay: rgba(247, 247, 245, 0.90);
+  --bg-input: #FAFAF9;
+
+  /* Borders */
+  --border-subtle: #EBEBEB;
+  --border-default: #E0E0E0;
+  --border-strong: #CCCCCC;
+  --border-focus: #AAAAAA;
+
+  /* Text */
+  --text-primary: #0A0A0A;
+  --text-secondary: #5A5A5A;
+  --text-muted: #9A9A9A;
+  --text-placeholder: #BEBEBE;
+  --text-disabled: #D0D0D0;
+
+  /* Buttons */
+  --btn-primary-bg: #0A0A0A;
+  --btn-primary-text: #FFFFFF;
+  --btn-primary-hover: #1A1A1A;
+  --btn-secondary-bg: transparent;
+  --btn-secondary-border: #D4D4D4;
+  --btn-secondary-hover-bg: rgba(0, 0, 0, 0.04);
+  --btn-secondary-hover-border: #AAAAAA;
+
+  /* Status & Semantic (Light) */
+  --status-success: #16A34A;
+  --status-success-bg: rgba(22, 163, 74, 0.08);
+  --status-success-border: rgba(22, 163, 74, 0.16);
+  --status-warning: #D97706;
+  --status-warning-bg: rgba(217, 119, 6, 0.08);
+  --status-error: #DC2626;
+  --status-error-bg: rgba(220, 38, 38, 0.08);
+  --status-neutral: #6B6B6B;
+  --status-neutral-bg: rgba(107, 107, 107, 0.10);
+
+  /* Data Visualization (Light) */
+  --chart-line: rgba(0, 0, 0, 0.40);
+  --chart-fill-top: rgba(0, 0, 0, 0.08);
+  --chart-fill-bottom: transparent;
+  --chart-grid: rgba(0, 0, 0, 0.05);
+  --chart-tooltip-bg: #FFFFFF;
+  --chart-tooltip-border: #E0E0E0;
+  --chart-series-1: #0A0A0A;
+  --chart-series-2: #9A9A9A;
+
+  /* Decorative / Glow (Light) */
+  --glow-soft: rgba(0, 0, 0, 0.04);
+  --glow-faint: rgba(0, 0, 0, 0.02);
+  --grid-line: rgba(0, 0, 0, 0.04);
+  --noise-opacity: 0.015;
+
+  /* Gradients (Light) */
+  --grad-hero-top: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0, 0, 0, 0.05), transparent 60%);
+  --grad-hero-side: radial-gradient(ellipse 60% 40% at 80% 80%, rgba(0, 0, 0, 0.02), transparent 50%);
+  --grad-shimmer-text: linear-gradient(90deg, #0A0A0A, #5A5A5A, #0A0A0A, #5A5A5A, #0A0A0A);
+  --grad-card-shine: linear-gradient(135deg, rgba(0, 0, 0, 0.02) 0%, transparent 60%);
+
+  /* Shadows (Light) */
+  --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.10);
+  --shadow-lg: 0 24px 64px rgba(0, 0, 0, 0.12);
+  --shadow-hero-card: 0 40px 120px rgba(0, 0, 0, 0.12), 0 8px 32px rgba(0, 0, 0, 0.06);
+
+  /* shadcn colour mapping (light) */
+  --background: #F7F7F5;
+  --foreground: #0A0A0A;
+  --card: #FFFFFF;
+  --card-foreground: #0A0A0A;
+  --popover: #FFFFFF;
+  --popover-foreground: #0A0A0A;
+  --primary: #0A0A0A;
+  --primary-foreground: #FFFFFF;
+  --secondary: #EFEFED;
+  --secondary-foreground: #5A5A5A;
+  --muted: #EFEFED;
+  --muted-foreground: #9A9A9A;
+  --accent: #FAFAF9;
+  --accent-foreground: #0A0A0A;
+  --destructive: #DC2626;
+  --border: #E0E0E0;
+  --input: #FAFAF9;
+  --ring: #AAAAAA;
+  --chart-1: #0A0A0A;
+  --chart-2: #9A9A9A;
+  --chart-3: #5A5A5A;
+  --chart-4: #D0D0D0;
+  --chart-5: #6B6B6B;
+  --sidebar: #EFEFED;
+  --sidebar-foreground: #5A5A5A;
+  --sidebar-primary: #0A0A0A;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #FFFFFF;
+  --sidebar-accent-foreground: #0A0A0A;
+  --sidebar-border: #EBEBEB;
+  --sidebar-ring: #AAAAAA;
+}
+
+/* ─── shadcn oklch token system (light=default, dark via .dark class) ─── */
+:root {
+  --radius: 0.65rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+/* ─── Typography Scale ─────────────────────────────────────────────── */
+:root {
+  --text-xs-size: 11px;
+  --text-sm-size: 12px;
+  --text-base-size: 14px;
+  --text-md-size: 16px;
+  --text-lg-size: 18px;
+  --text-xl-size: 22px;
+  --text-2xl-size: 28px;
+  --text-display-size: clamp(44px, 5.5vw, 76px);
+}
+
+/* ─── Spacing Scale ────────────────────────────────────────────────── */
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+  --space-30: 120px;
+}
+
+/* ─── Custom Border Radius (THEME.md exact values) ─────────────── */
+:root {
+  --radius-xs: 6px;
+}
+
+/* ─── Keyframe Animations ──────────────────────────────────────────── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  40% { transform: translateY(-12px) rotate(-0.5deg); }
+  70% { transform: translateY(-6px) rotate(0.3deg); }
+}
+
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes shimmer {
+  from { background-position: -200% center; }
+  to { background-position: 200% center; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+@keyframes drawLine {
+  from { stroke-dashoffset: 1000; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* ─── Scroll Reveal ────────────────────────────────────────────────── */
+.fade-up {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity var(--duration-enter) var(--ease-out),
+              transform var(--duration-enter) var(--ease-out);
+}
+
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Base Styles ──────────────────────────────────────────────────── */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans), system-ui, sans-serif;
+  }
+}
+
+/* ─── Modal Scroll ─────────────────────────────────────────────────── */
+.modal-scroll::-webkit-scrollbar { width: 4px; }
+.modal-scroll::-webkit-scrollbar-track { background: transparent; }
+.modal-scroll::-webkit-scrollbar-thumb { background: #2A2A2A; border-radius: 9999px; }
+.modal-scroll::-webkit-scrollbar-thumb:hover { background: #3A3A3A; }
+
+
