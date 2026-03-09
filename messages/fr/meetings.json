@@ -1,0 +1,73 @@
+{
+  "pageTitle": "Réunions",
+  "searchPlaceholder": "Rechercher une réunion…",
+  "addButton": "Nouvelle réunion",
+  "table": {
+    "title": "Titre",
+    "date": "Date",
+    "time": "Horaire",
+    "location": "Lieu",
+    "status": "Statut",
+    "invitations": "Invitations",
+    "actions": "Actions",
+    "empty": "Aucune réunion trouvée",
+    "viewDetails": "Voir détails",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "accepted_one": "accepté",
+    "accepted_other": "acceptés",
+    "cancelSuccess": "Réunion annulée"
+  },
+  "panel": {
+    "title": "Nouvelle réunion",
+    "description": "Planifiez une assemblée générale et invitez des copropriétaires.",
+    "titleLabel": "Titre",
+    "titlePlaceholder": "Assemblée Générale Q2 2026",
+    "descriptionLabel": "Description (optionnel)",
+    "descriptionPlaceholder": "Ordre du jour…",
+    "dateLabel": "Date",
+    "startTimeLabel": "Heure de début",
+    "startTimePlaceholder": "Choisir une heure",
+    "endTimeLabel": "Heure de fin",
+    "endTimePlaceholder": "Choisir une heure",
+    "locationLabel": "Lieu",
+    "locationPlaceholder": "Salle de réunion",
+    "ownersLabel": "Copropriétaires à inviter",
+    "selected_one": "sélectionné",
+    "selected_other": "sélectionnés",
+    "ownersPlaceholder": "Sélectionner des copropriétaires",
+    "ownerSearchPlaceholder": "Rechercher…",
+    "ownerSearchEmpty": "Aucun résultat",
+    "submitting": "Création…",
+    "submit": "Créer la réunion",
+    "success": "Réunion créée avec succès"
+  },
+  "detail": {
+    "backButton": "Retour aux réunions",
+    "cancelButton": "Annuler la réunion",
+    "cancelling": "Annulation…",
+    "errorLoading": "Impossible de charger les détails de la réunion.",
+    "dateLabel": "Date",
+    "timeLabel": "Horaire",
+    "locationLabel": "Lieu",
+    "participantsLabel": "Participants",
+    "confirmed": "confirmés",
+    "descriptionTitle": "Description",
+    "invitationsTitle": "Invitations",
+    "invitationTable": {
+      "name": "Nom",
+      "email": "Email",
+      "status": "Statut",
+      "respondedAt": "Répondu le",
+      "empty": "Aucune invitation"
+    },
+    "cancelSuccess": "Réunion annulée"
+  },
+  "delete": {
+    "title": "Supprimer la réunion ?",
+    "description": "Cette action est irréversible. La réunion sera archivée et ne sera plus visible dans la liste.",
+    "submitting": "Suppression…",
+    "submit": "Supprimer",
+    "success": "Réunion supprimée"
+  }
+}

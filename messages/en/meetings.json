@@ -1,0 +1,73 @@
+{
+  "pageTitle": "Meetings",
+  "searchPlaceholder": "Search a meeting…",
+  "addButton": "New meeting",
+  "table": {
+    "title": "Title",
+    "date": "Date",
+    "time": "Time",
+    "location": "Location",
+    "status": "Status",
+    "invitations": "Invitations",
+    "actions": "Actions",
+    "empty": "No meetings found",
+    "viewDetails": "View details",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "accepted_one": "accepted",
+    "accepted_other": "accepted",
+    "cancelSuccess": "Meeting cancelled"
+  },
+  "panel": {
+    "title": "New meeting",
+    "description": "Schedule a general assembly and invite co-owners.",
+    "titleLabel": "Title",
+    "titlePlaceholder": "General Assembly Q2 2026",
+    "descriptionLabel": "Description (optional)",
+    "descriptionPlaceholder": "Agenda…",
+    "dateLabel": "Date",
+    "startTimeLabel": "Start time",
+    "startTimePlaceholder": "Choose a time",
+    "endTimeLabel": "End time",
+    "endTimePlaceholder": "Choose a time",
+    "locationLabel": "Location",
+    "locationPlaceholder": "Meeting room",
+    "ownersLabel": "Co-owners to invite",
+    "selected_one": "selected",
+    "selected_other": "selected",
+    "ownersPlaceholder": "Select co-owners",
+    "ownerSearchPlaceholder": "Search…",
+    "ownerSearchEmpty": "No results",
+    "submitting": "Creating…",
+    "submit": "Create meeting",
+    "success": "Meeting created successfully"
+  },
+  "detail": {
+    "backButton": "Back to meetings",
+    "cancelButton": "Cancel meeting",
+    "cancelling": "Cancelling…",
+    "errorLoading": "Unable to load meeting details.",
+    "dateLabel": "Date",
+    "timeLabel": "Time",
+    "locationLabel": "Location",
+    "participantsLabel": "Participants",
+    "confirmed": "confirmed",
+    "descriptionTitle": "Description",
+    "invitationsTitle": "Invitations",
+    "invitationTable": {
+      "name": "Name",
+      "email": "Email",
+      "status": "Status",
+      "respondedAt": "Responded at",
+      "empty": "No invitations"
+    },
+    "cancelSuccess": "Meeting cancelled"
+  },
+  "delete": {
+    "title": "Delete meeting?",
+    "description": "This action is irreversible. The meeting will be archived and will no longer be visible in the list.",
+    "submitting": "Deleting…",
+    "submit": "Delete",
+    "success": "Meeting deleted"
+  }
+}

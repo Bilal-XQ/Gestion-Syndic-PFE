@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Loader2, AlertCircle } from "lucide-react";
 
@@ -16,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 
 import {
-  apartmentSchema,
+  createApartmentSchema,
   type ApartmentFormValues,
 } from "@/lib/validations/apartment";
 import { createApartment, updateApartment } from "@/lib/actions/apartments";
@@ -37,14 +38,13 @@ export function ApartmentPanel({
   open,
   onOpenChange,
   apartment,
-}: ApartmentPanelProps) {
-  const isEdit = !!apartment;
+}: ApartmentPanelProps) {  const t = useTranslations("apartments");  const tc = useTranslations("common");  const tv = useTranslations("validation");  const isEdit = !!apartment;
   const queryClient = useQueryClient();
   const [serverError, setServerError] = useState("");
 
   const form = useForm<ApartmentFormValues>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(apartmentSchema) as any,
+    resolver: zodResolver(createApartmentSchema(tv)) as any,
     defaultValues: {
       unitNumber: apartment?.unitNumber ?? "",
       floor: apartment?.floor,
@@ -64,8 +64,8 @@ export function ApartmentPanel({
       if (result.success) {
         toast.success(
           isEdit
-            ? "Appartement mis à jour"
-            : "Appartement créé avec succès"
+            ? t("panel.updateSuccess")
+            : t("panel.createSuccess")
         );
         queryClient.invalidateQueries({ queryKey: ["apartments"] });
         onOpenChange(false);
@@ -76,8 +76,8 @@ export function ApartmentPanel({
       }
     },
     onError: () => {
-      setServerError("Une erreur est survenue");
-      toast.error("Une erreur est survenue");
+      setServerError(tc("errorOccurred"));
+      toast.error(tc("errorOccurred"));
     },
   });
 
@@ -106,12 +106,12 @@ export function ApartmentPanel({
         {/* HEADER */}
         <div className="border-b border-[--border-default] px-7 pt-7 pb-5">
           <DialogTitle className="text-[15px] font-semibold text-[--text-primary] tracking-[-0.01em]">
-            {isEdit ? "Modifier l'appartement" : "Ajouter un appartement"}
+            {isEdit ? t("panel.editTitle") : t("panel.createTitle")}
           </DialogTitle>
           <DialogDescription className="mt-1 text-[13px] leading-[1.5] text-[--text-muted]">
             {isEdit
-              ? "Modifiez les informations de l'appartement."
-              : "Remplissez les informations du nouvel appartement."}
+              ? t("panel.editDescription")
+              : t("panel.createDescription")}
           </DialogDescription>
         </div>
 
@@ -121,7 +121,7 @@ export function ApartmentPanel({
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <label htmlFor="unitNumber" className={labelClass}>
-                  Numéro
+                  {t("panel.unitNumberLabel")}
                 </label>
                 <Input
                   id="unitNumber"
@@ -138,7 +138,7 @@ export function ApartmentPanel({
 
               <div className="space-y-1.5">
                 <label htmlFor="floor" className={labelClass}>
-                  Étage
+                  {t("panel.floorLabel")}
                 </label>
                 <Input
                   id="floor"
@@ -158,7 +158,7 @@ export function ApartmentPanel({
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <label htmlFor="surfaceArea" className={labelClass}>
-                  Superficie (m²)
+                  {t("panel.surfaceAreaLabel")}
                 </label>
                 <Input
                   id="surfaceArea"
@@ -177,7 +177,7 @@ export function ApartmentPanel({
 
               <div className="space-y-1.5">
                 <label htmlFor="roomCount" className={labelClass}>
-                  Nombre de pièces
+                  {t("panel.roomCountLabel")}
                 </label>
                 <Input
                   id="roomCount"
@@ -210,13 +210,13 @@ export function ApartmentPanel({
               className="flex w-full items-center justify-center rounded-[10px] bg-[--btn-primary-bg] px-5 py-[13px] text-[14px] font-medium text-[--btn-primary-text] transition-all duration-150 cursor-pointer hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
             >
               {mutation.isPending && (
-                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                <Loader2 className="w-4 h-4 animate-spin me-2" />
               )}
               {mutation.isPending
-                ? "Enregistrement…"
+                ? t("panel.submitting")
                 : isEdit
-                  ? "Mettre à jour"
-                  : "Créer"}
+                  ? t("panel.updateButton")
+                  : t("panel.createButton")}
             </button>
           </div>
         </form>

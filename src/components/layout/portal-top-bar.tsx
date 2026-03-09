@@ -2,17 +2,21 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { signOut } from "@/lib/actions/auth";
 import { Home, CreditCard, Bell, LogOut } from "lucide-react";
-
-const portalNavItems = [
-  { label: "Mon espace", href: "/portal", icon: Home },
-  { label: "Paiements", href: "/payments", icon: CreditCard },
-  { label: "Notifications", href: "/notifications", icon: Bell },
-];
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
 
 export function PortalTopBar() {
+  const t = useTranslations("common");
   const pathname = usePathname();
+
+  const portalNavItems = [
+    { label: t("ownerNav.mySpace"), href: "/portal", icon: Home },
+    { label: t("ownerNav.payments"), href: "/payments", icon: CreditCard },
+    { label: t("ownerNav.notifications"), href: "/notifications", icon: Bell },
+  ];
 
   return (
     <header className="flex h-14 shrink-0 items-center justify-between border-b border-[--border-subtle] bg-[--bg-base] px-4 md:px-6">
@@ -59,19 +63,23 @@ export function PortalTopBar() {
       </div>
 
       {/* Right section */}
-      <form
-        action={async () => {
-          await signOut();
-        }}
-      >
-        <button
-          type="submit"
-          className="flex h-9 items-center gap-2 rounded-[8px] px-3 text-sm text-[--text-muted] transition-colors duration-[150ms] hover:bg-[--bg-card] hover:text-[--text-secondary]"
+      <div className="flex items-center gap-1">
+        <LanguageSwitcher />
+        <ThemeToggle />
+        <form
+          action={async () => {
+            await signOut();
+          }}
         >
-          <LogOut className="h-4 w-4" />
-          <span className="hidden sm:inline">Déconnexion</span>
-        </button>
-      </form>
+          <button
+            type="submit"
+            className="flex h-9 items-center gap-2 rounded-[8px] px-3 text-sm text-[--text-muted] transition-colors duration-[150ms] hover:bg-[--bg-card] hover:text-[--text-secondary]"
+          >
+            <LogOut className="h-4 w-4" />
+            <span className="hidden sm:inline">{t("userMenu.signOut")}</span>
+          </button>
+        </form>
+      </div>
     </header>
   );
 }

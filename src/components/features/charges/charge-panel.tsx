@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Loader2, AlertCircle } from "lucide-react";
 
@@ -23,7 +24,7 @@ import {
 } from "@/components/ui/select";
 import { DatePicker } from "@/components/ui/date-picker";
 
-import { chargeSchema, type ChargeFormValues } from "@/lib/validations/charge";
+import { createChargeSchema, type ChargeFormValues } from "@/lib/validations/charge";
 import { createCharge } from "@/lib/actions/charges";
 
 // ---------------------------------------------------------------------------
@@ -35,32 +36,31 @@ type Apartment = {
   floor: number;
 };
 
+interface ChargePanelProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
 async function fetchApartments(): Promise<Apartment[]> {
   const res = await fetch("/api/apartments");
   if (!res.ok) throw new Error("Failed to fetch apartments");
   return res.json();
 }
 
-const categoryOptions = [
-  { value: "electricity", label: "Électricité" },
-  { value: "water", label: "Eau" },
-  { value: "maintenance", label: "Entretien" },
-  { value: "repair", label: "Réparation" },
-  { value: "other", label: "Autre" },
-] as const;
-
-// ---------------------------------------------------------------------------
-// Props
-// ---------------------------------------------------------------------------
-interface ChargePanelProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}
-
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 export function ChargePanel({ open, onOpenChange }: ChargePanelProps) {
+  const t = useTranslations("charges");
+  const tc = useTranslations("common");
+  const tv = useTranslations("validation");
+  const categoryOptions = [
+    { value: "electricity", label: tc("categories.electricity") },
+    { value: "water", label: tc("categories.water") },
+    { value: "maintenance", label: tc("categories.maintenance") },
+    { value: "repair", label: tc("categories.repair") },
+    { value: "other", label: tc("categories.other") },
+  ];
   const queryClient = useQueryClient();
   const [serverError, setServerError] = useState("");
 
@@ -71,7 +71,7 @@ export function ChargePanel({ open, onOpenChange }: ChargePanelProps) {
 
   const form = useForm<ChargeFormValues>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(chargeSchema) as any,
+    resolver: zodResolver(createChargeSchema(tv)) as any,
     defaultValues: {
       title: "",
       description: "",
@@ -86,7 +86,7 @@ export function ChargePanel({ open, onOpenChange }: ChargePanelProps) {
     },
     onSuccess: (result) => {
       if (result.success) {
-        toast.success("Charge créée avec succès");
+        toast.success(t("panel.success"));
         queryClient.invalidateQueries({ queryKey: ["charges"] });
         onOpenChange(false);
         form.reset();
@@ -96,8 +96,8 @@ export function ChargePanel({ open, onOpenChange }: ChargePanelProps) {
       }
     },
     onError: () => {
-      setServerError("Une erreur est survenue");
-      toast.error("Une erreur est survenue");
+      setServerError(tc("errorOccurred"));
+      toast.error(tc("errorOccurred"));
     },
   });
 
@@ -127,10 +127,10 @@ export function ChargePanel({ open, onOpenChange }: ChargePanelProps) {
         {/* HEADER */}
         <div className="border-b border-[--border-default] px-7 pt-7 pb-5">
           <DialogTitle className="text-[15px] font-semibold text-[--text-primary] tracking-[-0.01em]">
-            Nouvelle charge
+            {t("panel.title")}
           </DialogTitle>
           <DialogDescription className="mt-1 text-[13px] leading-[1.5] text-[--text-muted]">
-            Créez une charge pour un appartement.
+            {t("panel.description")}
           </DialogDescription>
         </div>
 
@@ -140,11 +140,11 @@ export function ChargePanel({ open, onOpenChange }: ChargePanelProps) {
             {/* Title */}
             <div className="space-y-1.5">
               <label htmlFor="title" className={labelClass}>
-                Titre
+                {t("panel.titleLabel")}
               </label>
               <Input
                 id="title"
-                placeholder="Électricité Q1 2026"
+                placeholder={t("panel.titlePlaceholder")}
                 className={inputClass}
                 {...form.register("title")}
               />
@@ -158,11 +158,11 @@ export function ChargePanel({ open, onOpenChange }: ChargePanelProps) {
             {/* Description */}
             <div className="space-y-1.5">
               <label htmlFor="description" className={labelClass}>
-                Description (optionnel)
+                {t("panel.descriptionLabel")}
               </label>
               <textarea
                 id="description"
-                placeholder="Détails de la charge…"
+                placeholder={t("panel.descriptionPlaceholder")}
                 className={`${inputClass} resize-none min-h-[72px]`}
                 {...form.register("description")}
               />
@@ -170,7 +170,7 @@ export function ChargePanel({ open, onOpenChange }: ChargePanelProps) {
 
             {/* Category */}
             <div className="space-y-1.5">
-              <label className={labelClass}>Catégorie</label>
+              <label className={labelClass}>{t("panel.categoryLabel")}</label>
               <Select
                 value={form.watch("category") ?? ""}
                 onValueChange={(val) =>
@@ -182,11 +182,11 @@ export function ChargePanel({ open, onOpenChange }: ChargePanelProps) {
                 }
               >
                 <SelectTrigger className={selectTriggerClass}>
-                  <SelectValue placeholder="Choisir une catégorie" />
+                  <SelectValue placeholder={t("panel.categoryPlaceholder")} />
                 </SelectTrigger>
                 <SelectContent className="rounded-[10px] border border-[--border-default] bg-popover text-popover-foreground shadow-[var(--shadow-md)]">
                   <SelectItem value="placeholder" disabled>
-                    Choisir une catégorie
+                    {t("panel.categoryPlaceholder")}
                   </SelectItem>
                   {categoryOptions.map((opt) => (
                     <SelectItem
@@ -252,7 +252,7 @@ export function ChargePanel({ open, onOpenChange }: ChargePanelProps) {
 
             {/* Apartment */}
             <div className="space-y-1.5">
-              <label className={labelClass}>Appartement</label>
+              <label className={labelClass}>{t("panel.apartmentLabel")}</label>
               <Select
                 value={form.watch("apartmentId")}
                 onValueChange={(val) =>
@@ -260,7 +260,7 @@ export function ChargePanel({ open, onOpenChange }: ChargePanelProps) {
                 }
               >
                 <SelectTrigger className={selectTriggerClass}>
-                  <SelectValue placeholder="Choisir un appartement" />
+                  <SelectValue placeholder={t("panel.apartmentPlaceholder")} />
                 </SelectTrigger>
                 <SelectContent className="rounded-[10px] border border-[--border-default] bg-popover text-popover-foreground shadow-[var(--shadow-md)]">
                   {apartments.map((apt) => (
@@ -269,7 +269,7 @@ export function ChargePanel({ open, onOpenChange }: ChargePanelProps) {
                       value={apt.id}
                       className="text-[14px] focus:bg-[--bg-card-hover] focus:text-[--text-primary]"
                     >
-                      {apt.unitNumber} — Étage {apt.floor}
+                      {apt.unitNumber} — {tc("floor")} {apt.floor}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -296,9 +296,9 @@ export function ChargePanel({ open, onOpenChange }: ChargePanelProps) {
               className="flex w-full items-center justify-center rounded-[10px] bg-[--btn-primary-bg] px-5 py-[13px] text-[14px] font-medium text-[--btn-primary-text] transition-all duration-150 cursor-pointer hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
             >
               {mutation.isPending && (
-                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                <Loader2 className="w-4 h-4 animate-spin me-2" />
               )}
-              {mutation.isPending ? "Création…" : "Créer la charge"}
+              {mutation.isPending ? t("panel.submitting") : t("panel.submit")}
             </button>
           </div>
         </form>

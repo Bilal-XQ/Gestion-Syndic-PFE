@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 import {
@@ -29,8 +30,8 @@ export function DeleteApartmentDialog({
   onOpenChange,
   apartmentId,
   unitNumber,
-}: DeleteApartmentDialogProps) {
-  const queryClient = useQueryClient();
+}: DeleteApartmentDialogProps) {  const t = useTranslations("apartments");
+  const tc = useTranslations("common");  const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -39,7 +40,7 @@ export function DeleteApartmentDialog({
     },
     onSuccess: (result) => {
       if (result.success) {
-        toast.success("Appartement supprimé");
+        toast.success(t("delete.success"));
         queryClient.invalidateQueries({ queryKey: ["apartments"] });
         onOpenChange(false);
       } else {
@@ -47,7 +48,7 @@ export function DeleteApartmentDialog({
       }
     },
     onError: () => {
-      toast.error("Une erreur est survenue");
+      toast.error(tc("errorOccurred"));
     },
   });
 
@@ -56,16 +57,15 @@ export function DeleteApartmentDialog({
       <AlertDialogContent className="border-[--border-default] bg-[--bg-elevated]">
         <AlertDialogHeader>
           <AlertDialogTitle className="text-[--text-primary]">
-            Êtes-vous sûr ?
+            {t("delete.title")}
           </AlertDialogTitle>
           <AlertDialogDescription className="text-[--text-secondary]">
-            L&apos;appartement <strong>{unitNumber}</strong> sera archivé. Cette
-            action est réversible.
+            {t("delete.description", { unitNumber })}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={mutation.isPending}>
-            Annuler
+            {tc("cancel")}
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={(e) => {
@@ -75,7 +75,7 @@ export function DeleteApartmentDialog({
             disabled={mutation.isPending}
             className="bg-[--status-error] text-white hover:bg-[--status-error]/90"
           >
-            {mutation.isPending ? "Suppression…" : "Supprimer"}
+            {mutation.isPending ? t("delete.submitting") : t("delete.submit")}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

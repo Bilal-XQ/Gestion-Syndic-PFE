@@ -1,0 +1,19 @@
+{
+  "pageTitle": "Paramètres",
+  "pageTitleAuthenticated": "Paramètres de l'immeuble",
+  "unauthenticated": "Non authentifié",
+  "form": {
+    "buildingLegend": "Immeuble",
+    "buildingNameLabel": "Nom de l'immeuble",
+    "buildingNamePlaceholder": "Résidence les Oliviers",
+    "addressLabel": "Adresse",
+    "addressPlaceholder": "12 Rue de la Paix, Casablanca",
+    "contactLegend": "Coordonnées du syndic",
+    "phoneLabel": "Téléphone",
+    "phonePlaceholder": "+212 6 00 00 00 00",
+    "emailLabel": "E-mail de contact",
+    "emailPlaceholder": "syndic@example.com",
+    "submit": "Enregistrer",
+    "success": "Paramètres mis à jour"
+  }
+}

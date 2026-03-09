@@ -1,0 +1,17 @@
+{
+  "pageTitle": "الإشعارات",
+  "unreadCount_zero": "0 إشعار غير مقروء",
+  "unreadCount_one": "{count} إشعار غير مقروء",
+  "unreadCount_other": "{count} إشعارات غير مقروءة",
+  "markAllRead": "تحديد الكل كمقروء",
+  "markAllReadSuccess": "تم تحديد جميع الإشعارات كمقروءة",
+  "empty": "لا توجد إشعارات حتى الآن.",
+  "alreadyRead": "مقروء",
+  "markAsRead": "تحديد كمقروء",
+  "accept": "قبول",
+  "decline": "رفض",
+  "responseSuccess": "تم تسجيل الرد",
+  "responseError": "فشل في تسجيل الرد",
+  "statusAccepted": "مقبولة",
+  "statusDeclined": "مرفوضة"
+}

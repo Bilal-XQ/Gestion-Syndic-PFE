@@ -1,0 +1,42 @@
+{
+  "pageTitle": "الملاك المشتركون",
+  "searchPlaceholder": "البحث بالاسم أو البريد الإلكتروني…",
+  "addButton": "إضافة",
+  "table": {
+    "fullName": "الاسم الكامل",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف",
+    "apartment": "الشقة",
+    "actions": "الإجراءات",
+    "empty": "لا يوجد ملاك مشتركون"
+  },
+  "panel": {
+    "createTitle": "إضافة مالك مشترك",
+    "editTitle": "تعديل المالك المشترك",
+    "createDescription": "أدخل بيانات المالك المشترك الجديد.",
+    "editDescription": "حدّث بيانات المالك المشترك.",
+    "firstNameLabel": "الاسم الأول",
+    "firstNamePlaceholder": "محمد",
+    "lastNameLabel": "اسم العائلة",
+    "lastNamePlaceholder": "العمراني",
+    "emailLabel": "البريد الإلكتروني",
+    "emailPlaceholder": "mohamed@example.com",
+    "phoneLabel": "الهاتف",
+    "phonePlaceholder": "+212 6XX XXX XXX",
+    "apartmentLabel": "الشقة",
+    "apartmentPlaceholder": "اختر شقة",
+    "ownershipDateLabel": "تاريخ التملك",
+    "submitting": "جارٍ الحفظ…",
+    "createButton": "إنشاء",
+    "updateButton": "تحديث",
+    "createSuccess": "تم إنشاء المالك المشترك بنجاح",
+    "updateSuccess": "تم تحديث المالك المشترك"
+  },
+  "delete": {
+    "title": "هل أنت متأكد؟",
+    "description": "سيتم أرشفة المالك المشترك {ownerName}. سيتم الحفاظ على بياناته المالية.",
+    "submitting": "جارٍ الأرشفة…",
+    "submit": "أرشفة",
+    "success": "تمت أرشفة المالك المشترك"
+  }
+}

@@ -1,12 +1,14 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 import { updatePassword } from "@/lib/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export function UpdatePasswordForm() {
+  const t = useTranslations("auth");
   const [state, formAction, isPending] = useActionState(
     async (_prev: { error: string } | null, formData: FormData) => {
       const result = await updatePassword(formData);
@@ -29,7 +31,7 @@ export function UpdatePasswordForm() {
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="password" className="text-sm text-[--text-secondary]">
-          Nouveau mot de passe
+          {t("updatePassword.newPasswordLabel")}
         </Label>
         <Input
           id="password"
@@ -47,7 +49,7 @@ export function UpdatePasswordForm() {
           htmlFor="confirmPassword"
           className="text-sm text-[--text-secondary]"
         >
-          Confirmer le mot de passe
+          {t("updatePassword.confirmPasswordLabel")}
         </Label>
         <Input
           id="confirmPassword"
@@ -65,7 +67,7 @@ export function UpdatePasswordForm() {
         disabled={isPending}
         className="h-11 w-full rounded-[10px] bg-[--btn-primary-bg] font-medium text-[--btn-primary-text] transition-all duration-[150ms] hover:opacity-90 active:scale-[0.98] disabled:opacity-40"
       >
-        {isPending ? "Mise à jour…" : "Mettre à jour le mot de passe"}
+        {isPending ? t("updatePassword.submitting") : t("updatePassword.submit")}
       </Button>
     </form>
   );

@@ -1,4 +1,5 @@
 import { eq } from "drizzle-orm";
+import { getTranslations } from "next-intl/server";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { createClient } from "@/utils/supabase/server";
@@ -6,6 +7,7 @@ import { getBuildingBySyndicId } from "@/lib/db/queries/buildings";
 import { SettingsForm } from "@/components/features/settings/settings-form";
 
 export default async function SettingsPage() {
+  const t = await getTranslations("settings");
   const supabase = await createClient();
   const {
     data: { user },
@@ -15,9 +17,9 @@ export default async function SettingsPage() {
     return (
       <div className="flex flex-1 flex-col gap-6">
         <h1 className="text-2xl font-semibold text-[--text-primary]">
-          Paramètres
+          {t("pageTitle")}
         </h1>
-        <p className="text-sm text-[--text-muted]">Non authentifié</p>
+        <p className="text-sm text-[--text-muted]">{t("unauthenticated")}</p>
       </div>
     );
   }
@@ -33,7 +35,7 @@ export default async function SettingsPage() {
   return (
     <div className="flex flex-1 flex-col gap-6">
       <h1 className="text-2xl font-semibold text-[--text-primary]">
-        Paramètres de l&apos;immeuble
+        {t("pageTitleAuthenticated")}
       </h1>
       <SettingsForm
         defaultValues={{

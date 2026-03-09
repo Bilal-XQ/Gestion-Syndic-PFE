@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { createClient } from "@/utils/supabase/server";
 import { getDashboardMetrics } from "@/lib/db/queries/dashboard";
 import { getOverdueCharges } from "@/lib/db/queries/charges";
@@ -8,13 +9,14 @@ import { RecentPayments } from "@/components/features/dashboard/recent-payments"
 import { OverdueChargesTable } from "@/components/features/dashboard/overdue-charges-table";
 
 export default async function DashboardPage() {
+  const t = await getTranslations("dashboard");
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   const syndicId = user?.id ?? "";
-  const syndicFirstName = user?.user_metadata?.first_name?.trim() || "Syndic";
+  const syndicFirstName = user?.user_metadata?.first_name?.trim() || t("fallbackName");
 
   const emptyMetrics = {
     totalOwners: 0,
@@ -46,9 +48,9 @@ export default async function DashboardPage() {
       {/* Page header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Tableau de bord</h1>
+          <h1 className="text-2xl font-bold tracking-tight">{t("pageTitle")}</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Bienvenue, {syndicFirstName}
+            {t("welcome", { name: syndicFirstName })}
           </p>
         </div>
       </div>
@@ -68,7 +70,7 @@ export default async function DashboardPage() {
 
       {/* Overdue charges table */}
       <div>
-        <h2 className="text-sm font-medium mb-3">Charges en retard</h2>
+        <h2 className="text-sm font-medium mb-3">{t("overdueCharges")}</h2>
         <OverdueChargesTable charges={overdueCharges} />
       </div>
     </div>

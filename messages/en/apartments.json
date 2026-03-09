@@ -1,0 +1,37 @@
+{
+  "pageTitle": "Apartments",
+  "searchPlaceholder": "Search by unit number…",
+  "addButton": "Add",
+  "table": {
+    "unitNumber": "Unit",
+    "floor": "Floor",
+    "surfaceArea": "Surface",
+    "rooms": "Rooms",
+    "status": "Status",
+    "actions": "Actions",
+    "empty": "No apartments found"
+  },
+  "panel": {
+    "createTitle": "Add apartment",
+    "editTitle": "Edit apartment",
+    "createDescription": "Fill in the information for the new apartment.",
+    "editDescription": "Update the apartment's information.",
+    "unitNumberLabel": "Unit number",
+    "unitNumberPlaceholder": "A101",
+    "floorLabel": "Floor",
+    "surfaceAreaLabel": "Surface area (m²)",
+    "roomCountLabel": "Number of rooms",
+    "submitting": "Saving…",
+    "createButton": "Create",
+    "updateButton": "Update",
+    "createSuccess": "Apartment created successfully",
+    "updateSuccess": "Apartment updated"
+  },
+  "delete": {
+    "title": "Are you sure?",
+    "description": "Apartment {unitNumber} will be archived. This action is reversible.",
+    "submitting": "Deleting…",
+    "submit": "Delete",
+    "success": "Apartment deleted"
+  }
+}

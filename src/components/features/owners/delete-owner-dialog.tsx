@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 import {
@@ -28,8 +29,8 @@ export function DeleteOwnerDialog({
   onOpenChange,
   ownerId,
   ownerName,
-}: DeleteOwnerDialogProps) {
-  const queryClient = useQueryClient();
+}: DeleteOwnerDialogProps) {  const t = useTranslations("owners");
+  const tc = useTranslations("common");  const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -38,7 +39,7 @@ export function DeleteOwnerDialog({
     },
     onSuccess: (result) => {
       if (result.success) {
-        toast.success("Copropriétaire archivé");
+        toast.success(t("delete.success"));
         queryClient.invalidateQueries({ queryKey: ["owners"] });
         queryClient.invalidateQueries({ queryKey: ["apartments"] });
         onOpenChange(false);
@@ -47,7 +48,7 @@ export function DeleteOwnerDialog({
       }
     },
     onError: () => {
-      toast.error("Une erreur est survenue");
+      toast.error(tc("errorOccurred"));
     },
   });
 
@@ -56,16 +57,15 @@ export function DeleteOwnerDialog({
       <AlertDialogContent className="border-[--border-default] bg-[--bg-elevated]">
         <AlertDialogHeader>
           <AlertDialogTitle className="text-[--text-primary]">
-            Êtes-vous sûr ?
+            {t("delete.title")}
           </AlertDialogTitle>
           <AlertDialogDescription className="text-[--text-secondary]">
-            Le copropriétaire <strong>{ownerName}</strong> sera archivé. Ses
-            données financières seront conservées.
+            {t("delete.description", { ownerName: ownerName })}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={mutation.isPending}>
-            Annuler
+            {tc("cancel")}
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={(e) => {
@@ -75,7 +75,7 @@ export function DeleteOwnerDialog({
             disabled={mutation.isPending}
             className="bg-[--status-error] text-white hover:bg-[--status-error]/90"
           >
-            {mutation.isPending ? "Archivage…" : "Archiver"}
+            {mutation.isPending ? t("delete.submitting") : t("delete.submit")}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -4,9 +4,9 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { Home, CreditCard, Bell } from "lucide-react";
 import { useSidebarStore } from "@/lib/stores/sidebar";
-import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { SidebarUserMenu } from "@/components/layout/sidebar-user-menu";
 import {
   Sidebar,
@@ -21,12 +21,6 @@ import {
   SidebarGroupLabel,
   useSidebar,
 } from "@/components/ui/sidebar";
-
-const portalNavItems = [
-  { label: "Mon espace", href: "/portal", icon: Home },
-  { label: "Paiements", href: "/payments", icon: CreditCard },
-  { label: "Notifications", href: "/notifications", icon: Bell },
-];
 
 async function fetchUnreadCount(): Promise<number> {
   const res = await fetch("/api/notifications");
@@ -45,9 +39,16 @@ export function OwnerSidebar({
   lastName = "",
   ...props
 }: OwnerSidebarProps) {
+  const t = useTranslations("common");
   const pathname = usePathname();
   const { open } = useSidebar();
   const setCollapsed = useSidebarStore((s) => s.setCollapsed);
+
+  const portalNavItems = [
+    { label: t("ownerNav.mySpace"), href: "/portal", icon: Home },
+    { label: t("ownerNav.payments"), href: "/payments", icon: CreditCard },
+    { label: t("ownerNav.notifications"), href: "/notifications", icon: Bell },
+  ];
 
   const { data: unreadCount = 0 } = useQuery({
     queryKey: ["notifications", "unread-count"],
@@ -67,7 +68,7 @@ export function OwnerSidebar({
         <div className="flex items-center gap-1">
           <SidebarMenu className="flex-1">
             <SidebarMenuItem>
-              <SidebarMenuButton size="lg" asChild tooltip="Mon espace">
+              <SidebarMenuButton size="lg" asChild tooltip={t("ownerNav.mySpace")}>
                 <Link href="/portal">
                   <div className="flex aspect-square size-8 items-center justify-center rounded-[8px] border border-[--border-default] bg-[--bg-card]">
                     <span className="text-sm font-semibold text-[--text-primary]">
@@ -83,9 +84,7 @@ export function OwnerSidebar({
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
-          <div className="shrink-0 group-data-[collapsible=icon]:hidden">
-            <ThemeToggle />
-          </div>
+
         </div>
       </SidebarHeader>
 
@@ -93,7 +92,7 @@ export function OwnerSidebar({
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel className="text-[--text-muted]">
-            Navigation
+            {t("navigation")}
           </SidebarGroupLabel>
           <SidebarMenu>
             {portalNavItems.map((item) => {
@@ -131,7 +130,7 @@ export function OwnerSidebar({
         <SidebarUserMenu
           firstName={firstName}
           lastName={lastName}
-          roleLabel="Copropriétaire"
+          roleLabel={t("roleLabels.owner")}
           profileHref="/portal"
         />
       </SidebarFooter>
@@ -141,4 +140,4 @@ export function OwnerSidebar({
   );
 }
 
-export { portalNavItems };
+

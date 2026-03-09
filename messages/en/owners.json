@@ -1,0 +1,42 @@
+{
+  "pageTitle": "Co-owners",
+  "searchPlaceholder": "Search by name or email…",
+  "addButton": "Add",
+  "table": {
+    "fullName": "Full name",
+    "email": "Email",
+    "phone": "Phone",
+    "apartment": "Apartment",
+    "actions": "Actions",
+    "empty": "No co-owners found"
+  },
+  "panel": {
+    "createTitle": "Add co-owner",
+    "editTitle": "Edit co-owner",
+    "createDescription": "Fill in the information for the new co-owner.",
+    "editDescription": "Update the co-owner's information.",
+    "firstNameLabel": "First name",
+    "firstNamePlaceholder": "John",
+    "lastNameLabel": "Last name",
+    "lastNamePlaceholder": "Smith",
+    "emailLabel": "Email",
+    "emailPlaceholder": "john@example.com",
+    "phoneLabel": "Phone",
+    "phonePlaceholder": "+212 6XX XXX XXX",
+    "apartmentLabel": "Apartment",
+    "apartmentPlaceholder": "Select an apartment",
+    "ownershipDateLabel": "Ownership date",
+    "submitting": "Saving…",
+    "createButton": "Create",
+    "updateButton": "Update",
+    "createSuccess": "Co-owner created successfully",
+    "updateSuccess": "Co-owner updated"
+  },
+  "delete": {
+    "title": "Are you sure?",
+    "description": "Co-owner {ownerName} will be archived. Their financial data will be preserved.",
+    "submitting": "Archiving…",
+    "submit": "Archive",
+    "success": "Co-owner archived"
+  }
+}

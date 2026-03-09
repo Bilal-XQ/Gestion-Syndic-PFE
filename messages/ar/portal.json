@@ -1,0 +1,59 @@
+{
+  "pageTitle": "ملفي الشخصي",
+  "profile": {
+    "personalInfo": "المعلومات الشخصية",
+    "nameLabel": "الاسم",
+    "emailLabel": "البريد الإلكتروني",
+    "ownershipDateLabel": "تاريخ التملك",
+    "apartmentSection": "الشقة",
+    "unitLabel": "الوحدة",
+    "floorLabel": "الطابق",
+    "surfaceLabel": "المساحة",
+    "roomsLabel": "الغرف",
+    "buildingSection": "المبنى",
+    "buildingNameLabel": "الاسم",
+    "buildingAddressLabel": "العنوان",
+    "phoneLabel": "الهاتف",
+    "phonePlaceholder": "06 12 34 56 78",
+    "phoneNotSet": "غير محدد",
+    "phoneSubmit": "حفظ",
+    "phoneCancel": "إلغاء",
+    "phoneEditButton": "تعديل",
+    "phoneSuccess": "تم تحديث الهاتف",
+    "changePassword": "تغيير كلمة المرور",
+    "newPasswordLabel": "كلمة المرور الجديدة",
+    "confirmPasswordLabel": "تأكيد كلمة المرور",
+    "changePasswordSubmitting": "جارٍ التحديث…",
+    "changePasswordSubmit": "تغيير كلمة المرور",
+    "changePasswordSuccess": "تم تغيير كلمة المرور بنجاح",
+    "errorLoading": "تعذّر تحميل الملف الشخصي."
+  },
+  "ownerPayments": {
+    "pageTitle": "مدفوعاتي",
+    "tabCharges": "رسومي",
+    "tabHistory": "السجل",
+    "chargesEmpty": "لا توجد رسوم حتى الآن.",
+    "historyEmpty": "لا توجد مدفوعات مسجّلة.",
+    "chargesTable": {
+      "title": "العنوان",
+      "category": "الفئة",
+      "total": "الإجمالي",
+      "paid": "المدفوع",
+      "remaining": "المتبقي",
+      "status": "الحالة",
+      "dueDate": "تاريخ الاستحقاق",
+      "actions": "الإجراءات",
+      "payButton": "دفع",
+      "noticeButton": "إشعار"
+    },
+    "historyTable": {
+      "date": "التاريخ",
+      "charge": "الرسم",
+      "category": "الفئة",
+      "amount": "المبلغ",
+      "method": "الطريقة",
+      "reference": "المرجع",
+      "notes": "ملاحظات"
+    }
+  }
+}

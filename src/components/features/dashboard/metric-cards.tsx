@@ -1,41 +1,19 @@
 import { Users, Building2, DoorOpen, KeyRound, Receipt, CreditCard } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { Card } from "@/components/ui/card";
 import type { DashboardMetrics } from "@/lib/db/queries/dashboard";
 
-const metricConfig = [
-  {
-    key: "totalOwners" as const,
-    label: "Copropriétaires",
-    icon: Users,
-  },
-  {
-    key: "totalApartments" as const,
-    label: "Appartements",
-    icon: Building2,
-  },
-  {
-    key: "occupiedApartments" as const,
-    label: "Occupés",
-    icon: KeyRound,
-  },
-  {
-    key: "vacantApartments" as const,
-    label: "Vacants",
-    icon: DoorOpen,
-  },
-  {
-    key: "totalCharges" as const,
-    label: "Charges",
-    icon: Receipt,
-  },
-  {
-    key: "totalPayments" as const,
-    label: "Paiements",
-    icon: CreditCard,
-  },
-];
+export async function MetricCards({ metrics }: { metrics: DashboardMetrics }) {
+  const t = await getTranslations("dashboard");
 
-export function MetricCards({ metrics }: { metrics: DashboardMetrics }) {
+  const metricConfig = [
+    { key: "totalOwners" as const, label: t("metrics.owners"), icon: Users },
+    { key: "totalApartments" as const, label: t("metrics.apartments"), icon: Building2 },
+    { key: "occupiedApartments" as const, label: t("metrics.occupied"), icon: KeyRound },
+    { key: "vacantApartments" as const, label: t("metrics.vacant"), icon: DoorOpen },
+    { key: "totalCharges" as const, label: t("metrics.activeCharges"), icon: Receipt },
+    { key: "totalPayments" as const, label: t("metrics.totalCollected"), icon: CreditCard },
+  ];
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {metricConfig.map(({ key, label, icon: Icon }) => (

@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { Card } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import type { getPaymentsGlobal } from "@/lib/db/queries/payments"
@@ -7,14 +8,15 @@ type RecentPaymentsProps = {
   payments: Awaited<ReturnType<typeof getPaymentsGlobal>>
 }
 
-export function RecentPayments({ payments }: RecentPaymentsProps) {
+export async function RecentPayments({ payments }: RecentPaymentsProps) {
+  const t = await getTranslations("dashboard");
   return (
     <Card className="p-5 h-full">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <p className="text-sm font-medium">Paiements récents</p>
+          <p className="text-sm font-medium">{t("recentPayments.title")}</p>
           <p className="text-xs text-muted-foreground mt-0.5">
-            {payments.length} dernier{payments.length > 1 ? "s" : ""}
+            {payments.length} {t(payments.length > 1 ? "recentPayments.last_other" : "recentPayments.last_one")}
           </p>
         </div>
       </div>
@@ -22,7 +24,7 @@ export function RecentPayments({ payments }: RecentPaymentsProps) {
       {payments.length === 0 ? (
         <div className="h-[200px] flex items-center justify-center">
           <p className="text-sm text-muted-foreground">
-            Aucun paiement pour l&apos;instant
+            {t("recentPayments.empty")}
           </p>
         </div>
       ) : (
@@ -44,7 +46,7 @@ export function RecentPayments({ payments }: RecentPaymentsProps) {
                   </p>
                 </div>
 
-                <div className="text-right shrink-0">
+                <div className="text-end shrink-0">
                   <p className="text-sm font-mono font-medium leading-none">
                     +{formatMAD(payment.amount)}
                   </p>

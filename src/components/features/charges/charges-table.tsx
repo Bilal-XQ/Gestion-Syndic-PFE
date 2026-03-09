@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { Plus, Search, MoreHorizontal, Trash2, Mail, Download } from "lucide-react";
 import { toast } from "sonner";
 
@@ -28,6 +29,7 @@ import { DeleteChargeDialog } from "./delete-charge-dialog";
 
 import { sendPaymentReminder, downloadPaymentNotice } from "@/lib/actions/charges";
 import { formatDate, formatMAD } from "@/lib/formatters";
+import { exportCharges, type ExportColumns } from "@/lib/export/excel";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -60,18 +62,36 @@ async function fetchCharges(): Promise<Charge[]> {
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-const categoryLabels: Record<string, string> = {
-  electricity: "Électricité",
-  water: "Eau",
-  maintenance: "Entretien",
-  repair: "Réparation",
-  other: "Autre",
-};
+
+// category labels are now built inside the component using translations
 
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 export function ChargesTable() {
+  const t = useTranslations("charges");
+  const tc = useTranslations("common");
+  const exportCols: ExportColumns = {
+    title: tc("export.columns.title"),
+    apartment: tc("export.columns.apartment"),
+    category: tc("export.columns.category"),
+    totalAmount: tc("export.columns.totalAmount"),
+    amountPaid: tc("export.columns.amountPaid"),
+    remaining: tc("export.columns.remaining"),
+    currency: tc("export.columns.currency"),
+    dueDate: tc("export.columns.dueDate"),
+    status: tc("export.columns.status"),
+    fullName: "", email: "", phone: "", ownershipDate: "",
+    ownerName: "", chargeTitle: "", amount: "",
+    paymentDate: "", method: "", reference: "",
+  };
+  const categoryLabels: Record<string, string> = {
+    electricity: tc("categories.electricity"),
+    water: tc("categories.water"),
+    maintenance: tc("categories.maintenance"),
+    repair: tc("categories.repair"),
+    other: tc("categories.other"),
+  };
   const [search, setSearch] = useState("");
   const [panelOpen, setPanelOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; title: string } | null>(null);
@@ -91,7 +111,7 @@ export function ChargesTable() {
   async function handleSendReminder(chargeId: string) {
     const result = await sendPaymentReminder(chargeId);
     if (result.success) {
-      toast.success("Rappel envoyé avec succès");
+      toast.success(t("table.reminderSuccess"));
     } else {
       toast.error(result.error);
     }
@@ -121,18 +141,28 @@ export function ChargesTable() {
       {/* Toolbar */}
       <div className="flex items-center justify-between gap-4">
         <div className="relative max-w-xs flex-1">
-          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[--text-muted]" />
+          <Search className="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-[--text-muted]" />
           <Input
-            placeholder="Rechercher par titre ou appartement…"
+            placeholder={t("searchPlaceholder")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9"
+            className="ps-9"
           />
         </div>
-        <Button onClick={() => setPanelOpen(true)}>
-          <Plus className="size-4" />
-          Nouvelle charge
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            onClick={() => exportCharges(filtered, exportCols, tc("export.sheetName"))}
+            disabled={filtered.length === 0}
+          >
+            <Download className="size-4" />
+            {tc("export.button")}
+          </Button>
+          <Button onClick={() => setPanelOpen(true)}>
+            <Plus className="size-4" />
+            {t("addButton")}
+          </Button>
+        </div>
       </div>
 
       {/* Table */}
@@ -142,31 +172,31 @@ export function ChargesTable() {
           <TableHeader>
             <TableRow className="border-[--border-subtle] hover:bg-transparent">
               <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-                Titre
+                {t("table.title")}
               </TableHead>
               <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-                Appartement
+                {t("table.apartment")}
               </TableHead>
               <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-                Catégorie
+                {t("table.category")}
               </TableHead>
               <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-                Total
+                {t("table.total")}
               </TableHead>
               <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-                Payé
+                {t("table.paid")}
               </TableHead>
               <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-                Restant
+                {t("table.remaining")}
               </TableHead>
               <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-                Échéance
+                {t("table.dueDate")}
               </TableHead>
               <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-                Statut
+                {t("table.status")}
               </TableHead>
-              <TableHead className="text-right text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-                Actions
+              <TableHead className="text-end text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
+                {t("table.actions")}
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -174,13 +204,13 @@ export function ChargesTable() {
             {isLoading ? (
               <TableRow>
                 <TableCell colSpan={9} className="h-24 text-center text-[--text-muted]">
-                  Chargement…
+                  {tc("loading")}
                 </TableCell>
               </TableRow>
             ) : filtered.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={9} className="h-24 text-center text-[--text-muted]">
-                  Aucune charge trouvée
+                  {t("table.empty")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -215,7 +245,7 @@ export function ChargesTable() {
                       status={charge.status as "paid" | "partial" | "unpaid"}
                     />
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-end">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon">
@@ -225,20 +255,20 @@ export function ChargesTable() {
                       <DropdownMenuContent align="end">
                         {Number(charge.remainingAmount) > 0 && (
                           <DropdownMenuItem onClick={() => handleSendReminder(charge.id)}>
-                            <Mail className="mr-2 size-4" />
-                            Envoyer rappel
+                            <Mail className="me-2 size-4" />
+                            {t("table.sendReminder")}
                           </DropdownMenuItem>
                         )}
                         <DropdownMenuItem onClick={() => handleDownloadPdf(charge.id)}>
-                          <Download className="mr-2 size-4" />
-                          Télécharger avis
+                          <Download className="me-2 size-4" />
+                          {t("table.downloadNotice")}
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => setDeleteTarget({ id: charge.id, title: charge.title })}
                           className="text-[--status-error] focus:text-[--status-error]"
                         >
-                          <Trash2 className="mr-2 size-4" />
-                          Supprimer
+                          <Trash2 className="me-2 size-4" />
+                          {tc("delete")}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

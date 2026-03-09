@@ -1,13 +1,25 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { LoginForm } from "@/components/features/auth/login-form";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 
-export const metadata: Metadata = {
-  title: "Connexion — Syndic",
-};
+export async function generateMetadata() {
+  const t = await getTranslations("auth");
+  return { title: t("login.pageTitle") } satisfies Metadata;
+}
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  const t = await getTranslations("auth");
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[--bg-base] px-4">
+    <div className="relative flex min-h-screen items-center justify-center bg-[--bg-base] px-4">
+      {/* Top-right controls */}
+      <div className="absolute end-4 top-4 flex items-center gap-1">
+        <LanguageSwitcher />
+        <ThemeToggle />
+      </div>
+
       <div className="w-full max-w-sm">
         {/* Logo / App name */}
         <div className="mb-8 flex flex-col items-center gap-2">
@@ -20,7 +32,7 @@ export default function LoginPage() {
             Syndic
           </h1>
           <p className="text-sm text-[--text-muted]">
-            Connectez-vous à votre compte
+            {t("login.subtitle")}
           </p>
         </div>
 

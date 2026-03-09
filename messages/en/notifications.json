@@ -1,0 +1,17 @@
+{
+  "pageTitle": "Notifications",
+  "unreadCount_zero": "0 unread notifications",
+  "unreadCount_one": "{count} unread notification",
+  "unreadCount_other": "{count} unread notifications",
+  "markAllRead": "Mark all as read",
+  "markAllReadSuccess": "All notifications marked as read",
+  "empty": "No notifications yet.",
+  "alreadyRead": "Already read",
+  "markAsRead": "Mark as read",
+  "accept": "Accept",
+  "decline": "Decline",
+  "responseSuccess": "Response recorded",
+  "responseError": "Failed to record response",
+  "statusAccepted": "Accepted",
+  "statusDeclined": "Declined"
+}

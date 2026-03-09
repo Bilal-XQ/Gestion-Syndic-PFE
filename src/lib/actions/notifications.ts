@@ -4,7 +4,8 @@ import { eq, and, isNull } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { meetingInvitations, owners, auditLogs } from "@/lib/db/schema";
 import { createClient } from "@/utils/supabase/server";
-import { respondInvitationSchema } from "@/lib/validations/meeting";
+import { getTranslations } from "next-intl/server";
+import { createRespondInvitationSchema } from "@/lib/validations/meeting";
 import {
   markAsRead,
   markAllAsRead,
@@ -24,7 +25,9 @@ export async function respondToInvitation(
   values: unknown
 ): Promise<ActionResult<{ id: string }>> {
   // 1. Validate
-  const parsed = respondInvitationSchema.safeParse(values);
+  const t = await getTranslations("validation");
+  const schema = createRespondInvitationSchema(t);
+  const parsed = schema.safeParse(values);
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0].message };
   }

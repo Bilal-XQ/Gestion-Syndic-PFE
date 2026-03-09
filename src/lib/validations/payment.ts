@@ -1,15 +1,17 @@
 import { z } from "zod";
 
-export const paymentSchema = z.object({
-  chargeId: z.string().uuid("Charge invalide"),
-  ownerId: z.string().uuid("Propriétaire invalide"),
-  amount: z.coerce.number().positive("Le montant doit être positif"),
-  paymentDate: z.string().min(1, "La date de paiement est requise"),
-  method: z.enum(["bank_transfer", "check", "cash"], {
-    message: "Méthode de paiement invalide",
-  }),
-  reference: z.string().min(1, "La référence est requise"),
-  notes: z.string().optional(),
-});
+export function createPaymentSchema(t: (key: string) => string) {
+  return z.object({
+    chargeId: z.string().uuid(t("payment.chargeInvalid")),
+    ownerId: z.string().uuid(t("payment.ownerInvalid")),
+    amount: z.coerce.number().positive(t("payment.amountPositive")),
+    paymentDate: z.string().min(1, t("payment.paymentDateRequired")),
+    method: z.enum(["bank_transfer", "check", "cash"], {
+      message: t("payment.methodInvalid"),
+    }),
+    reference: z.string().min(1, t("payment.referenceRequired")),
+    notes: z.string().optional(),
+  });
+}
 
-export type PaymentFormValues = z.infer<typeof paymentSchema>;
+export type PaymentFormValues = z.infer<ReturnType<typeof createPaymentSchema>>;

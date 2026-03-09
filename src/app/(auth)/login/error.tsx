@@ -2,6 +2,7 @@
 
 import * as Sentry from "@sentry/nextjs";
 import { useEffect } from "react";
+import { useTranslations } from "next-intl";
 
 export default function LoginError({
   error,
@@ -10,6 +11,7 @@ export default function LoginError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const t = useTranslations("auth");
   useEffect(() => {
     Sentry.captureException(error);
   }, [error]);
@@ -27,17 +29,16 @@ export default function LoginError({
 
         <div className="flex flex-col items-center gap-4 rounded-[16px] border border-[--border-default] bg-[--bg-card] p-6 text-center">
           <h1 className="text-lg font-semibold text-[--text-primary]">
-            Une erreur est survenue
+            {t("errorPage.heading")}
           </h1>
           <p className="text-sm text-[--text-secondary]">
-            {error.message ||
-              "Quelque chose s'est mal passé. Veuillez réessayer."}
+            {error.message || t("errorPage.message")}
           </p>
           <button
             onClick={reset}
             className="rounded-[10px] bg-[--btn-primary-bg] px-5 py-2.5 text-sm font-medium text-[--btn-primary-text] transition-transform duration-[150ms] hover:opacity-90 active:scale-[0.98]"
           >
-            Réessayer
+            {t("errorPage.retry")}
           </button>
         </div>
       </div>

@@ -4,7 +4,8 @@ import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { buildings, users, auditLogs } from "@/lib/db/schema";
 import { createClient } from "@/utils/supabase/server";
-import { settingsSchema } from "@/lib/validations/settings";
+import { getTranslations } from "next-intl/server";
+import { createSettingsSchema } from "@/lib/validations/settings";
 import { getBuildingBySyndicId } from "@/lib/db/queries/buildings";
 
 // ---------------------------------------------------------------------------
@@ -21,7 +22,9 @@ export async function updateBuilding(
   values: unknown
 ): Promise<ActionResult> {
   // 1. Validate
-  const parsed = settingsSchema.safeParse(values);
+  const t = await getTranslations("validation");
+  const schema = createSettingsSchema(t);
+  const parsed = schema.safeParse(values);
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0].message };
   }

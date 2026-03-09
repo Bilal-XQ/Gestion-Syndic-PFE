@@ -1,0 +1,55 @@
+{
+  "nav": {
+    "login": "Connexion"
+  },
+  "hero": {
+    "badge": "Gestion de copropriété",
+    "headline": "Simplifiez la gestion de votre copropriété",
+    "subheadline": "Une plateforme moderne pour les syndics et les copropriétaires. Paiements, réunions, charges — tout au même endroit.",
+    "cta": "Commencer maintenant",
+    "ctaSecondary": "Découvrir les fonctionnalités"
+  },
+  "features": {
+    "badge": "Fonctionnalités",
+    "heading": "Tout ce dont vous avez besoin",
+    "buildings": {
+      "title": "Gestion des immeubles",
+      "description": "Suivez vos bâtiments, appartements et lots avec une vue centralisée et hiérarchique."
+    },
+    "owners": {
+      "title": "Copropriétaires",
+      "description": "Gérez les profils, les quotas de tantièmes et invitez les propriétaires à leur portail."
+    },
+    "payments": {
+      "title": "Paiements & Charges",
+      "description": "Générez des appels de charges, enregistrez les paiements et suivez les créances en temps réel."
+    },
+    "meetings": {
+      "title": "Réunions & PV",
+      "description": "Planifiez des assemblées, rédigez les ordres du jour et archivez les procès-verbaux."
+    },
+    "dashboard": {
+      "title": "Tableau de bord",
+      "description": "Indicateurs clés, taux de recouvrement et tendances de paiement en un coup d'œil."
+    },
+    "security": {
+      "title": "Sécurité & Audit",
+      "description": "Authentification sécurisée, journal d'audit immutable et contrôle d'accès par rôle."
+    }
+  },
+  "stats": {
+    "openSource": "Open Source",
+    "secureRoles": "Rôles sécurisés",
+    "integratedModules": "Modules intégrés",
+    "hiddenFees": "Frais cachés"
+  },
+  "cta": {
+    "heading": "Prêt à moderniser votre gestion ?",
+    "description": "Rejoignez les syndics qui ont choisi une solution simple, sécurisée et efficace.",
+    "button": "Accéder à la plateforme"
+  },
+  "footer": {
+    "brand": "Syndic — Gestion de Copropriété",
+    "copyright": "© {year} Syndic. Tous droits réservés."
+  }
+}

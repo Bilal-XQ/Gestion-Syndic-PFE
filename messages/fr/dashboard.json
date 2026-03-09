@@ -1,0 +1,39 @@
+{
+  "pageTitle": "Tableau de bord",
+  "welcome": "Bienvenue, {name}",
+  "fallbackName": "Syndic",
+  "overdueCharges": "Charges en retard",
+  "metrics": {
+    "owners": "Copropriétaires",
+    "ownersSecondary": "propriétaires actifs",
+    "apartments": "Appartements",
+    "apartmentsSecondary": "dans l'immeuble",
+    "occupied": "Occupés",
+    "occupiedSecondary": "appartements occupés",
+    "vacant": "Vacants",
+    "vacantSecondary": "appartements disponibles",
+    "activeCharges": "Charges actives",
+    "activeChargesSecondary": "en attente de paiement",
+    "totalCollected": "Total collecté",
+    "totalCollectedSecondary": "paiements reçus"
+  },
+  "recentPayments": {
+    "title": "Paiements récents",
+    "last_one": "dernier",
+    "last_other": "derniers",
+    "empty": "Aucun paiement pour l'instant"
+  },
+  "paymentChart": {
+    "title": "Activité des paiements",
+    "subtitle": "6 derniers mois",
+    "empty": "Aucun paiement enregistré"
+  },
+  "overdueTable": {
+    "owner": "Propriétaire",
+    "charge": "Charge",
+    "apartment": "Appartement",
+    "remaining": "Restant",
+    "dueDate": "Échéance",
+    "empty": "Aucune charge en retard"
+  }
+}

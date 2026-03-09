@@ -12,6 +12,7 @@ import { Card } from "@/components/ui/card"
 import { format, parseISO } from "date-fns"
 import { fr } from "date-fns/locale"
 import { motion } from "motion/react"
+import { useTranslations } from "next-intl";
 import { formatMAD } from "@/lib/formatters"
 
 interface PaymentChartProps {
@@ -40,6 +41,7 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
 }
 
 export function PaymentChart({ data }: PaymentChartProps) {
+  const t = useTranslations("dashboard");
   const isEmpty = data.length === 0 || data.every((d) => d.total === 0)
 
   const chartData = data.map((d) => ({
@@ -56,14 +58,14 @@ export function PaymentChart({ data }: PaymentChartProps) {
     >
       <Card className="p-5">
         <div className="mb-4">
-          <p className="text-sm font-medium">Activité des paiements</p>
-          <p className="text-xs text-muted-foreground mt-0.5">6 derniers mois</p>
+          <p className="text-sm font-medium">{t("paymentChart.title")}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">{t("paymentChart.subtitle")}</p>
         </div>
 
         {isEmpty ? (
           <div className="h-[260px] flex items-center justify-center">
             <p className="text-sm text-muted-foreground">
-              Aucun paiement enregistré
+              {t("paymentChart.empty")}
             </p>
           </div>
         ) : (

@@ -18,9 +18,20 @@ export default async function SyndicLayout({
     data: { user },
   } = await supabase.auth.getUser();
 
-  const nameRow = user?.id ? await getUserNameById(user.id) : null;
-  const firstName = nameRow?.firstName ?? "";
-  const lastName = nameRow?.lastName ?? "";
+  const metadataFirstName =
+    typeof user?.user_metadata?.first_name === "string"
+      ? user.user_metadata.first_name
+      : "";
+  const metadataLastName =
+    typeof user?.user_metadata?.last_name === "string"
+      ? user.user_metadata.last_name
+      : "";
+
+  const shouldQueryDbName =
+    Boolean(user?.id) && (!metadataFirstName || !metadataLastName);
+  const nameRow = shouldQueryDbName && user?.id ? await getUserNameById(user.id) : null;
+  const firstName = metadataFirstName || nameRow?.firstName || "";
+  const lastName = metadataLastName || nameRow?.lastName || "";
 
   return (
     <SidebarProvider defaultOpen={defaultOpen}>

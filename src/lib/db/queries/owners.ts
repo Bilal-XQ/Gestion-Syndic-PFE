@@ -76,12 +76,18 @@ export async function getOwnerByUserId(userId: string) {
 export async function getUserNameById(
   userId: string
 ): Promise<{ firstName: string; lastName: string } | null> {
-  const [row] = await db
-    .select({ firstName: users.firstName, lastName: users.lastName })
-    .from(users)
-    .where(eq(users.id, userId))
-    .limit(1);
-  return row ?? null;
+  try {
+    const [row] = await db
+      .select({ firstName: users.firstName, lastName: users.lastName })
+      .from(users)
+      .where(and(eq(users.id, userId), isNull(users.deletedAt)))
+      .limit(1);
+
+    return row ?? null;
+  } catch {
+    // Layouts can safely fall back to JWT metadata for display names.
+    return null;
+  }
 }
 
 /**

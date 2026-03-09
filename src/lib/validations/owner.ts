@@ -1,12 +1,14 @@
 import { z } from "zod";
 
-export const ownerSchema = z.object({
-  firstName: z.string().min(1, "Le prénom est requis"),
-  lastName: z.string().min(1, "Le nom est requis"),
-  email: z.string().email("Adresse e-mail invalide"),
-  phone: z.string().optional(),
-  apartmentId: z.string().uuid("Appartement invalide"),
-  ownershipDate: z.string().date("Date invalide"),
-});
+export function createOwnerSchema(t: (key: string) => string) {
+  return z.object({
+    firstName: z.string().min(1, t("owner.firstNameRequired")),
+    lastName: z.string().min(1, t("owner.lastNameRequired")),
+    email: z.string().email(t("owner.emailInvalid")),
+    phone: z.string().optional(),
+    apartmentId: z.string().uuid(t("owner.apartmentInvalid")),
+    ownershipDate: z.string().date(t("owner.dateInvalid")),
+  });
+}
 
-export type OwnerFormValues = z.infer<typeof ownerSchema>;
+export type OwnerFormValues = z.infer<ReturnType<typeof createOwnerSchema>>;

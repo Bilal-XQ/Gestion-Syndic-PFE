@@ -1,0 +1,44 @@
+{
+  "pageTitle": "Charges",
+  "searchPlaceholder": "Rechercher par titre ou appartement…",
+  "addButton": "Nouvelle charge",
+  "table": {
+    "title": "Titre",
+    "apartment": "Appartement",
+    "category": "Catégorie",
+    "total": "Total",
+    "paid": "Payé",
+    "remaining": "Restant",
+    "dueDate": "Échéance",
+    "status": "Statut",
+    "actions": "Actions",
+    "empty": "Aucune charge trouvée",
+    "sendReminder": "Envoyer rappel",
+    "downloadNotice": "Télécharger avis",
+    "reminderSuccess": "Rappel envoyé avec succès"
+  },
+  "panel": {
+    "title": "Nouvelle charge",
+    "description": "Créez une charge pour un appartement.",
+    "titleLabel": "Titre",
+    "titlePlaceholder": "Électricité Q1 2026",
+    "descriptionLabel": "Description (optionnel)",
+    "descriptionPlaceholder": "Détails de la charge…",
+    "categoryLabel": "Catégorie",
+    "categoryPlaceholder": "Choisir une catégorie",
+    "amountLabel": "Montant total (MAD)",
+    "dueDateLabel": "Date d'échéance",
+    "apartmentLabel": "Appartement",
+    "apartmentPlaceholder": "Choisir un appartement",
+    "submitting": "Création…",
+    "submit": "Créer la charge",
+    "success": "Charge créée avec succès"
+  },
+  "delete": {
+    "title": "Êtes-vous sûr ?",
+    "description": "La charge {chargeTitle} sera archivée. Cette action est réversible.",
+    "submitting": "Suppression…",
+    "submit": "Supprimer",
+    "success": "Charge supprimée"
+  }
+}

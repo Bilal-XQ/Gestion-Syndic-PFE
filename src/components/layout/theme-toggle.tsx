@@ -3,9 +3,11 @@
 import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 
 export function ThemeToggle() {
+  const t = useTranslations("common");
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -25,8 +27,8 @@ export function ThemeToggle() {
       size="icon"
       aria-label={
         resolvedTheme === "dark"
-          ? "Passer en mode clair"
-          : "Passer en mode sombre"
+          ? t("themeToggle.switchToLight")
+          : t("themeToggle.switchToDark")
       }
       className="size-8 shrink-0 rounded-[8px]"
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}

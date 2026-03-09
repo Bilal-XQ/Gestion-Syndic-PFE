@@ -3,6 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
@@ -13,7 +14,7 @@ import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
 import {
-  settingsSchema,
+  createSettingsSchema,
   type SettingsFormValues,
 } from "@/lib/validations/settings";
 import { updateBuilding } from "@/lib/actions/settings";
@@ -23,8 +24,11 @@ interface SettingsFormProps {
 }
 
 export function SettingsForm({ defaultValues }: SettingsFormProps) {
+  const t = useTranslations("settings");
+  const tc = useTranslations("common");
+  const tv = useTranslations("validation");
   const form = useForm<SettingsFormValues>({
-    resolver: zodResolver(settingsSchema),
+    resolver: zodResolver(createSettingsSchema(tv)),
     defaultValues,
   });
 
@@ -34,13 +38,13 @@ export function SettingsForm({ defaultValues }: SettingsFormProps) {
     },
     onSuccess: (result) => {
       if (result.success) {
-        toast.success("Paramètres mis à jour");
+        toast.success(t("form.success"));
       } else {
         toast.error(result.error);
       }
     },
     onError: () => {
-      toast.error("Une erreur est survenue");
+      toast.error(tc("errorOccurred"));
     },
   });
 
@@ -53,14 +57,14 @@ export function SettingsForm({ defaultValues }: SettingsFormProps) {
         {/* Building info */}
         <fieldset className="flex flex-col gap-4">
           <legend className="mb-1 text-sm font-medium text-[--text-primary]">
-            Immeuble
+            {t("form.buildingLegend")}
           </legend>
 
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="name">Nom de l&apos;immeuble</Label>
+            <Label htmlFor="name">{t("form.buildingNameLabel")}</Label>
             <Input
               id="name"
-              placeholder="Résidence les Oliviers"
+              placeholder={t("form.buildingNamePlaceholder")}
               {...form.register("name")}
             />
             {form.formState.errors.name && (
@@ -71,10 +75,10 @@ export function SettingsForm({ defaultValues }: SettingsFormProps) {
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="address">Adresse</Label>
+            <Label htmlFor="address">{t("form.addressLabel")}</Label>
             <Input
               id="address"
-              placeholder="12 Rue de la Paix, Casablanca"
+              placeholder={t("form.addressPlaceholder")}
               {...form.register("address")}
             />
             {form.formState.errors.address && (
@@ -90,15 +94,15 @@ export function SettingsForm({ defaultValues }: SettingsFormProps) {
         {/* Syndic contact info */}
         <fieldset className="flex flex-col gap-4">
           <legend className="mb-1 text-sm font-medium text-[--text-primary]">
-            Coordonnées du syndic
+            {t("form.contactLegend")}
           </legend>
 
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="contactPhone">Téléphone</Label>
+            <Label htmlFor="contactPhone">{t("form.phoneLabel")}</Label>
             <Input
               id="contactPhone"
               type="tel"
-              placeholder="+212 6 00 00 00 00"
+              placeholder={t("form.phonePlaceholder")}
               {...form.register("contactPhone")}
             />
             {form.formState.errors.contactPhone && (
@@ -109,11 +113,11 @@ export function SettingsForm({ defaultValues }: SettingsFormProps) {
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="contactEmail">E-mail de contact</Label>
+            <Label htmlFor="contactEmail">{t("form.emailLabel")}</Label>
             <Input
               id="contactEmail"
               type="email"
-              placeholder="syndic@example.com"
+              placeholder={t("form.emailPlaceholder")}
               {...form.register("contactEmail")}
             />
             {form.formState.errors.contactEmail && (
@@ -131,7 +135,7 @@ export function SettingsForm({ defaultValues }: SettingsFormProps) {
             className="w-fit"
           >
             {mutation.isPending && <Loader2 className="size-4 animate-spin" />}
-            Enregistrer
+            {t("form.submit")}
           </Button>
         </div>
       </form>

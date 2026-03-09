@@ -1,0 +1,62 @@
+{
+  "auth": {
+    "emailRequired": "L'adresse e-mail est requise",
+    "emailInvalid": "Adresse e-mail invalide",
+    "passwordRequired": "Le mot de passe est requis",
+    "passwordMin8": "Le mot de passe doit contenir au moins 8 caractères",
+    "confirmPasswordRequired": "Veuillez confirmer le mot de passe",
+    "passwordsMismatch": "Les mots de passe ne correspondent pas"
+  },
+  "apartment": {
+    "unitNumberRequired": "Le numéro est requis",
+    "floorInteger": "L'étage doit être un entier",
+    "surfacePositive": "La superficie doit être positive",
+    "roomCountInteger": "Le nombre de pièces doit être un entier",
+    "roomCountMin": "Au moins 1 pièce"
+  },
+  "charge": {
+    "titleRequired": "Le titre est requis",
+    "categoryInvalid": "Catégorie invalide",
+    "amountPositive": "Le montant doit être positif",
+    "dueDateRequired": "La date d'échéance est requise",
+    "apartmentInvalid": "Appartement invalide"
+  },
+  "meeting": {
+    "titleRequired": "Le titre est requis",
+    "dateRequired": "La date est requise",
+    "startTimeRequired": "L'heure de début est requise",
+    "endTimeRequired": "L'heure de fin est requise",
+    "locationRequired": "Le lieu est requis",
+    "ownerInvalid": "Propriétaire invalide",
+    "selectAtLeastOneOwner": "Sélectionnez au moins un propriétaire",
+    "endTimeAfterStart": "L'heure de fin doit être après l'heure de début",
+    "invitationInvalid": "Invitation invalide",
+    "responseInvalid": "Réponse invalide"
+  },
+  "owner": {
+    "firstNameRequired": "Le prénom est requis",
+    "lastNameRequired": "Le nom est requis",
+    "emailInvalid": "Adresse e-mail invalide",
+    "apartmentInvalid": "Appartement invalide",
+    "dateInvalid": "Date invalide"
+  },
+  "payment": {
+    "chargeInvalid": "Charge invalide",
+    "ownerInvalid": "Propriétaire invalide",
+    "amountPositive": "Le montant doit être positif",
+    "paymentDateRequired": "La date de paiement est requise",
+    "methodInvalid": "Méthode de paiement invalide",
+    "referenceRequired": "La référence est requise"
+  },
+  "profile": {
+    "phoneMin": "Le numéro doit contenir au moins 8 caractères",
+    "phoneMax": "Le numéro ne doit pas dépasser 20 caractères",
+    "passwordMin8": "8 caractères minimum",
+    "passwordsMismatch": "Les mots de passe ne correspondent pas"
+  },
+  "settings": {
+    "buildingNameRequired": "Le nom de l'immeuble est requis",
+    "addressRequired": "L'adresse est requise",
+    "emailInvalid": "Adresse e-mail invalide"
+  }
+}

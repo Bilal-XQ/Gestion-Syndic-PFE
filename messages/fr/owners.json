@@ -1,0 +1,42 @@
+{
+  "pageTitle": "Copropriétaires",
+  "searchPlaceholder": "Rechercher par nom ou e-mail…",
+  "addButton": "Ajouter",
+  "table": {
+    "fullName": "Nom complet",
+    "email": "E-mail",
+    "phone": "Téléphone",
+    "apartment": "Appartement",
+    "actions": "Actions",
+    "empty": "Aucun copropriétaire trouvé"
+  },
+  "panel": {
+    "createTitle": "Ajouter un copropriétaire",
+    "editTitle": "Modifier le copropriétaire",
+    "createDescription": "Remplissez les informations du nouveau copropriétaire.",
+    "editDescription": "Modifiez les informations du copropriétaire.",
+    "firstNameLabel": "Prénom",
+    "firstNamePlaceholder": "Jean",
+    "lastNameLabel": "Nom",
+    "lastNamePlaceholder": "Dupont",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "jean@exemple.fr",
+    "phoneLabel": "Téléphone",
+    "phonePlaceholder": "+212 6XX XXX XXX",
+    "apartmentLabel": "Appartement",
+    "apartmentPlaceholder": "Sélectionner un appartement",
+    "ownershipDateLabel": "Date de propriété",
+    "submitting": "Enregistrement…",
+    "createButton": "Créer",
+    "updateButton": "Mettre à jour",
+    "createSuccess": "Copropriétaire créé avec succès",
+    "updateSuccess": "Copropriétaire mis à jour"
+  },
+  "delete": {
+    "title": "Êtes-vous sûr ?",
+    "description": "Le copropriétaire {ownerName} sera archivé. Ses données financières seront conservées.",
+    "submitting": "Archivage…",
+    "submit": "Archiver",
+    "success": "Copropriétaire archivé"
+  }
+}

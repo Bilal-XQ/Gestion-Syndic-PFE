@@ -20,9 +20,19 @@ export default async function OwnerLayout({
   } = await supabase.auth.getUser();
   const userId = user?.id ?? "";
 
-  const nameRow = userId ? await getUserNameById(userId) : null;
-  const firstName = nameRow?.firstName ?? "";
-  const lastName = nameRow?.lastName ?? "";
+  const metadataFirstName =
+    typeof user?.user_metadata?.first_name === "string"
+      ? user.user_metadata.first_name
+      : "";
+  const metadataLastName =
+    typeof user?.user_metadata?.last_name === "string"
+      ? user.user_metadata.last_name
+      : "";
+
+  const shouldQueryDbName = Boolean(userId) && (!metadataFirstName || !metadataLastName);
+  const nameRow = shouldQueryDbName ? await getUserNameById(userId) : null;
+  const firstName = metadataFirstName || nameRow?.firstName || "";
+  const lastName = metadataLastName || nameRow?.lastName || "";
 
   return (
     <SidebarProvider defaultOpen={defaultOpen}>

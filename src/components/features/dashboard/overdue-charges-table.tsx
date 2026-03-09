@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { Card } from "@/components/ui/card"
 import {
   Table,
@@ -14,26 +15,27 @@ type OverdueChargesTableProps = {
   charges: Awaited<ReturnType<typeof getOverdueCharges>>
 }
 
-export function OverdueChargesTable({ charges }: OverdueChargesTableProps) {
+export async function OverdueChargesTable({ charges }: OverdueChargesTableProps) {
+  const t = await getTranslations("dashboard");
   return (
     <Card className="overflow-hidden">
       <Table>
         <TableHeader>
           <TableRow className="hover:bg-transparent">
             <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-muted-foreground">
-              Propriétaire
+              {t("overdueTable.owner")}
             </TableHead>
             <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-muted-foreground">
-              Charge
+              {t("overdueTable.charge")}
             </TableHead>
             <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-muted-foreground">
-              Appartement
+              {t("overdueTable.apartment")}
             </TableHead>
             <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-muted-foreground">
-              Restant
+              {t("overdueTable.remaining")}
             </TableHead>
             <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-muted-foreground">
-              Échéance
+              {t("overdueTable.dueDate")}
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -44,7 +46,7 @@ export function OverdueChargesTable({ charges }: OverdueChargesTableProps) {
                 colSpan={5}
                 className="h-24 text-center text-muted-foreground"
               >
-                Aucune charge en retard
+                {t("overdueTable.empty")}
               </TableCell>
             </TableRow>
           ) : (

@@ -1,0 +1,59 @@
+{
+  "pageTitle": "My profile",
+  "profile": {
+    "personalInfo": "Personal information",
+    "nameLabel": "Name",
+    "emailLabel": "Email",
+    "ownershipDateLabel": "Ownership date",
+    "apartmentSection": "Apartment",
+    "unitLabel": "Unit",
+    "floorLabel": "Floor",
+    "surfaceLabel": "Surface",
+    "roomsLabel": "Rooms",
+    "buildingSection": "Building",
+    "buildingNameLabel": "Name",
+    "buildingAddressLabel": "Address",
+    "phoneLabel": "Phone",
+    "phonePlaceholder": "06 12 34 56 78",
+    "phoneNotSet": "Not set",
+    "phoneSubmit": "Save",
+    "phoneCancel": "Cancel",
+    "phoneEditButton": "Edit",
+    "phoneSuccess": "Phone updated",
+    "changePassword": "Change password",
+    "newPasswordLabel": "New password",
+    "confirmPasswordLabel": "Confirm password",
+    "changePasswordSubmitting": "Updating…",
+    "changePasswordSubmit": "Change password",
+    "changePasswordSuccess": "Password changed successfully",
+    "errorLoading": "Unable to load profile."
+  },
+  "ownerPayments": {
+    "pageTitle": "My payments",
+    "tabCharges": "My charges",
+    "tabHistory": "History",
+    "chargesEmpty": "No charges at the moment.",
+    "historyEmpty": "No payments recorded.",
+    "chargesTable": {
+      "title": "Title",
+      "category": "Category",
+      "total": "Total",
+      "paid": "Paid",
+      "remaining": "Remaining",
+      "status": "Status",
+      "dueDate": "Due date",
+      "actions": "Actions",
+      "payButton": "Pay",
+      "noticeButton": "Notice"
+    },
+    "historyTable": {
+      "date": "Date",
+      "charge": "Charge",
+      "category": "Category",
+      "amount": "Amount",
+      "method": "Method",
+      "reference": "Reference",
+      "notes": "Notes"
+    }
+  }
+}

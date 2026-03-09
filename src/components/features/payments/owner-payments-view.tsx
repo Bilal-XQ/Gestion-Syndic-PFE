@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Download, CreditCard } from "lucide-react";
 
@@ -21,6 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/features/shared/StatusBadge";
 import { OwnerPaymentForm } from "@/components/features/payments/owner-payment-form";
 import { downloadPaymentNotice } from "@/lib/actions/charges";
+import { exportOwnerPayments, type ExportColumns } from "@/lib/export/excel";
 import { formatDate, formatMAD } from "@/lib/formatters";
 
 // ---------------------------------------------------------------------------
@@ -53,24 +55,38 @@ type Payment = {
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-const categoryLabels: Record<string, string> = {
-  electricity: "Électricité",
-  water: "Eau",
-  maintenance: "Entretien",
-  repair: "Réparation",
-  other: "Autre",
-};
-
-const methodLabels: Record<string, string> = {
-  bank_transfer: "Virement",
-  check: "Chèque",
-  cash: "Espèces",
-};
+// category and method labels are now built inside the component using translations
 
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 export function OwnerPaymentsView() {
+  const t = useTranslations("portal");
+  const tc = useTranslations("common");
+  const exportCols: ExportColumns = {
+    chargeTitle: tc("export.columns.chargeTitle"),
+    category: tc("export.columns.category"),
+    amount: tc("export.columns.amount"),
+    currency: tc("export.columns.currency"),
+    paymentDate: tc("export.columns.paymentDate"),
+    method: tc("export.columns.method"),
+    reference: tc("export.columns.reference"),
+    fullName: "", email: "", phone: "", apartment: "", ownershipDate: "",
+    title: "", totalAmount: "", amountPaid: "",
+    remaining: "", dueDate: "", status: "", ownerName: "",
+  };
+  const categoryLabels: Record<string, string> = {
+    electricity: tc("categories.electricity"),
+    water: tc("categories.water"),
+    maintenance: tc("categories.maintenance"),
+    repair: tc("categories.repair"),
+    other: tc("categories.other"),
+  };
+  const methodLabels: Record<string, string> = {
+    bank_transfer: tc("paymentMethods.transfer"),
+    check: tc("paymentMethods.check"),
+    cash: tc("paymentMethods.cash"),
+  };
   const [paymentOpen, setPaymentOpen] = useState(false);
   const [selectedCharge, setSelectedCharge] = useState<Charge | null>(null);
 
@@ -118,8 +134,8 @@ export function OwnerPaymentsView() {
     <>
       <Tabs defaultValue="charges">
         <TabsList>
-          <TabsTrigger value="charges">Mes charges</TabsTrigger>
-          <TabsTrigger value="history">Historique</TabsTrigger>
+          <TabsTrigger value="charges">{t("ownerPayments.tabCharges")}</TabsTrigger>
+          <TabsTrigger value="history">{t("ownerPayments.tabHistory")}</TabsTrigger>
         </TabsList>
 
         {/* ─── Tab 1: Charges ─── */}
@@ -133,21 +149,21 @@ export function OwnerPaymentsView() {
               </div>
             ) : charges.length === 0 ? (
               <p className="p-6 text-center text-sm text-[--text-secondary]">
-                Aucune charge pour le moment.
+                {t("ownerPayments.chargesEmpty")}
               </p>
             ) : (
               <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Titre</TableHead>
-                    <TableHead>Catégorie</TableHead>
-                    <TableHead className="text-right">Total</TableHead>
-                    <TableHead className="text-right">Payé</TableHead>
-                    <TableHead className="text-right">Restant</TableHead>
-                    <TableHead>Statut</TableHead>
-                    <TableHead>Échéance</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead>{t("ownerPayments.chargesTable.title")}</TableHead>
+                    <TableHead>{t("ownerPayments.chargesTable.category")}</TableHead>
+                    <TableHead className="text-end">{t("ownerPayments.chargesTable.total")}</TableHead>
+                    <TableHead className="text-end">{t("ownerPayments.chargesTable.paid")}</TableHead>
+                    <TableHead className="text-end">{t("ownerPayments.chargesTable.remaining")}</TableHead>
+                    <TableHead>{t("ownerPayments.chargesTable.status")}</TableHead>
+                    <TableHead>{t("ownerPayments.chargesTable.dueDate")}</TableHead>
+                    <TableHead className="text-end">{t("ownerPayments.chargesTable.actions")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -161,13 +177,13 @@ export function OwnerPaymentsView() {
                           {categoryLabels[charge.category] ?? charge.category}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="text-end">
                         {formatMAD(charge.totalAmount)}
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="text-end">
                         {formatMAD(charge.amountPaid)}
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="text-end">
                         {formatMAD(charge.remainingAmount)}
                       </TableCell>
                       <TableCell>
@@ -176,7 +192,7 @@ export function OwnerPaymentsView() {
                         />
                       </TableCell>
                       <TableCell>{formatDate(charge.dueDate)}</TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="text-end">
                         <div className="flex justify-end gap-1">
                           {charge.status !== "paid" && (
                             <Button
@@ -187,8 +203,8 @@ export function OwnerPaymentsView() {
                                 setPaymentOpen(true);
                               }}
                             >
-                              <CreditCard className="mr-1 h-4 w-4" />
-                              Payer
+                              <CreditCard className="me-1 h-4 w-4" />
+                              {t("ownerPayments.chargesTable.payButton")}
                             </Button>
                           )}
                           <Button
@@ -196,8 +212,8 @@ export function OwnerPaymentsView() {
                             variant="ghost"
                             onClick={() => handleDownload(charge.id)}
                           >
-                            <Download className="mr-1 h-4 w-4" />
-                            Avis
+                            <Download className="me-1 h-4 w-4" />
+                            {t("ownerPayments.chargesTable.noticeButton")}
                           </Button>
                         </div>
                       </TableCell>
@@ -212,6 +228,16 @@ export function OwnerPaymentsView() {
 
         {/* ─── Tab 2: Payment History ─── */}
         <TabsContent value="history">
+          <div className="mb-4 flex justify-end">
+            <Button
+              variant="outline"
+              onClick={() => exportOwnerPayments(payments, exportCols, tc("export.sheetName"))}
+              disabled={payments.length === 0}
+            >
+              <Download className="size-4" />
+              {tc("export.button")}
+            </Button>
+          </div>
           <Card className="border-[--border-default] bg-[--bg-elevated]">
             {paymentsLoading ? (
               <div className="space-y-2 p-4">
@@ -221,20 +247,20 @@ export function OwnerPaymentsView() {
               </div>
             ) : payments.length === 0 ? (
               <p className="p-6 text-center text-sm text-[--text-secondary]">
-                Aucun paiement enregistré.
+                {t("ownerPayments.historyEmpty")}
               </p>
             ) : (
               <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Charge</TableHead>
-                    <TableHead>Catégorie</TableHead>
-                    <TableHead className="text-right">Montant</TableHead>
-                    <TableHead>Méthode</TableHead>
-                    <TableHead>Référence</TableHead>
-                    <TableHead>Notes</TableHead>
+                    <TableHead>{t("ownerPayments.historyTable.date")}</TableHead>
+                    <TableHead>{t("ownerPayments.historyTable.charge")}</TableHead>
+                    <TableHead>{t("ownerPayments.historyTable.category")}</TableHead> 
+                    <TableHead className="text-end">{t("ownerPayments.historyTable.amount")}</TableHead>
+                    <TableHead>{t("ownerPayments.historyTable.method")}</TableHead>
+                    <TableHead>{t("ownerPayments.historyTable.reference")}</TableHead>
+                    <TableHead>{t("ownerPayments.historyTable.notes")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -250,7 +276,7 @@ export function OwnerPaymentsView() {
                             payment.chargeCategory}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="text-end">
                         {formatMAD(payment.amount)}
                       </TableCell>
                       <TableCell>

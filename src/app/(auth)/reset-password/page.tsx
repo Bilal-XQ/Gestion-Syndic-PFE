@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { ResetPasswordForm } from "@/components/features/auth/reset-password-form";
 import { UpdatePasswordForm } from "@/components/features/auth/update-password-form";
 
-export const metadata: Metadata = {
-  title: "Réinitialiser le mot de passe — Syndic",
-};
+export async function generateMetadata() {
+  const t = await getTranslations("auth");
+  return { title: t("resetPassword.pageTitle") } satisfies Metadata;
+}
 
 /**
  * This page serves dual purpose:
@@ -19,6 +21,7 @@ export default async function ResetPasswordPage({
 }: {
   searchParams: Promise<{ code?: string }>;
 }) {
+  const t = await getTranslations("auth");
   const { code } = await searchParams;
   const hasCode = Boolean(code);
 
@@ -33,12 +36,12 @@ export default async function ResetPasswordPage({
             </span>
           </div>
           <h1 className="text-xl font-semibold text-[--text-primary]">
-            {hasCode ? "Nouveau mot de passe" : "Mot de passe oublié"}
+            {hasCode ? t("resetPassword.headingWithCode") : t("resetPassword.headingWithoutCode")}
           </h1>
           <p className="text-sm text-[--text-muted]">
             {hasCode
-              ? "Choisissez un nouveau mot de passe"
-              : "Entrez votre e-mail pour recevoir un lien de réinitialisation"}
+              ? t("resetPassword.subtitleWithCode")
+              : t("resetPassword.subtitleWithoutCode")}
           </p>
         </div>
 

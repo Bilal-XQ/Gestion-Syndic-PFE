@@ -4,9 +4,10 @@ import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { users, auditLogs } from "@/lib/db/schema";
 import { createClient } from "@/utils/supabase/server";
+import { getTranslations } from "next-intl/server";
 import {
-  updatePhoneSchema,
-  changePasswordSchema,
+  createUpdatePhoneSchema,
+  createChangePasswordSchema,
 } from "@/lib/validations/profile";
 import { getOwnerByUserId } from "@/lib/db/queries/owners";
 
@@ -41,7 +42,9 @@ export async function updatePhone(
   values: unknown
 ): Promise<ActionResult> {
   // 1. Validate
-  const parsed = updatePhoneSchema.safeParse(values);
+  const t = await getTranslations("validation");
+  const schema = createUpdatePhoneSchema(t);
+  const parsed = schema.safeParse(values);
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0].message };
   }
@@ -81,7 +84,9 @@ export async function changePassword(
   values: unknown
 ): Promise<ActionResult> {
   // 1. Validate
-  const parsed = changePasswordSchema.safeParse(values);
+  const t = await getTranslations("validation");
+  const schema = createChangePasswordSchema(t);
+  const parsed = schema.safeParse(values);
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0].message };
   }

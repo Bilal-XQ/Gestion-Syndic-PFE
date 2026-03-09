@@ -1,0 +1,40 @@
+{
+  "pageTitle": "المدفوعات",
+  "summary": {
+    "totalCharges": "إجمالي الرسوم",
+    "totalCollected": "إجمالي المحصّل",
+    "remainingBalance": "الرصيد المتبقي"
+  },
+  "filters": {
+    "from": "من",
+    "to": "إلى",
+    "owner": "المالك",
+    "all": "الكل",
+    "category": "الفئة",
+    "allCategories": "جميع الفئات",
+    "allCategoriesShort": "الكل"
+  },
+  "table": {
+    "owner": "المالك",
+    "charge": "الرسم",
+    "amount": "المبلغ",
+    "date": "التاريخ",
+    "method": "الطريقة",
+    "reference": "المرجع",
+    "empty": "لا توجد مدفوعات"
+  },
+  "ownerForm": {
+    "title": "إجراء الدفع",
+    "descriptionWithCharge": "الرصيد المتبقي:",
+    "descriptionNoCharge": "اختر رسماً",
+    "amountLabel": "المبلغ (الحد الأقصى {max})",
+    "paymentDateLabel": "تاريخ الدفع",
+    "methodLabel": "طريقة الدفع",
+    "referenceLabel": "المرجع",
+    "notesLabel": "ملاحظات (اختياري)",
+    "notesPlaceholder": "تفاصيل إضافية…",
+    "submitting": "جارٍ الحفظ…",
+    "submit": "تسجيل الدفع",
+    "success": "تم تسجيل الدفع بنجاح"
+  }
+}

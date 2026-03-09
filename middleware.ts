@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { updateSession } from "@/utils/supabase/middleware";
+import { LOCALE_COOKIE } from "@/i18n/config";
 
 // ---------------------------------------------------------------------------
 // Rate limiter — 5 attempts / 60 s sliding window on the login route.
@@ -36,6 +37,19 @@ function isOwnerRoute(pathname: string): boolean {
   return OWNER_PREFIXES.some(
     (p) => pathname === p || pathname.startsWith(p + "/")
   );
+}
+
+// Preserve the NEXT_LOCALE cookie when issuing redirects
+function redirectWithLocale(url: URL, request: NextRequest): NextResponse {
+  const response = NextResponse.redirect(url);
+  const localeCookie = request.cookies.get(LOCALE_COOKIE);
+  if (localeCookie) {
+    response.cookies.set(LOCALE_COOKIE, localeCookie.value, {
+      path: "/",
+      sameSite: "lax",
+    });
+  }
+  return response;
 }
 
 // ---------------------------------------------------------------------------
@@ -76,7 +90,7 @@ export async function middleware(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = LOGIN_PATH;
     url.searchParams.set("redirectedFrom", pathname);
-    return NextResponse.redirect(url);
+    return redirectWithLocale(url, request);
   }
 
   // 4. Role-based route protection (JWT only — no DB query)
@@ -90,21 +104,21 @@ export async function middleware(request: NextRequest) {
     if (pathname.startsWith(SYNDIC_PREFIX) && role !== "syndic") {
       const url = request.nextUrl.clone();
       url.pathname = role === "proprietaire" ? "/portal" : LOGIN_PATH;
-      return NextResponse.redirect(url);
+      return redirectWithLocale(url, request);
     }
 
     // Owner-only routes
     if (isOwnerRoute(pathname) && role !== "proprietaire") {
       const url = request.nextUrl.clone();
       url.pathname = role === "syndic" ? SYNDIC_PREFIX : LOGIN_PATH;
-      return NextResponse.redirect(url);
+      return redirectWithLocale(url, request);
     }
 
     // Authenticated users hitting /login → redirect to their home
     if (pathname === LOGIN_PATH) {
       const url = request.nextUrl.clone();
       url.pathname = role === "syndic" ? SYNDIC_PREFIX : "/portal";
-      return NextResponse.redirect(url);
+      return redirectWithLocale(url, request);
     }
   }
 

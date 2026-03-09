@@ -1,0 +1,44 @@
+{
+  "pageTitle": "الرسوم",
+  "searchPlaceholder": "البحث بالعنوان أو الشقة…",
+  "addButton": "رسم جديد",
+  "table": {
+    "title": "العنوان",
+    "apartment": "الشقة",
+    "category": "الفئة",
+    "total": "الإجمالي",
+    "paid": "المدفوع",
+    "remaining": "المتبقي",
+    "dueDate": "تاريخ الاستحقاق",
+    "status": "الحالة",
+    "actions": "الإجراءات",
+    "empty": "لا توجد رسوم",
+    "sendReminder": "إرسال تذكير",
+    "downloadNotice": "تنزيل الإشعار",
+    "reminderSuccess": "تم إرسال التذكير بنجاح"
+  },
+  "panel": {
+    "title": "رسم جديد",
+    "description": "أنشئ رسماً لشقة.",
+    "titleLabel": "العنوان",
+    "titlePlaceholder": "كهرباء الربع الأول 2026",
+    "descriptionLabel": "الوصف (اختياري)",
+    "descriptionPlaceholder": "تفاصيل الرسم…",
+    "categoryLabel": "الفئة",
+    "categoryPlaceholder": "اختر فئة",
+    "amountLabel": "المبلغ الإجمالي (MAD)",
+    "dueDateLabel": "تاريخ الاستحقاق",
+    "apartmentLabel": "الشقة",
+    "apartmentPlaceholder": "اختر شقة",
+    "submitting": "جارٍ الإنشاء…",
+    "submit": "إنشاء الرسم",
+    "success": "تم إنشاء الرسم بنجاح"
+  },
+  "delete": {
+    "title": "هل أنت متأكد؟",
+    "description": "سيتم أرشفة الرسم {chargeTitle}. هذا الإجراء قابل للعكس.",
+    "submitting": "جارٍ الحذف…",
+    "submit": "حذف",
+    "success": "تم حذف الرسم"
+  }
+}

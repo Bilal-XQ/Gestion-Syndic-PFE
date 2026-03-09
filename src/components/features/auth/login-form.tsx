@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useActionState } from "react";
+import { useTranslations } from "next-intl";
 import { login } from "@/lib/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -10,6 +11,7 @@ import { PasswordInput } from "@/components/features/auth/password-input";
 import Link from "next/link";
 
 export function LoginForm() {
+  const t = useTranslations("auth");
   const [rememberMe, setRememberMe] = useState(true);
   const [state, formAction, isPending] = useActionState(
     async (_prev: { error: string } | null, formData: FormData) => {
@@ -33,13 +35,13 @@ export function LoginForm() {
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="email" className="text-sm text-[--text-secondary]">
-          Adresse e-mail
+          {t("login.emailLabel")}
         </Label>
         <Input
           id="email"
           name="email"
           type="email"
-          placeholder="vous@exemple.com"
+          placeholder={t("login.emailPlaceholder")}
           autoComplete="email"
           required
           className="h-11 rounded-[10px] border-[--border-default] bg-[--bg-input] text-[--text-primary] placeholder:text-[--text-placeholder] focus:border-[--border-focus] focus:ring-2 focus:ring-white/[0.06]"
@@ -52,13 +54,13 @@ export function LoginForm() {
             htmlFor="password"
             className="text-sm text-[--text-secondary]"
           >
-            Mot de passe
+            {t("login.passwordLabel")}
           </Label>
           <Link
             href="/reset-password"
             className="text-xs text-[--text-muted] transition-colors hover:text-[--text-secondary]"
           >
-            Mot de passe oublié ?
+            {t("login.forgotPassword")}
           </Link>
         </div>
         <PasswordInput
@@ -78,7 +80,7 @@ export function LoginForm() {
           onCheckedChange={(checked) => setRememberMe(checked === true)}
         />
         <Label htmlFor="rememberMe" className="text-sm text-[--text-secondary] cursor-pointer">
-          Se souvenir de moi
+          {t("login.rememberMe")}
         </Label>
       </div>
       <input type="hidden" name="rememberMe" value={rememberMe ? "true" : "false"} />
@@ -88,7 +90,7 @@ export function LoginForm() {
         disabled={isPending}
         className="h-11 w-full rounded-[10px] bg-[--btn-primary-bg] font-medium text-[--btn-primary-text] transition-all duration-[150ms] hover:opacity-90 active:scale-[0.98] disabled:opacity-40"
       >
-        {isPending ? "Connexion…" : "Se connecter"}
+        {isPending ? t("login.submitting") : t("login.submit")}
       </Button>
     </form>
   );

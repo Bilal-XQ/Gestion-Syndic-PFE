@@ -1,0 +1,39 @@
+{
+  "pageTitle": "Dashboard",
+  "welcome": "Welcome, {name}",
+  "fallbackName": "Syndic",
+  "overdueCharges": "Overdue charges",
+  "metrics": {
+    "owners": "Co-owners",
+    "ownersSecondary": "active owners",
+    "apartments": "Apartments",
+    "apartmentsSecondary": "in the building",
+    "occupied": "Occupied",
+    "occupiedSecondary": "occupied apartments",
+    "vacant": "Vacant",
+    "vacantSecondary": "available apartments",
+    "activeCharges": "Active charges",
+    "activeChargesSecondary": "awaiting payment",
+    "totalCollected": "Total collected",
+    "totalCollectedSecondary": "payments received"
+  },
+  "recentPayments": {
+    "title": "Recent payments",
+    "last_one": "last",
+    "last_other": "last",
+    "empty": "No payments yet"
+  },
+  "paymentChart": {
+    "title": "Payment activity",
+    "subtitle": "Last 6 months",
+    "empty": "No payments recorded"
+  },
+  "overdueTable": {
+    "owner": "Owner",
+    "charge": "Charge",
+    "apartment": "Apartment",
+    "remaining": "Remaining",
+    "dueDate": "Due date",
+    "empty": "No overdue charges"
+  }
+}

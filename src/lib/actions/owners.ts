@@ -5,7 +5,8 @@ import { db } from "@/lib/db";
 import { owners, users, apartments, auditLogs } from "@/lib/db/schema";
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
-import { ownerSchema } from "@/lib/validations/owner";
+import { getTranslations } from "next-intl/server";
+import { createOwnerSchema } from "@/lib/validations/owner";
 import { getBuildingBySyndicId } from "@/lib/db/queries/buildings";
 import { getOwnerById } from "@/lib/db/queries/owners";
 import { getApartmentById } from "@/lib/db/queries/apartments";
@@ -28,7 +29,9 @@ export async function createOwner(
   values: unknown
 ): Promise<ActionResult<{ id: string }>> {
   // 1. Validate
-  const parsed = ownerSchema.safeParse(values);
+  const t = await getTranslations("validation");
+  const schema = createOwnerSchema(t);
+  const parsed = schema.safeParse(values);
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0].message };
   }
@@ -158,7 +161,9 @@ export async function updateOwner(
   values: unknown
 ): Promise<ActionResult> {
   // 1. Validate
-  const parsed = ownerSchema.safeParse(values);
+  const t = await getTranslations("validation");
+  const schema = createOwnerSchema(t);
+  const parsed = schema.safeParse(values);
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0].message };
   }

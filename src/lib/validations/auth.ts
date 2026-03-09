@@ -3,45 +3,45 @@ import { z } from "zod";
 // ---------------------------------------------------------------------------
 // Login
 // ---------------------------------------------------------------------------
-export const loginSchema = z.object({
-  email: z
-    .string()
-    .min(1, "L'adresse e-mail est requise")
-    .email("Adresse e-mail invalide"),
-  password: z
-    .string()
-    .min(1, "Le mot de passe est requis"),
-});
+export function createLoginSchema(t: (key: string) => string) {
+  return z.object({
+    email: z
+      .string()
+      .min(1, t("auth.emailRequired"))
+      .email(t("auth.emailInvalid")),
+    password: z.string().min(1, t("auth.passwordRequired")),
+  });
+}
 
-export type LoginFormValues = z.infer<typeof loginSchema>;
+export type LoginFormValues = z.infer<ReturnType<typeof createLoginSchema>>;
 
 // ---------------------------------------------------------------------------
 // Request password reset (email only)
 // ---------------------------------------------------------------------------
-export const resetPasswordSchema = z.object({
-  email: z
-    .string()
-    .min(1, "L'adresse e-mail est requise")
-    .email("Adresse e-mail invalide"),
-});
+export function createResetPasswordSchema(t: (key: string) => string) {
+  return z.object({
+    email: z
+      .string()
+      .min(1, t("auth.emailRequired"))
+      .email(t("auth.emailInvalid")),
+  });
+}
 
-export type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
+export type ResetPasswordFormValues = z.infer<ReturnType<typeof createResetPasswordSchema>>;
 
 // ---------------------------------------------------------------------------
 // Set new password (password recovery flow)
 // ---------------------------------------------------------------------------
-export const updatePasswordSchema = z
-  .object({
-    password: z
-      .string()
-      .min(8, "Le mot de passe doit contenir au moins 8 caractères"),
-    confirmPassword: z
-      .string()
-      .min(1, "Veuillez confirmer le mot de passe"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Les mots de passe ne correspondent pas",
-    path: ["confirmPassword"],
-  });
+export function createUpdatePasswordSchema(t: (key: string) => string) {
+  return z
+    .object({
+      password: z.string().min(8, t("auth.passwordMin8")),
+      confirmPassword: z.string().min(1, t("auth.confirmPasswordRequired")),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: t("auth.passwordsMismatch"),
+      path: ["confirmPassword"],
+    });
+}
 
-export type UpdatePasswordFormValues = z.infer<typeof updatePasswordSchema>;
+export type UpdatePasswordFormValues = z.infer<ReturnType<typeof createUpdatePasswordSchema>>;

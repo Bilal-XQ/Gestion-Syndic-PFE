@@ -1,0 +1,44 @@
+{
+  "pageTitle": "Charges",
+  "searchPlaceholder": "Search by title or apartment…",
+  "addButton": "New charge",
+  "table": {
+    "title": "Title",
+    "apartment": "Apartment",
+    "category": "Category",
+    "total": "Total",
+    "paid": "Paid",
+    "remaining": "Remaining",
+    "dueDate": "Due date",
+    "status": "Status",
+    "actions": "Actions",
+    "empty": "No charges found",
+    "sendReminder": "Send reminder",
+    "downloadNotice": "Download notice",
+    "reminderSuccess": "Reminder sent successfully"
+  },
+  "panel": {
+    "title": "New charge",
+    "description": "Create a charge for an apartment.",
+    "titleLabel": "Title",
+    "titlePlaceholder": "Electricity Q1 2026",
+    "descriptionLabel": "Description (optional)",
+    "descriptionPlaceholder": "Charge details…",
+    "categoryLabel": "Category",
+    "categoryPlaceholder": "Choose a category",
+    "amountLabel": "Total amount (MAD)",
+    "dueDateLabel": "Due date",
+    "apartmentLabel": "Apartment",
+    "apartmentPlaceholder": "Choose an apartment",
+    "submitting": "Creating…",
+    "submit": "Create charge",
+    "success": "Charge created successfully"
+  },
+  "delete": {
+    "title": "Are you sure?",
+    "description": "Charge {chargeTitle} will be archived. This action is reversible.",
+    "submitting": "Deleting…",
+    "submit": "Delete",
+    "success": "Charge deleted"
+  }
+}

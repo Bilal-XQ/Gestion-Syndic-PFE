@@ -4,7 +4,8 @@ import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { apartments, auditLogs } from "@/lib/db/schema";
 import { createClient } from "@/utils/supabase/server";
-import { apartmentSchema } from "@/lib/validations/apartment";
+import { getTranslations } from "next-intl/server";
+import { createApartmentSchema } from "@/lib/validations/apartment";
 import { getBuildingBySyndicId } from "@/lib/db/queries/buildings";
 import { getApartmentById } from "@/lib/db/queries/apartments";
 import { getOwnerByApartmentId } from "@/lib/db/queries/owners";
@@ -23,7 +24,9 @@ export async function createApartment(
   values: unknown
 ): Promise<ActionResult<{ id: string }>> {
   // 1. Validate
-  const parsed = apartmentSchema.safeParse(values);
+  const t = await getTranslations("validation");
+  const schema = createApartmentSchema(t);
+  const parsed = schema.safeParse(values);
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0].message };
   }
@@ -75,7 +78,9 @@ export async function updateApartment(
   values: unknown
 ): Promise<ActionResult> {
   // 1. Validate
-  const parsed = apartmentSchema.safeParse(values);
+  const t = await getTranslations("validation");
+  const schema = createApartmentSchema(t);
+  const parsed = schema.safeParse(values);
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0].message };
   }

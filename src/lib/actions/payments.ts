@@ -3,7 +3,8 @@
 import { db } from "@/lib/db";
 import { payments, auditLogs } from "@/lib/db/schema";
 import { createClient } from "@/utils/supabase/server";
-import { paymentSchema } from "@/lib/validations/payment";
+import { getTranslations } from "next-intl/server";
+import { createPaymentSchema } from "@/lib/validations/payment";
 import { getChargeById } from "@/lib/db/queries/charges";
 import { getOwnerByUserId } from "@/lib/db/queries/owners";
 
@@ -21,7 +22,9 @@ export async function createPayment(
   values: unknown
 ): Promise<ActionResult<{ id: string }>> {
   // 1. Validate
-  const parsed = paymentSchema.safeParse(values);
+  const t = await getTranslations("validation");
+  const schema = createPaymentSchema(t);
+  const parsed = schema.safeParse(values);
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0].message };
   }

@@ -1,0 +1,40 @@
+{
+  "pageTitle": "Paiements",
+  "summary": {
+    "totalCharges": "Total charges",
+    "totalCollected": "Total encaissé",
+    "remainingBalance": "Solde restant"
+  },
+  "filters": {
+    "from": "Du",
+    "to": "Au",
+    "owner": "Propriétaire",
+    "all": "Tous",
+    "category": "Catégorie",
+    "allCategories": "Toutes catégories",
+    "allCategoriesShort": "Toutes"
+  },
+  "table": {
+    "owner": "Propriétaire",
+    "charge": "Charge",
+    "amount": "Montant",
+    "date": "Date",
+    "method": "Méthode",
+    "reference": "Référence",
+    "empty": "Aucun paiement trouvé"
+  },
+  "ownerForm": {
+    "title": "Effectuer un paiement",
+    "descriptionWithCharge": "Solde restant :",
+    "descriptionNoCharge": "Sélectionnez une charge",
+    "amountLabel": "Montant (max {max})",
+    "paymentDateLabel": "Date de paiement",
+    "methodLabel": "Méthode de paiement",
+    "referenceLabel": "Référence",
+    "notesLabel": "Notes (optionnel)",
+    "notesPlaceholder": "Détails supplémentaires…",
+    "submitting": "Enregistrement…",
+    "submit": "Enregistrer le paiement",
+    "success": "Paiement enregistré avec succès"
+  }
+}

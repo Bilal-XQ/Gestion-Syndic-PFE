@@ -1,0 +1,59 @@
+{
+  "pageTitle": "Mon profil",
+  "profile": {
+    "personalInfo": "Informations personnelles",
+    "nameLabel": "Nom",
+    "emailLabel": "Email",
+    "ownershipDateLabel": "Date de propriété",
+    "apartmentSection": "Appartement",
+    "unitLabel": "Unité",
+    "floorLabel": "Étage",
+    "surfaceLabel": "Surface",
+    "roomsLabel": "Pièces",
+    "buildingSection": "Immeuble",
+    "buildingNameLabel": "Nom",
+    "buildingAddressLabel": "Adresse",
+    "phoneLabel": "Téléphone",
+    "phonePlaceholder": "06 12 34 56 78",
+    "phoneNotSet": "Non renseigné",
+    "phoneSubmit": "Enregistrer",
+    "phoneCancel": "Annuler",
+    "phoneEditButton": "Modifier",
+    "phoneSuccess": "Téléphone mis à jour",
+    "changePassword": "Changer le mot de passe",
+    "newPasswordLabel": "Nouveau mot de passe",
+    "confirmPasswordLabel": "Confirmer le mot de passe",
+    "changePasswordSubmitting": "Modification…",
+    "changePasswordSubmit": "Modifier le mot de passe",
+    "changePasswordSuccess": "Mot de passe modifié avec succès",
+    "errorLoading": "Impossible de charger le profil."
+  },
+  "ownerPayments": {
+    "pageTitle": "Mes paiements",
+    "tabCharges": "Mes charges",
+    "tabHistory": "Historique",
+    "chargesEmpty": "Aucune charge pour le moment.",
+    "historyEmpty": "Aucun paiement enregistré.",
+    "chargesTable": {
+      "title": "Titre",
+      "category": "Catégorie",
+      "total": "Total",
+      "paid": "Payé",
+      "remaining": "Restant",
+      "status": "Statut",
+      "dueDate": "Échéance",
+      "actions": "Actions",
+      "payButton": "Payer",
+      "noticeButton": "Avis"
+    },
+    "historyTable": {
+      "date": "Date",
+      "charge": "Charge",
+      "category": "Catégorie",
+      "amount": "Montant",
+      "method": "Méthode",
+      "reference": "Référence",
+      "notes": "Notes"
+    }
+  }
+}

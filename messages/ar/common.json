@@ -1,0 +1,119 @@
+{
+  "appName": "سنديك",
+  "navigation": "التنقل",
+  "actions": "الإجراءات",
+  "save": "حفظ",
+  "cancel": "إلغاء",
+  "delete": "حذف",
+  "edit": "تعديل",
+  "create": "إنشاء",
+  "add": "إضافة",
+  "update": "تحديث",
+  "search": "بحث",
+  "loading": "جارٍ التحميل…",
+  "retry": "إعادة المحاولة",
+  "back": "رجوع",
+  "noResults": "لا توجد نتائج",
+  "selectDate": "اختر تاريخاً",
+  "errorOccurred": "حدث خطأ",
+  "somethingWentWrong": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+  "status": {
+    "paid": "مدفوع",
+    "partial": "جزئي",
+    "unpaid": "غير مدفوع",
+    "occupied": "مشغول",
+    "vacant": "شاغر",
+    "scheduled": "مجدول",
+    "completed": "مكتمل",
+    "cancelled": "ملغى",
+    "accepted": "مقبول",
+    "declined": "مرفوض",
+    "invited": "مدعو"
+  },
+  "categories": {
+    "electricity": "كهرباء",
+    "water": "ماء",
+    "maintenance": "صيانة",
+    "repair": "إصلاح",
+    "other": "أخرى"
+  },
+  "paymentMethods": {
+    "transfer": "تحويل",
+    "transferFull": "تحويل بنكي",
+    "check": "شيك",
+    "cash": "نقداً"
+  },
+  "currency": "MAD",
+  "unitSuffix": "م²",
+  "floor": "الطابق",
+  "userMenu": {
+    "myProfile": "ملفي الشخصي",
+    "signOut": "تسجيل الخروج"
+  },
+  "themeToggle": {
+    "switchToLight": "التبديل إلى الوضع الفاتح",
+    "switchToDark": "التبديل إلى الوضع الداكن"
+  },
+  "languageSwitcher": {
+    "fr": "FR",
+    "en": "EN",
+    "ar": "عر"
+  },
+  "fallbackUserName": "مستخدم",
+  "roleLabels": {
+    "admin": "مدير",
+    "owner": "مالك مشترك"
+  },
+  "syndicNav": {
+    "overview": "نظرة عامة",
+    "owners": "الملاك المشتركون",
+    "apartments": "الشقق",
+    "charges": "الرسوم",
+    "meetings": "الاجتماعات",
+    "payments": "المدفوعات",
+    "settings": "الإعدادات"
+  },
+  "ownerNav": {
+    "mySpace": "مساحتي",
+    "payments": "المدفوعات",
+    "notifications": "الإشعارات"
+  },
+  "notFound": {
+    "subtitle": "الصفحة غير موجودة",
+    "description": "الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
+    "backHome": "العودة إلى الرئيسية"
+  },
+  "errorPage": {
+    "title": "حدث خطأ",
+    "retry": "حاول مرة أخرى"
+  },
+  "export": {
+    "button": "تصدير",
+    "owners": "تصدير المالكين",
+    "charges": "تصدير التكاليف",
+    "payments": "تصدير المدفوعات",
+    "ownerPayments": "تصدير مدفوعاتي",
+    "sheetName": "بيانات",
+    "columns": {
+      "fullName": "الاسم الكامل",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "apartment": "الشقة",
+      "ownershipDate": "تاريخ الملكية",
+      "title": "العنوان",
+      "category": "الفئة",
+      "totalAmount": "المبلغ الإجمالي",
+      "amountPaid": "المبلغ المدفوع",
+      "remaining": "المتبقي",
+      "dueDate": "تاريخ الاستحقاق",
+      "status": "الحالة",
+      "currency": "العملة",
+      "ownerName": "المالك",
+      "chargeTitle": "التكلفة",
+      "amount": "المبلغ",
+      "paymentDate": "تاريخ الدفع",
+      "method": "طريقة الدفع",
+      "reference": "المرجع"
+    }
+  }
+}

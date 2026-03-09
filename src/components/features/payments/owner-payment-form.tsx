@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Loader2, AlertCircle } from "lucide-react";
 
@@ -23,7 +24,7 @@ import {
 } from "@/components/ui/select";
 import { DatePicker } from "@/components/ui/date-picker";
 
-import { paymentSchema, type PaymentFormValues } from "@/lib/validations/payment";
+import { createPaymentSchema, type PaymentFormValues } from "@/lib/validations/payment";
 import { createPayment } from "@/lib/actions/payments";
 import { formatMAD } from "@/lib/formatters";
 
@@ -43,12 +44,6 @@ interface OwnerPaymentFormProps {
   ownerId: string;
 }
 
-const methodOptions = [
-  { value: "bank_transfer", label: "Virement bancaire" },
-  { value: "check", label: "Chèque" },
-  { value: "cash", label: "Espèces" },
-] as const;
-
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
@@ -58,12 +53,20 @@ export function OwnerPaymentForm({
   charge,
   ownerId,
 }: OwnerPaymentFormProps) {
+  const t = useTranslations("payments");
+  const tc = useTranslations("common");
+  const tv = useTranslations("validation");
+  const methodOptions = [
+    { value: "bank_transfer", label: tc("paymentMethods.transferFull") },
+    { value: "check", label: tc("paymentMethods.check") },
+    { value: "cash", label: tc("paymentMethods.cash") },
+  ];
   const queryClient = useQueryClient();
   const [serverError, setServerError] = useState("");
 
   const form = useForm<PaymentFormValues>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(paymentSchema) as any,
+    resolver: zodResolver(createPaymentSchema(tv)) as any,
     defaultValues: {
       chargeId: charge?.id ?? "",
       ownerId: ownerId,
@@ -92,13 +95,31 @@ export function OwnerPaymentForm({
     onOpenChange(v);
   };
 
+  // Sync hidden form fields (chargeId, ownerId) when the dialog opens.
+  // The Dialog's onOpenChange is only called on user-driven close attempts;
+  // when the parent sets open=true externally this effect fires instead.
+  useEffect(() => {
+    if (open && charge) {
+      setServerError("");
+      form.reset({
+        chargeId: charge.id,
+        ownerId: ownerId,
+        amount: 0,
+        paymentDate: new Date().toISOString().split("T")[0],
+        method: "bank_transfer",
+        reference: "",
+        notes: "",
+      });
+    }
+  }, [open, charge?.id, ownerId]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const mutation = useMutation({
     mutationFn: async (data: PaymentFormValues) => {
       return createPayment(data);
     },
     onSuccess: (result) => {
       if (result.success) {
-        toast.success("Paiement enregistré avec succès");
+        toast.success(t("ownerForm.success"));
         queryClient.invalidateQueries({ queryKey: ["portal", "charges"] });
         queryClient.invalidateQueries({ queryKey: ["portal", "payments"] });
         onOpenChange(false);
@@ -109,8 +130,8 @@ export function OwnerPaymentForm({
       }
     },
     onError: () => {
-      setServerError("Une erreur est survenue");
-      toast.error("Une erreur est survenue");
+      setServerError(tc("errorOccurred"));
+      toast.error(tc("errorOccurred"));
     },
   });
 
@@ -129,12 +150,12 @@ export function OwnerPaymentForm({
         {/* HEADER */}
         <div className="border-b border-[--border-default] px-7 pt-7 pb-5">
           <DialogTitle className="text-[15px] font-semibold text-[--text-primary] tracking-[-0.01em]">
-            Effectuer un paiement
+            {t("ownerForm.title")}
           </DialogTitle>
           <DialogDescription className="mt-1 text-[13px] leading-[1.5] text-[--text-muted]">
             {charge
-              ? `${charge.title} — Solde restant : ${formatMAD(remaining)}`
-              : "Sélectionnez une charge"}
+              ? `${charge.title} — ${t("ownerForm.descriptionWithCharge")} ${formatMAD(remaining)}`
+              : t("ownerForm.descriptionNoCharge")}
           </DialogDescription>
         </div>
 
@@ -145,7 +166,7 @@ export function OwnerPaymentForm({
             {/* Amount */}
             <div className="space-y-1.5">
               <label htmlFor="amount" className={labelClass}>
-                Montant (max {formatMAD(remaining)})
+                {t("ownerForm.amountLabel", { max: formatMAD(remaining) })}
               </label>
               <Input
                 id="amount"
@@ -166,7 +187,7 @@ export function OwnerPaymentForm({
             {/* Payment date */}
             <div className="space-y-1.5">
               <label htmlFor="paymentDate" className={labelClass}>
-                Date de paiement
+                {t("ownerForm.paymentDateLabel")}
               </label>
               <DatePicker
                 value={form.watch("paymentDate")}
@@ -176,7 +197,7 @@ export function OwnerPaymentForm({
                     shouldValidate: true,
                   })
                 }
-                placeholder="Choisir une date"
+                placeholder={tc("selectDate")}
                 buttonClassName={inputClass}
               />
               {form.formState.errors.paymentDate && (
@@ -188,7 +209,7 @@ export function OwnerPaymentForm({
 
             {/* Method */}
             <div className="space-y-1.5">
-              <label className={labelClass}>Méthode de paiement</label>
+              <label className={labelClass}>{t("ownerForm.methodLabel")}</label>
               <Select
                 value={form.watch("method")}
                 onValueChange={(v) =>
@@ -215,7 +236,7 @@ export function OwnerPaymentForm({
             {/* Reference */}
             <div className="space-y-1.5">
               <label htmlFor="reference" className={labelClass}>
-                Référence
+                {t("ownerForm.referenceLabel")}
               </label>
               <Input
                 id="reference"
@@ -233,11 +254,11 @@ export function OwnerPaymentForm({
             {/* Notes */}
             <div className="space-y-1.5">
               <label htmlFor="notes" className={labelClass}>
-                Notes (optionnel)
+                {t("ownerForm.notesLabel")}
               </label>
               <textarea
                 id="notes"
-                placeholder="Détails supplémentaires…"
+                placeholder={t("ownerForm.notesPlaceholder")}
                 className={`${inputClass} resize-none min-h-[80px]`}
                 {...form.register("notes")}
               />
@@ -258,9 +279,9 @@ export function OwnerPaymentForm({
               className="flex w-full items-center justify-center rounded-[10px] bg-[--btn-primary-bg] px-5 py-[13px] text-[14px] font-medium text-[--btn-primary-text] transition-all duration-150 cursor-pointer hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
             >
               {mutation.isPending && (
-                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                <Loader2 className="w-4 h-4 animate-spin me-2" />
               )}
-              {mutation.isPending ? "Enregistrement…" : "Enregistrer le paiement"}
+              {mutation.isPending ? t("ownerForm.submitting") : t("ownerForm.submit")}
             </button>
           </div>
         </form>

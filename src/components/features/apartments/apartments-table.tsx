@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { Plus, Pencil, Trash2, Search } from "lucide-react";
 
 import {
@@ -47,6 +48,7 @@ export function ApartmentsTable({
   initialData: Apartment[];
   buildingId: string;
 }) {
+  const t = useTranslations("apartments");
   const [search, setSearch] = useState("");
   const [panelOpen, setPanelOpen] = useState(false);
   const [editApartment, setEditApartment] = useState<Apartment | null>(null);
@@ -68,12 +70,12 @@ export function ApartmentsTable({
       {/* Toolbar */}
       <div className="flex items-center justify-between gap-4">
         <div className="relative max-w-xs flex-1">
-          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[--text-muted]" />
+          <Search className="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-[--text-muted]" />
           <Input
-            placeholder="Rechercher par numéro…"
+            placeholder={t("searchPlaceholder")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9"
+            className="ps-9"
           />
         </div>
         <Button
@@ -83,7 +85,7 @@ export function ApartmentsTable({
           }}
         >
           <Plus className="size-4" />
-          Ajouter
+          {t("addButton")}
         </Button>
       </div>
 
@@ -94,22 +96,22 @@ export function ApartmentsTable({
           <TableHeader>
             <TableRow className="border-[--border-subtle] hover:bg-transparent">
               <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-                Numéro
+                {t("table.unitNumber")}
               </TableHead>
               <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-                Étage
+                {t("table.floor")}
               </TableHead>
               <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-                Superficie
+                {t("table.surfaceArea")}
               </TableHead>
               <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-                Pièces
+                {t("table.rooms")}
               </TableHead>
               <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-                Statut
+                {t("table.status")}
               </TableHead>
-              <TableHead className="text-right text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-                Actions
+              <TableHead className="text-end text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
+                {t("table.actions")}
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -120,7 +122,7 @@ export function ApartmentsTable({
                   colSpan={6}
                   className="h-24 text-center text-[--text-muted]"
                 >
-                  Aucun appartement trouvé
+                  {t("table.empty")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -146,7 +148,7 @@ export function ApartmentsTable({
                       status={apt.status as "occupied" | "vacant"}
                     />
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-end">
                     <div className="flex items-center justify-end gap-1">
                       <Button
                         variant="ghost"

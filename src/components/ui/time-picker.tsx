@@ -51,8 +51,9 @@ export function TimePicker({
     : ["", ""]
 
   const updateValue = (nextHour: string, nextMinute: string) => {
-    if (!nextHour || !nextMinute) return
-    onChange(`${nextHour}:${nextMinute}`)
+    const h = nextHour || "00"
+    const m = nextMinute || "00"
+    onChange(`${h}:${m}`)
   }
 
   return (

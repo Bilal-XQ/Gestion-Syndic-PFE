@@ -8,6 +8,7 @@ import {
   FileText,
   CreditCard,
 } from "lucide-react"
+import { useTranslations } from "next-intl";
 import { AnimatedMetricCard } from "./animated-metric-card"
 import type { DashboardMetrics } from "@/lib/db/queries/dashboard"
 import { formatMAD } from "@/lib/formatters"
@@ -22,43 +23,44 @@ interface MetricCardsGridProps {
 }
 
 export function MetricCardsGrid({ metrics, financialSummary }: MetricCardsGridProps) {
+  const t = useTranslations("dashboard");
   const totalCollectedFormatted = formatMAD(financialSummary.totalCollected)
 
   const cards = [
     {
-      label: "Copropriétaires",
+      label: t("metrics.owners"),
       value: metrics.totalOwners,
-      secondaryText: "propriétaires actifs",
+      secondaryText: t("metrics.ownersSecondary"),
       icon: Users2,
     },
     {
-      label: "Appartements",
+      label: t("metrics.apartments"),
       value: metrics.totalApartments,
-      secondaryText: "dans l'immeuble",
+      secondaryText: t("metrics.apartmentsSecondary"),
       icon: Building2,
     },
     {
-      label: "Occupés",
+      label: t("metrics.occupied"),
       value: metrics.occupiedApartments,
-      secondaryText: "appartements occupés",
+      secondaryText: t("metrics.occupiedSecondary"),
       icon: DoorOpen,
     },
     {
-      label: "Vacants",
+      label: t("metrics.vacant"),
       value: metrics.vacantApartments,
-      secondaryText: "appartements disponibles",
+      secondaryText: t("metrics.vacantSecondary"),
       icon: DoorClosed,
     },
     {
-      label: "Charges actives",
+      label: t("metrics.activeCharges"),
       value: metrics.totalCharges,
-      secondaryText: "en attente de paiement",
+      secondaryText: t("metrics.activeChargesSecondary"),
       icon: FileText,
     },
     {
-      label: "Total collecté",
+      label: t("metrics.totalCollected"),
       value: totalCollectedFormatted,
-      secondaryText: "paiements reçus",
+      secondaryText: t("metrics.totalCollectedSecondary"),
       icon: CreditCard,
     },
   ]

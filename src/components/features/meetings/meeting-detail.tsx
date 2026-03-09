@@ -2,6 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { ArrowLeft, MapPin, Clock, Calendar, Users } from "lucide-react";
 import { toast } from "sonner";
 
@@ -62,6 +63,7 @@ async function fetchMeetingDetail(id: string): Promise<MeetingDetail> {
 export function MeetingDetail({ meetingId }: { meetingId: string }) {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const t = useTranslations("meetings");
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["meetings", meetingId],
@@ -72,13 +74,13 @@ export function MeetingDetail({ meetingId }: { meetingId: string }) {
     mutationFn: async () => cancelMeeting(meetingId),
     onSuccess: (result) => {
       if (result.success) {
-        toast.success("Réunion annulée");
+        toast.success(t("detail.cancelSuccess"));
         queryClient.invalidateQueries({ queryKey: ["meetings"] });
       } else {
         toast.error(result.error);
       }
     },
-    onError: () => toast.error("Une erreur est survenue"),
+    onError: () => toast.error(t("detail.cancelSuccess")),
   });
 
   if (isLoading) {
@@ -94,7 +96,7 @@ export function MeetingDetail({ meetingId }: { meetingId: string }) {
   if (error || !data) {
     return (
       <div className="text-[--text-secondary]">
-        Impossible de charger les détails de la réunion.
+        {t("detail.errorLoading")}
       </div>
     );
   }
@@ -113,7 +115,7 @@ export function MeetingDetail({ meetingId }: { meetingId: string }) {
         onClick={() => router.push("/dashboard/meetings")}
       >
         <ArrowLeft className="h-4 w-4" />
-        Retour aux réunions
+        {t("detail.backButton")}
       </Button>
 
       {/* Header */}
@@ -134,7 +136,7 @@ export function MeetingDetail({ meetingId }: { meetingId: string }) {
             disabled={cancelMutation.isPending}
             onClick={() => cancelMutation.mutate()}
           >
-            {cancelMutation.isPending ? "Annulation…" : "Annuler la réunion"}
+            {cancelMutation.isPending ? t("detail.cancelling") : t("detail.cancelButton")}
           </Button>
         )}
       </div>
@@ -145,7 +147,7 @@ export function MeetingDetail({ meetingId }: { meetingId: string }) {
           <div className="flex items-start gap-3">
             <Calendar className="mt-0.5 h-4 w-4 text-[--text-muted]" />
             <div>
-              <p className="text-xs text-[--text-muted]">Date</p>
+              <p className="text-xs text-[--text-muted]">{t("detail.dateLabel")}</p>
               <p className="text-sm font-medium text-[--text-primary] capitalize">
                 {formattedDate}
               </p>
@@ -154,7 +156,7 @@ export function MeetingDetail({ meetingId }: { meetingId: string }) {
           <div className="flex items-start gap-3">
             <Clock className="mt-0.5 h-4 w-4 text-[--text-muted]" />
             <div>
-              <p className="text-xs text-[--text-muted]">Horaire</p>
+              <p className="text-xs text-[--text-muted]">{t("detail.timeLabel")}</p>
               <p className="text-sm font-medium font-mono text-[--text-primary]">
                 {formatTime(meeting.startTime)} – {formatTime(meeting.endTime)}
               </p>
@@ -163,7 +165,7 @@ export function MeetingDetail({ meetingId }: { meetingId: string }) {
           <div className="flex items-start gap-3">
             <MapPin className="mt-0.5 h-4 w-4 text-[--text-muted]" />
             <div>
-              <p className="text-xs text-[--text-muted]">Lieu</p>
+              <p className="text-xs text-[--text-muted]">{t("detail.locationLabel")}</p>
               <p className="text-sm font-medium text-[--text-primary]">
                 {meeting.location}
               </p>
@@ -172,9 +174,9 @@ export function MeetingDetail({ meetingId }: { meetingId: string }) {
           <div className="flex items-start gap-3">
             <Users className="mt-0.5 h-4 w-4 text-[--text-muted]" />
             <div>
-              <p className="text-xs text-[--text-muted]">Participants</p>
+              <p className="text-xs text-[--text-muted]">{t("detail.participantsLabel")}</p>
               <p className="text-sm font-medium text-[--text-primary]">
-                {meeting.acceptedCount}/{meeting.totalInvitations} confirmés
+                {meeting.acceptedCount}/{meeting.totalInvitations} {t("detail.confirmed")}
               </p>
             </div>
           </div>
@@ -186,7 +188,7 @@ export function MeetingDetail({ meetingId }: { meetingId: string }) {
         <Card className="border-[--border-default] bg-[--bg-card]">
           <CardHeader>
             <CardTitle className="text-sm text-[--text-secondary]">
-              Description
+              {t("detail.descriptionTitle")}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -208,11 +210,11 @@ export function MeetingDetail({ meetingId }: { meetingId: string }) {
           <Table>
             <TableHeader>
               <TableRow className="border-[--border-default]">
-                <TableHead className="text-[--text-muted]">Nom</TableHead>
-                <TableHead className="text-[--text-muted]">Email</TableHead>
-                <TableHead className="text-[--text-muted]">Statut</TableHead>
+                <TableHead className="text-[--text-muted]">{t("detail.invitationTable.name")}</TableHead>
+                <TableHead className="text-[--text-muted]">{t("detail.invitationTable.email")}</TableHead>
+                <TableHead className="text-[--text-muted]">{t("detail.invitationTable.status")}</TableHead>
                 <TableHead className="text-[--text-muted]">
-                  Répondu le
+                  {t("detail.invitationTable.respondedAt")}
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -223,7 +225,7 @@ export function MeetingDetail({ meetingId }: { meetingId: string }) {
                     colSpan={4}
                     className="text-center text-[--text-muted] py-8"
                   >
-                    Aucune invitation
+                    {t("detail.invitationTable.empty")}
                   </TableCell>
                 </TableRow>
               ) : (

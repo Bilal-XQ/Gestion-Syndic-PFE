@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Check, ChevronsUpDown, X, Loader2, AlertCircle } from "lucide-react";
 
@@ -32,7 +33,7 @@ import { DatePicker } from "@/components/ui/date-picker";
 import { TimePicker } from "@/components/ui/time-picker";
 
 import {
-  meetingSchema,
+  createMeetingSchema,
   type MeetingFormValues,
 } from "@/lib/validations/meeting";
 import { createMeeting } from "@/lib/actions/meetings";
@@ -68,6 +69,9 @@ interface MeetingPanelProps {
 // ---------------------------------------------------------------------------
 export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
   const queryClient = useQueryClient();
+  const t = useTranslations("meetings");
+  const tc = useTranslations("common");
+  const tv = useTranslations("validation");
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [serverError, setServerError] = useState("");
 
@@ -78,7 +82,7 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
 
   const form = useForm<MeetingFormValues>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(meetingSchema) as any,
+    resolver: zodResolver(createMeetingSchema(tv)) as any,
     defaultValues: {
       title: "",
       description: "",
@@ -96,7 +100,7 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
     },
     onSuccess: (result) => {
       if (result.success) {
-        toast.success("Réunion créée avec succès");
+        toast.success(t("panel.success"));
         queryClient.invalidateQueries({ queryKey: ["meetings"] });
         onOpenChange(false);
         form.reset();
@@ -106,8 +110,8 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
       }
     },
     onError: () => {
-      setServerError("Une erreur est survenue");
-      toast.error("Une erreur est survenue");
+      setServerError(tc("errorOccurred"));
+      toast.error(tc("errorOccurred"));
     },
   });
 
@@ -138,10 +142,10 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
         {/* HEADER */}
         <div className="border-b border-[--border-default] px-7 pt-7 pb-5">
           <DialogTitle className="text-[15px] font-semibold text-[--text-primary] tracking-[-0.01em]">
-            Nouvelle réunion
+            {t("panel.title")}
           </DialogTitle>
           <DialogDescription className="mt-1 text-[13px] leading-[1.5] text-[--text-muted]">
-            Planifiez une assemblée générale et invitez des copropriétaires.
+            {t("panel.description")}
           </DialogDescription>
         </div>
 
@@ -151,11 +155,11 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
             {/* Title */}
             <div className="space-y-1.5">
               <label htmlFor="title" className={labelClass}>
-                Titre
+                {t("panel.titleLabel")}
               </label>
               <Input
                 id="title"
-                placeholder="Assemblée Générale Q2 2026"
+                placeholder={t("panel.titlePlaceholder")}
                 className={inputClass}
                 {...form.register("title")}
               />
@@ -169,11 +173,11 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
             {/* Description */}
             <div className="space-y-1.5">
               <label htmlFor="description" className={labelClass}>
-                Description (optionnel)
+                {t("panel.descriptionLabel")}
               </label>
               <textarea
                 id="description"
-                placeholder="Ordre du jour…"
+                placeholder={t("panel.descriptionPlaceholder")}
                 className={`${inputClass} resize-none min-h-[64px]`}
                 {...form.register("description")}
               />
@@ -182,7 +186,7 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
             {/* Meeting date */}
             <div className="space-y-1.5">
               <label htmlFor="meetingDate" className={labelClass}>
-                Date
+                {t("panel.dateLabel")}
               </label>
               <DatePicker
                 value={form.watch("meetingDate")}
@@ -192,7 +196,7 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
                     shouldValidate: true,
                   })
                 }
-                placeholder="Choisir une date"
+                placeholder={tc("selectDate")}
                 buttonClassName={inputClass}
               />
               {form.formState.errors.meetingDate && (
@@ -206,7 +210,7 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <label htmlFor="startTime" className={labelClass}>
-                  Heure de début
+                  {t("panel.startTimeLabel")}
                 </label>
                 <TimePicker
                   value={form.watch("startTime")}
@@ -216,7 +220,7 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
                       shouldValidate: true,
                     })
                   }
-                  placeholder="Choisir une heure"
+                  placeholder={t("panel.startTimePlaceholder")}
                   buttonClassName={inputClass}
                 />
                 {form.formState.errors.startTime && (
@@ -227,7 +231,7 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
               </div>
               <div className="space-y-1.5">
                 <label htmlFor="endTime" className={labelClass}>
-                  Heure de fin
+                  {t("panel.endTimeLabel")}
                 </label>
                 <TimePicker
                   value={form.watch("endTime")}
@@ -237,7 +241,7 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
                       shouldValidate: true,
                     })
                   }
-                  placeholder="Choisir une heure"
+                  placeholder={t("panel.endTimePlaceholder")}
                   buttonClassName={inputClass}
                 />
                 {form.formState.errors.endTime && (
@@ -251,11 +255,11 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
             {/* Location */}
             <div className="space-y-1.5">
               <label htmlFor="location" className={labelClass}>
-                Lieu
+                {t("panel.locationLabel")}
               </label>
               <Input
                 id="location"
-                placeholder="Salle de réunion"
+                placeholder={t("panel.locationPlaceholder")}
                 className={inputClass}
                 {...form.register("location")}
               />
@@ -268,7 +272,7 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
 
             {/* Owner multi-select */}
             <div className="space-y-1.5">
-              <label className={labelClass}>Copropriétaires à inviter</label>
+              <label className={labelClass}>{t("panel.ownersLabel")}</label>
               <Controller
                 control={form.control}
                 name="ownerIds"
@@ -284,17 +288,17 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
                         >
                           <span className={field.value.length > 0 ? "text-[--text-primary]" : "text-[--text-placeholder]"}>
                             {field.value.length > 0
-                              ? `${field.value.length} sélectionné${field.value.length > 1 ? "s" : ""}`
-                              : "Sélectionner des copropriétaires"}
+                              ? `${field.value.length} ${field.value.length > 1 ? t("panel.selected_other") : t("panel.selected_one")}`
+                              : t("panel.ownersPlaceholder")}
                           </span>
-                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          <ChevronsUpDown className="ms-2 h-4 w-4 shrink-0 opacity-50" />
                         </button>
                       </PopoverTrigger>
                       <PopoverContent className="w-[var(--radix-popover-trigger-width)] rounded-[10px] border border-[--border-default] bg-popover p-0 text-popover-foreground shadow-[var(--shadow-md)]">
                         <Command>
-                          <CommandInput placeholder="Rechercher…" />
+                          <CommandInput placeholder={t("panel.ownerSearchPlaceholder")} />
                           <CommandList>
-                            <CommandEmpty>Aucun résultat</CommandEmpty>
+                            <CommandEmpty>{t("panel.ownerSearchEmpty")}</CommandEmpty>
                             <CommandGroup>
                               {owners.map((owner) => {
                                 const selected = field.value.includes(owner.id);
@@ -314,7 +318,7 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
                                   >
                                     <Check
                                       className={cn(
-                                        "mr-2 h-4 w-4",
+                                        "me-2 h-4 w-4",
                                         selected
                                           ? "opacity-100"
                                           : "opacity-0"
@@ -323,7 +327,7 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
                                     <span>
                                       {owner.firstName} {owner.lastName}
                                     </span>
-                                    <span className="ml-auto text-xs text-[--text-muted]">
+                                    <span className="ms-auto text-xs text-[--text-muted]">
                                       {owner.unitNumber}
                                     </span>
                                   </CommandItem>
@@ -350,7 +354,7 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
                               {owner.firstName} {owner.lastName}
                               <button
                                 type="button"
-                                className="ml-1 rounded-full outline-none hover:text-[#EF4444]"
+                                className="ms-1 rounded-full outline-none hover:text-[#EF4444]"
                                 onClick={() =>
                                   field.onChange(
                                     field.value.filter((v) => v !== id)
@@ -389,9 +393,9 @@ export function MeetingPanel({ open, onOpenChange }: MeetingPanelProps) {
               className="flex w-full items-center justify-center rounded-[10px] bg-[--btn-primary-bg] px-5 py-[13px] text-[14px] font-medium text-[--btn-primary-text] transition-all duration-150 cursor-pointer hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
             >
               {mutation.isPending && (
-                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                <Loader2 className="w-4 h-4 animate-spin me-2" />
               )}
-              {mutation.isPending ? "Création…" : "Créer la réunion"}
+              {mutation.isPending ? t("panel.submitting") : t("panel.submit")}
             </button>
           </div>
         </form>

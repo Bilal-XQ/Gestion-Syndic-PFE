@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import {
   LayoutDashboard,
   Users,
@@ -13,7 +14,6 @@ import {
   Settings,
 } from "lucide-react";
 import { useSidebarStore } from "@/lib/stores/sidebar";
-import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { SidebarUserMenu } from "@/components/layout/sidebar-user-menu";
 import {
   Sidebar,
@@ -29,44 +29,6 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-const navItems = [
-  {
-    label: "Vue d'ensemble",
-    href: "/dashboard",
-    icon: LayoutDashboard,
-  },
-  {
-    label: "Copropriétaires",
-    href: "/dashboard/owners",
-    icon: Users,
-  },
-  {
-    label: "Appartements",
-    href: "/dashboard/apartments",
-    icon: Building2,
-  },
-  {
-    label: "Charges",
-    href: "/dashboard/charges",
-    icon: Receipt,
-  },
-  {
-    label: "Réunions",
-    href: "/dashboard/meetings",
-    icon: CalendarDays,
-  },
-  {
-    label: "Paiements",
-    href: "/dashboard/payments",
-    icon: CreditCard,
-  },
-  {
-    label: "Paramètres",
-    href: "/dashboard/settings",
-    icon: Settings,
-  },
-];
-
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   firstName?: string;
   lastName?: string;
@@ -77,9 +39,20 @@ export function AppSidebar({
   lastName = "",
   ...props
 }: AppSidebarProps) {
+  const t = useTranslations("common");
   const pathname = usePathname();
   const { open } = useSidebar();
   const setCollapsed = useSidebarStore((s) => s.setCollapsed);
+
+  const navItems = [
+    { label: t("syndicNav.overview"), href: "/dashboard", icon: LayoutDashboard },
+    { label: t("syndicNav.owners"), href: "/dashboard/owners", icon: Users },
+    { label: t("syndicNav.apartments"), href: "/dashboard/apartments", icon: Building2 },
+    { label: t("syndicNav.charges"), href: "/dashboard/charges", icon: Receipt },
+    { label: t("syndicNav.meetings"), href: "/dashboard/meetings", icon: CalendarDays },
+    { label: t("syndicNav.payments"), href: "/dashboard/payments", icon: CreditCard },
+    { label: t("syndicNav.settings"), href: "/dashboard/settings", icon: Settings },
+  ];
 
   // Sync sidebar-07 state → Zustand store
   useEffect(() => {
@@ -109,9 +82,7 @@ export function AppSidebar({
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
-          <div className="shrink-0 group-data-[collapsible=icon]:hidden">
-            <ThemeToggle />
-          </div>
+
         </div>
       </SidebarHeader>
 
@@ -119,7 +90,7 @@ export function AppSidebar({
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel className="text-[--text-muted]">
-            Navigation
+            {t("navigation")}
           </SidebarGroupLabel>
           <SidebarMenu>
             {navItems.map((item) => {
@@ -152,7 +123,7 @@ export function AppSidebar({
         <SidebarUserMenu
           firstName={firstName}
           lastName={lastName}
-          roleLabel="Administrateur"
+          roleLabel={t("roleLabels.admin")}
           profileHref="/dashboard/settings"
         />
       </SidebarFooter>
@@ -162,4 +133,4 @@ export function AppSidebar({
   );
 }
 
-export { navItems };
+

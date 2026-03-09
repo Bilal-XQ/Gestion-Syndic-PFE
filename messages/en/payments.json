@@ -1,0 +1,40 @@
+{
+  "pageTitle": "Payments",
+  "summary": {
+    "totalCharges": "Total charges",
+    "totalCollected": "Total collected",
+    "remainingBalance": "Remaining balance"
+  },
+  "filters": {
+    "from": "From",
+    "to": "To",
+    "owner": "Owner",
+    "all": "All",
+    "category": "Category",
+    "allCategories": "All categories",
+    "allCategoriesShort": "All"
+  },
+  "table": {
+    "owner": "Owner",
+    "charge": "Charge",
+    "amount": "Amount",
+    "date": "Date",
+    "method": "Method",
+    "reference": "Reference",
+    "empty": "No payments found"
+  },
+  "ownerForm": {
+    "title": "Make a payment",
+    "descriptionWithCharge": "Remaining balance:",
+    "descriptionNoCharge": "Select a charge",
+    "amountLabel": "Amount (max {max})",
+    "paymentDateLabel": "Payment date",
+    "methodLabel": "Payment method",
+    "referenceLabel": "Reference",
+    "notesLabel": "Notes (optional)",
+    "notesPlaceholder": "Additional details…",
+    "submitting": "Saving…",
+    "submit": "Record payment",
+    "success": "Payment recorded successfully"
+  }
+}

@@ -1,13 +1,34 @@
 import { eq, and, sql, desc } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { notifications } from "@/lib/db/schema";
+import { notifications, meetingInvitations } from "@/lib/db/schema";
 
 /**
  * All notifications for a user, newest first.
  */
 export async function getNotifications(userId: string) {
   return db
-    .select()
+    .select({
+      id: notifications.id,
+      userId: notifications.userId,
+      type: notifications.type,
+      title: notifications.title,
+      message: notifications.message,
+      metadata: notifications.metadata,
+      isRead: notifications.isRead,
+      createdAt: notifications.createdAt,
+      updatedAt: notifications.updatedAt,
+      invitationStatus: sql<string | null>`
+        CASE
+          WHEN ${notifications.type} = 'meeting_invitation'
+          THEN (
+            SELECT ${meetingInvitations.status}
+            FROM ${meetingInvitations}
+            WHERE ${meetingInvitations.id}::text = (${notifications.metadata}->>'invitationId')
+          )
+          ELSE NULL
+        END
+      `.as("invitationStatus"),
+    })
     .from(notifications)
     .where(eq(notifications.userId, userId))
     .orderBy(desc(notifications.createdAt));

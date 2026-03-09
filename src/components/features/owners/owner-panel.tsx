@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Loader2, AlertCircle } from "lucide-react";
 
@@ -23,7 +24,7 @@ import {
 } from "@/components/ui/select";
 import { DatePicker } from "@/components/ui/date-picker";
 
-import { ownerSchema, type OwnerFormValues } from "@/lib/validations/owner";
+import { createOwnerSchema, type OwnerFormValues } from "@/lib/validations/owner";
 import { createOwner, updateOwner } from "@/lib/actions/owners";
 import type { getActiveOwners } from "@/lib/db/queries/owners";
 import { toDateInputValue } from "@/lib/formatters";
@@ -55,12 +56,15 @@ async function fetchAllApartments(): Promise<ApartmentOption[]> {
 }
 
 export function OwnerPanel({ open, onOpenChange, owner }: OwnerPanelProps) {
+  const t = useTranslations("owners");
+  const tc = useTranslations("common");
+  const tv = useTranslations("validation");
   const isEdit = !!owner;
   const queryClient = useQueryClient();
   const [serverError, setServerError] = useState("");
 
   const form = useForm<OwnerFormValues>({
-    resolver: zodResolver(ownerSchema),
+    resolver: zodResolver(createOwnerSchema(tv)),
     defaultValues: {
       firstName: owner?.firstName ?? "",
       lastName: owner?.lastName ?? "",
@@ -104,8 +108,8 @@ export function OwnerPanel({ open, onOpenChange, owner }: OwnerPanelProps) {
       if (result.success) {
         toast.success(
           isEdit
-            ? "Copropriétaire mis à jour"
-            : "Copropriétaire créé avec succès"
+            ? t("panel.updateSuccess")
+            : t("panel.createSuccess")
         );
         queryClient.invalidateQueries({ queryKey: ["owners"] });
         queryClient.invalidateQueries({ queryKey: ["apartments"] });
@@ -117,8 +121,8 @@ export function OwnerPanel({ open, onOpenChange, owner }: OwnerPanelProps) {
       }
     },
     onError: () => {
-      setServerError("Une erreur est survenue");
-      toast.error("Une erreur est survenue");
+      setServerError(tc("errorOccurred"));
+      toast.error(tc("errorOccurred"));
     },
   });
 
@@ -135,12 +139,12 @@ export function OwnerPanel({ open, onOpenChange, owner }: OwnerPanelProps) {
         {/* HEADER */}
         <div className="border-b border-[--border-default] px-7 pt-7 pb-5">
           <DialogTitle className="text-[15px] font-semibold text-[--text-primary] tracking-[-0.01em]">
-            {isEdit ? "Modifier le copropriétaire" : "Ajouter un copropriétaire"}
+            {isEdit ? t("panel.editTitle") : t("panel.createTitle")}
           </DialogTitle>
           <DialogDescription className="mt-1 text-[13px] leading-[1.5] text-[--text-muted]">
             {isEdit
-              ? "Modifiez les informations du copropriétaire."
-              : "Remplissez les informations du nouveau copropriétaire."}
+              ? t("panel.editDescription")
+              : t("panel.createDescription")}
           </DialogDescription>
         </div>
 
@@ -150,11 +154,11 @@ export function OwnerPanel({ open, onOpenChange, owner }: OwnerPanelProps) {
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
               <div className="space-y-1.5">
                 <label htmlFor="firstName" className={labelClass}>
-                  Prénom
+                  {t("panel.firstNameLabel")}
                 </label>
                 <Input
                   id="firstName"
-                  placeholder="Jean"
+                  placeholder={t("panel.firstNamePlaceholder")}
                   className={inputClass}
                   {...form.register("firstName")}
                 />
@@ -166,11 +170,11 @@ export function OwnerPanel({ open, onOpenChange, owner }: OwnerPanelProps) {
               </div>
               <div className="space-y-1.5">
                 <label htmlFor="lastName" className={labelClass}>
-                  Nom
+                  {t("panel.lastNameLabel")}
                 </label>
                 <Input
                   id="lastName"
-                  placeholder="Dupont"
+                  placeholder={t("panel.lastNamePlaceholder")}
                   className={inputClass}
                   {...form.register("lastName")}
                 />
@@ -184,12 +188,12 @@ export function OwnerPanel({ open, onOpenChange, owner }: OwnerPanelProps) {
 
             <div className="space-y-1.5">
               <label htmlFor="email" className={labelClass}>
-                E-mail
+                {t("panel.emailLabel")}
               </label>
               <Input
                 id="email"
                 type="email"
-                placeholder="jean@exemple.fr"
+                placeholder={t("panel.emailPlaceholder")}
                 disabled={isEdit}
                 className={inputClass}
                 {...form.register("email")}
@@ -203,11 +207,11 @@ export function OwnerPanel({ open, onOpenChange, owner }: OwnerPanelProps) {
 
             <div className="space-y-1.5">
               <label htmlFor="phone" className={labelClass}>
-                Téléphone
+                {t("panel.phoneLabel")}
               </label>
               <Input
                 id="phone"
-                placeholder="+212 6XX XXX XXX"
+                placeholder={t("panel.phonePlaceholder")}
                 className={inputClass}
                 {...form.register("phone")}
               />
@@ -219,7 +223,7 @@ export function OwnerPanel({ open, onOpenChange, owner }: OwnerPanelProps) {
             </div>
 
             <div className="space-y-1.5">
-              <label className={labelClass}>Appartement</label>
+              <label className={labelClass}>{t("panel.apartmentLabel")}</label>
               <Select
                 value={form.watch("apartmentId")}
                 onValueChange={(value) =>
@@ -227,7 +231,7 @@ export function OwnerPanel({ open, onOpenChange, owner }: OwnerPanelProps) {
                 }
               >
                 <SelectTrigger className={selectTriggerClass}>
-                  <SelectValue placeholder="Sélectionner un appartement" />
+                  <SelectValue placeholder={t("panel.apartmentPlaceholder")} />
                 </SelectTrigger>
                 <SelectContent className="rounded-[10px] border border-[--border-default] bg-popover text-popover-foreground shadow-[var(--shadow-md)]">
                   {apartmentOptions.map((apt) => (
@@ -250,7 +254,7 @@ export function OwnerPanel({ open, onOpenChange, owner }: OwnerPanelProps) {
 
             <div className="space-y-1.5">
               <label htmlFor="ownershipDate" className={labelClass}>
-                Date de propriété
+                {t("panel.ownershipDateLabel")}
               </label>
               <DatePicker
                 value={form.watch("ownershipDate")}
@@ -260,7 +264,7 @@ export function OwnerPanel({ open, onOpenChange, owner }: OwnerPanelProps) {
                     shouldValidate: true,
                   })
                 }
-                placeholder="Choisir une date"
+                placeholder={tc("selectDate")}
                 buttonClassName={inputClass}
               />
               {form.formState.errors.ownershipDate && (
@@ -285,13 +289,13 @@ export function OwnerPanel({ open, onOpenChange, owner }: OwnerPanelProps) {
               className="flex w-full items-center justify-center rounded-[10px] bg-[--btn-primary-bg] px-5 py-[13px] text-[14px] font-medium text-[--btn-primary-text] transition-all duration-150 cursor-pointer hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
             >
               {mutation.isPending && (
-                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                <Loader2 className="w-4 h-4 animate-spin me-2" />
               )}
               {mutation.isPending
-                ? "Enregistrement…"
+                ? t("panel.submitting")
                 : isEdit
-                  ? "Mettre à jour"
-                  : "Créer"}
+                  ? t("panel.updateButton")
+                  : t("panel.createButton")}
             </button>
           </div>
         </form>

@@ -1,0 +1,19 @@
+{
+  "pageTitle": "الإعدادات",
+  "pageTitleAuthenticated": "إعدادات المبنى",
+  "unauthenticated": "غير مصادق",
+  "form": {
+    "buildingLegend": "المبنى",
+    "buildingNameLabel": "اسم المبنى",
+    "buildingNamePlaceholder": "مجمع الزيتون",
+    "addressLabel": "العنوان",
+    "addressPlaceholder": "12 شارع السلام، الدار البيضاء",
+    "contactLegend": "بيانات الاتصال بالسنديك",
+    "phoneLabel": "الهاتف",
+    "phonePlaceholder": "+212 6 00 00 00 00",
+    "emailLabel": "البريد الإلكتروني للتواصل",
+    "emailPlaceholder": "syndic@example.com",
+    "submit": "حفظ",
+    "success": "تم تحديث الإعدادات"
+  }
+}

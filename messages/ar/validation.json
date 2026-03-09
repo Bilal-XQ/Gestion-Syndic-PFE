@@ -1,0 +1,62 @@
+{
+  "auth": {
+    "emailRequired": "البريد الإلكتروني مطلوب",
+    "emailInvalid": "بريد إلكتروني غير صالح",
+    "passwordRequired": "كلمة المرور مطلوبة",
+    "passwordMin8": "يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل",
+    "confirmPasswordRequired": "يرجى تأكيد كلمة المرور",
+    "passwordsMismatch": "كلمتا المرور غير متطابقتين"
+  },
+  "apartment": {
+    "unitNumberRequired": "رقم الوحدة مطلوب",
+    "floorInteger": "يجب أن يكون الطابق رقماً صحيحاً",
+    "surfacePositive": "يجب أن تكون المساحة موجبة",
+    "roomCountInteger": "يجب أن يكون عدد الغرف رقماً صحيحاً",
+    "roomCountMin": "غرفة واحدة على الأقل"
+  },
+  "charge": {
+    "titleRequired": "العنوان مطلوب",
+    "categoryInvalid": "فئة غير صالحة",
+    "amountPositive": "يجب أن يكون المبلغ موجباً",
+    "dueDateRequired": "تاريخ الاستحقاق مطلوب",
+    "apartmentInvalid": "شقة غير صالحة"
+  },
+  "meeting": {
+    "titleRequired": "العنوان مطلوب",
+    "dateRequired": "التاريخ مطلوب",
+    "startTimeRequired": "وقت البدء مطلوب",
+    "endTimeRequired": "وقت الانتهاء مطلوب",
+    "locationRequired": "الموقع مطلوب",
+    "ownerInvalid": "مالك غير صالح",
+    "selectAtLeastOneOwner": "اختر مالكاً واحداً على الأقل",
+    "endTimeAfterStart": "يجب أن يكون وقت الانتهاء بعد وقت البدء",
+    "invitationInvalid": "دعوة غير صالحة",
+    "responseInvalid": "رد غير صالح"
+  },
+  "owner": {
+    "firstNameRequired": "الاسم الأول مطلوب",
+    "lastNameRequired": "اسم العائلة مطلوب",
+    "emailInvalid": "بريد إلكتروني غير صالح",
+    "apartmentInvalid": "شقة غير صالحة",
+    "dateInvalid": "تاريخ غير صالح"
+  },
+  "payment": {
+    "chargeInvalid": "رسم غير صالح",
+    "ownerInvalid": "مالك غير صالح",
+    "amountPositive": "يجب أن يكون المبلغ موجباً",
+    "paymentDateRequired": "تاريخ الدفع مطلوب",
+    "methodInvalid": "طريقة دفع غير صالحة",
+    "referenceRequired": "المرجع مطلوب"
+  },
+  "profile": {
+    "phoneMin": "يجب أن يحتوي الرقم على 8 أحرف على الأقل",
+    "phoneMax": "يجب ألا يتجاوز الرقم 20 حرفاً",
+    "passwordMin8": "8 أحرف على الأقل",
+    "passwordsMismatch": "كلمتا المرور غير متطابقتين"
+  },
+  "settings": {
+    "buildingNameRequired": "اسم المبنى مطلوب",
+    "addressRequired": "العنوان مطلوب",
+    "emailInvalid": "بريد إلكتروني غير صالح"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "pageTitle": "لوحة التحكم",
+  "welcome": "مرحباً، {name}",
+  "fallbackName": "سنديك",
+  "overdueCharges": "الرسوم المتأخرة",
+  "metrics": {
+    "owners": "الملاك المشتركون",
+    "ownersSecondary": "ملاك نشطون",
+    "apartments": "الشقق",
+    "apartmentsSecondary": "في المبنى",
+    "occupied": "مشغولة",
+    "occupiedSecondary": "شقق مشغولة",
+    "vacant": "شاغرة",
+    "vacantSecondary": "شقق متاحة",
+    "activeCharges": "الرسوم النشطة",
+    "activeChargesSecondary": "في انتظار الدفع",
+    "totalCollected": "إجمالي المحصّل",
+    "totalCollectedSecondary": "مدفوعات مستلمة"
+  },
+  "recentPayments": {
+    "title": "المدفوعات الأخيرة",
+    "last_one": "آخر",
+    "last_other": "آخر",
+    "empty": "لا توجد مدفوعات حتى الآن"
+  },
+  "paymentChart": {
+    "title": "نشاط المدفوعات",
+    "subtitle": "آخر 6 أشهر",
+    "empty": "لا توجد مدفوعات مسجّلة"
+  },
+  "overdueTable": {
+    "owner": "المالك",
+    "charge": "الرسم",
+    "apartment": "الشقة",
+    "remaining": "المتبقي",
+    "dueDate": "تاريخ الاستحقاق",
+    "empty": "لا توجد رسوم متأخرة"
+  }
+}

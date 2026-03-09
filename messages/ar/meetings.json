@@ -1,0 +1,73 @@
+{
+  "pageTitle": "الاجتماعات",
+  "searchPlaceholder": "البحث عن اجتماع…",
+  "addButton": "اجتماع جديد",
+  "table": {
+    "title": "العنوان",
+    "date": "التاريخ",
+    "time": "الوقت",
+    "location": "الموقع",
+    "status": "الحالة",
+    "invitations": "الدعوات",
+    "actions": "الإجراءات",
+    "empty": "لا توجد اجتماعات",
+    "viewDetails": "عرض التفاصيل",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "accepted_one": "مقبول",
+    "accepted_other": "مقبولون",
+    "cancelSuccess": "تم إلغاء الاجتماع"
+  },
+  "panel": {
+    "title": "اجتماع جديد",
+    "description": "جدوِل جمعية عامة وادعُ الملاك المشتركين.",
+    "titleLabel": "العنوان",
+    "titlePlaceholder": "الجمعية العامة Q2 2026",
+    "descriptionLabel": "الوصف (اختياري)",
+    "descriptionPlaceholder": "جدول الأعمال…",
+    "dateLabel": "التاريخ",
+    "startTimeLabel": "وقت البداية",
+    "startTimePlaceholder": "اختر وقتاً",
+    "endTimeLabel": "وقت النهاية",
+    "endTimePlaceholder": "اختر وقتاً",
+    "locationLabel": "الموقع",
+    "locationPlaceholder": "قاعة الاجتماعات",
+    "ownersLabel": "الملاك المشتركون للدعوة",
+    "selected_one": "محدد",
+    "selected_other": "محددون",
+    "ownersPlaceholder": "اختر الملاك المشتركين",
+    "ownerSearchPlaceholder": "بحث…",
+    "ownerSearchEmpty": "لا توجد نتائج",
+    "submitting": "جارٍ الإنشاء…",
+    "submit": "إنشاء الاجتماع",
+    "success": "تم إنشاء الاجتماع بنجاح"
+  },
+  "detail": {
+    "backButton": "العودة إلى الاجتماعات",
+    "cancelButton": "إلغاء الاجتماع",
+    "cancelling": "جارٍ الإلغاء…",
+    "errorLoading": "تعذّر تحميل تفاصيل الاجتماع.",
+    "dateLabel": "التاريخ",
+    "timeLabel": "الوقت",
+    "locationLabel": "الموقع",
+    "participantsLabel": "المشاركون",
+    "confirmed": "مؤكد",
+    "descriptionTitle": "الوصف",
+    "invitationsTitle": "الدعوات",
+    "invitationTable": {
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "status": "الحالة",
+      "respondedAt": "تاريخ الرد",
+      "empty": "لا توجد دعوات"
+    },
+    "cancelSuccess": "تم إلغاء الاجتماع"
+  },
+  "delete": {
+    "title": "حذف الاجتماع؟",
+    "description": "هذا الإجراء لا يمكن التراجع عنه. سيتم أرشفة الاجتماع ولن يظهر في القائمة.",
+    "submitting": "جارٍ الحذف…",
+    "submit": "حذف",
+    "success": "تم حذف الاجتماع"
+  }
+}

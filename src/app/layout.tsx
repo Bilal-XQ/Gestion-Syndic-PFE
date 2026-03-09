@@ -1,8 +1,18 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Instrument_Serif, Syne, DM_Sans } from "next/font/google";
+import {
+  Geist,
+  Geist_Mono,
+  Instrument_Serif,
+  Syne,
+  DM_Sans,
+  IBM_Plex_Sans_Arabic,
+} from "next/font/google";
+import { getLocale, getMessages } from "next-intl/server";
+import { NextIntlClientProvider } from "next-intl";
 import { Toaster } from "@/components/ui/sonner";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import { rtlLocales, type Locale } from "@/i18n/config";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -34,27 +44,54 @@ const dmSans = DM_Sans({
   weight: ["300", "400", "500"],
 });
 
+const ibmPlexArabic = IBM_Plex_Sans_Arabic({
+  variable: "--font-ibm-plex-arabic",
+  subsets: ["arabic"],
+  weight: ["300", "400", "500", "600", "700"],
+});
+
 export const metadata: Metadata = {
   title: "Syndic — Gestion de Copropriété",
   description:
     "Application de gestion de copropriété pour syndics et copropriétaires.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+  const isRtl = rtlLocales.includes(locale as Locale);
+  const dir = isRtl ? "rtl" : "ltr";
+
+  const fontClasses = [
+    geistSans.variable,
+    geistMono.variable,
+    instrumentSerif.variable,
+    syne.variable,
+    dmSans.variable,
+    locale === "ar" ? ibmPlexArabic.variable : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <html lang="fr" suppressHydrationWarning>
+    <html lang={locale} dir={dir} suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} ${syne.variable} ${dmSans.variable} antialiased`}
+        className={`${fontClasses} antialiased${locale === "ar" ? " font-[family-name:var(--font-ibm-plex-arabic)]" : ""}`}
       >
         <ThemeProvider>
-          <QueryProvider>
-            {children}
-            <Toaster richColors position="bottom-right" />
-          </QueryProvider>
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            <QueryProvider>
+              {children}
+              <Toaster
+                richColors
+                position={isRtl ? "bottom-left" : "bottom-right"}
+              />
+            </QueryProvider>
+          </NextIntlClientProvider>
         </ThemeProvider>
       </body>
     </html>

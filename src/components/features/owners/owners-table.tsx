@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Plus, Pencil, Trash2, Search } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { Plus, Pencil, Trash2, Search, Download } from "lucide-react";
 
 import {
   Table,
@@ -18,6 +19,7 @@ import { Card } from "@/components/ui/card";
 import type { getActiveOwners } from "@/lib/db/queries/owners";
 import { OwnerPanel } from "./owner-panel";
 import { DeleteOwnerDialog } from "./delete-owner-dialog";
+import { exportOwners, type ExportColumns } from "@/lib/export/excel";
 
 type Owner = Awaited<ReturnType<typeof getActiveOwners>>[number];
 
@@ -28,6 +30,19 @@ async function fetchOwners(): Promise<Owner[]> {
 }
 
 export function OwnersTable({ initialData }: { initialData: Owner[] }) {
+  const t = useTranslations("owners");
+  const tc = useTranslations("common");
+  const exportCols: ExportColumns = {
+    fullName: tc("export.columns.fullName"),
+    email: tc("export.columns.email"),
+    phone: tc("export.columns.phone"),
+    apartment: tc("export.columns.apartment"),
+    ownershipDate: tc("export.columns.ownershipDate"),
+    title: "", category: "", totalAmount: "", amountPaid: "",
+    remaining: "", dueDate: "", status: "", currency: "",
+    ownerName: "", chargeTitle: "", amount: "",
+    paymentDate: "", method: "", reference: "",
+  };
   const [search, setSearch] = useState("");
   const [panelOpen, setPanelOpen] = useState(false);
   const [editOwner, setEditOwner] = useState<Owner | null>(null);
@@ -51,23 +66,33 @@ export function OwnersTable({ initialData }: { initialData: Owner[] }) {
       {/* Toolbar */}
       <div className="flex items-center justify-between gap-4">
         <div className="relative max-w-xs flex-1">
-          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[--text-muted]" />
+          <Search className="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-[--text-muted]" />
           <Input
-            placeholder="Rechercher par nom ou e-mail…"
+            placeholder={t("searchPlaceholder")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9"
+            className="ps-9"
           />
         </div>
-        <Button
-          onClick={() => {
-            setEditOwner(null);
-            setPanelOpen(true);
-          }}
-        >
-          <Plus className="size-4" />
-          Ajouter
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            onClick={() => exportOwners(filtered, exportCols, tc("export.sheetName"))}
+            disabled={filtered.length === 0}
+          >
+            <Download className="size-4" />
+            {tc("export.button")}
+          </Button>
+          <Button
+            onClick={() => {
+              setEditOwner(null);
+              setPanelOpen(true);
+            }}
+          >
+            <Plus className="size-4" />
+            {t("addButton")}
+          </Button>
+        </div>
       </div>
 
       {/* Table */}
@@ -77,19 +102,19 @@ export function OwnersTable({ initialData }: { initialData: Owner[] }) {
           <TableHeader>
             <TableRow className="border-[--border-subtle] hover:bg-transparent">
               <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-                Nom complet
+                {t("table.fullName")}
               </TableHead>
               <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-                E-mail
+                {t("table.email")}
               </TableHead>
               <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-                Téléphone
+                {t("table.phone")}
               </TableHead>
               <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-                Appartement
+                {t("table.apartment")}
               </TableHead>
-              <TableHead className="text-right text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-                Actions
+              <TableHead className="text-end text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
+                {t("table.actions")}
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -100,7 +125,7 @@ export function OwnersTable({ initialData }: { initialData: Owner[] }) {
                   colSpan={5}
                   className="h-24 text-center text-[--text-muted]"
                 >
-                  Aucun copropriétaire trouvé
+                  {t("table.empty")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -121,7 +146,7 @@ export function OwnersTable({ initialData }: { initialData: Owner[] }) {
                   <TableCell className="font-mono text-[--text-secondary]">
                     {owner.unitNumber}
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-end">
                     <div className="flex items-center justify-end gap-1">
                       <Button
                         variant="ghost"

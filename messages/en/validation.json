@@ -1,0 +1,62 @@
+{
+  "auth": {
+    "emailRequired": "Email address is required",
+    "emailInvalid": "Invalid email address",
+    "passwordRequired": "Password is required",
+    "passwordMin8": "Password must be at least 8 characters",
+    "confirmPasswordRequired": "Please confirm your password",
+    "passwordsMismatch": "Passwords do not match"
+  },
+  "apartment": {
+    "unitNumberRequired": "Unit number is required",
+    "floorInteger": "Floor must be an integer",
+    "surfacePositive": "Surface area must be positive",
+    "roomCountInteger": "Number of rooms must be an integer",
+    "roomCountMin": "At least 1 room"
+  },
+  "charge": {
+    "titleRequired": "Title is required",
+    "categoryInvalid": "Invalid category",
+    "amountPositive": "Amount must be positive",
+    "dueDateRequired": "Due date is required",
+    "apartmentInvalid": "Invalid apartment"
+  },
+  "meeting": {
+    "titleRequired": "Title is required",
+    "dateRequired": "Date is required",
+    "startTimeRequired": "Start time is required",
+    "endTimeRequired": "End time is required",
+    "locationRequired": "Location is required",
+    "ownerInvalid": "Invalid owner",
+    "selectAtLeastOneOwner": "Select at least one owner",
+    "endTimeAfterStart": "End time must be after start time",
+    "invitationInvalid": "Invalid invitation",
+    "responseInvalid": "Invalid response"
+  },
+  "owner": {
+    "firstNameRequired": "First name is required",
+    "lastNameRequired": "Last name is required",
+    "emailInvalid": "Invalid email address",
+    "apartmentInvalid": "Invalid apartment",
+    "dateInvalid": "Invalid date"
+  },
+  "payment": {
+    "chargeInvalid": "Invalid charge",
+    "ownerInvalid": "Invalid owner",
+    "amountPositive": "Amount must be positive",
+    "paymentDateRequired": "Payment date is required",
+    "methodInvalid": "Invalid payment method",
+    "referenceRequired": "Reference is required"
+  },
+  "profile": {
+    "phoneMin": "Number must be at least 8 characters",
+    "phoneMax": "Number must not exceed 20 characters",
+    "passwordMin8": "Minimum 8 characters",
+    "passwordsMismatch": "Passwords do not match"
+  },
+  "settings": {
+    "buildingNameRequired": "Building name is required",
+    "addressRequired": "Address is required",
+    "emailInvalid": "Invalid email address"
+  }
+}

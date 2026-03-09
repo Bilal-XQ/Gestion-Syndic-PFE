@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
@@ -14,6 +15,7 @@ export function PasswordInput({
   containerClassName,
   ...props
 }: PasswordInputProps) {
+  const t = useTranslations("auth");
   const [visible, setVisible] = useState(false);
 
   return (
@@ -21,14 +23,14 @@ export function PasswordInput({
       <Input
         {...props}
         type={visible ? "text" : "password"}
-        className={cn("pr-11", className)}
+        className={cn("pe-11", className)}
       />
       <button
         type="button"
         aria-label={
-          visible ? "Masquer le mot de passe" : "Afficher le mot de passe"
+          visible ? t("passwordInput.hidePassword") : t("passwordInput.showPassword")
         }
-        className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-[--text-muted] transition-colors hover:text-[--text-secondary]"
+        className="absolute inset-y-0 end-0 flex w-11 items-center justify-center text-[--text-muted] transition-colors hover:text-[--text-secondary]"
         onClick={() => setVisible((v) => !v)}
         tabIndex={-1}
       >

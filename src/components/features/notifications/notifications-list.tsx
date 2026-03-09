@@ -1,12 +1,27 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Bell, CheckCheck, Mail, MailOpen } from "lucide-react";
+import { useTranslations, useLocale } from "next-intl";
+import {
+  Bell,
+  CheckCheck,
+  Mail,
+  MailOpen,
+  CheckCircle,
+  AlertCircle,
+  Check,
+  X,
+} from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
+import { enUS } from "date-fns/locale";
+import { arSA } from "date-fns/locale";
 
+import { cn } from "@/lib/utils";
+import { formatDate } from "@/lib/formatters";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -27,12 +42,30 @@ type Notification = {
   metadata: Record<string, unknown> | null;
   isRead: boolean;
   createdAt: string;
+  invitationStatus: string | null;
 };
 
 type NotificationsResponse = {
   notifications: Notification[];
   unreadCount: number;
 };
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+const notificationIcons: Record<string, React.ElementType> = {
+  meeting_invitation: Mail,
+  payment_confirmation: CheckCircle,
+  payment_reminder: AlertCircle,
+  payment_notice: Bell,
+};
+
+function formatNotificationMessage(message: string): string {
+  return message.replace(
+    /\b(\d{4}-\d{2}-\d{2})\b/g,
+    (_, isoDate) => formatDate(isoDate)
+  );
+}
 
 async function fetchNotifications(): Promise<NotificationsResponse> {
   const res = await fetch("/api/notifications");
@@ -45,6 +78,9 @@ async function fetchNotifications(): Promise<NotificationsResponse> {
 // ---------------------------------------------------------------------------
 export function NotificationsList() {
   const queryClient = useQueryClient();
+  const t = useTranslations("notifications");
+  const locale = useLocale();
+  const dateFnsLocale = locale === "ar" ? arSA : locale === "en" ? enUS : fr;
 
   const { data, isLoading } = useQuery({
     queryKey: ["notifications"],
@@ -62,24 +98,25 @@ export function NotificationsList() {
     mutationFn: markAllNotificationsRead,
     onSuccess: (result) => {
       if (result.success) {
-        toast.success("Toutes les notifications marquées comme lues");
+        toast.success(t("markAllReadSuccess"));
         queryClient.invalidateQueries({ queryKey: ["notifications"] });
       }
     },
   });
 
   const respondMutation = useMutation({
-    mutationFn: respondToInvitation,
+    mutationFn: ({ invitationId, response }: { invitationId: string; response: "accepted" | "declined" }) =>
+      respondToInvitation({ invitationId, response }),
     onSuccess: (result) => {
       if (result.success) {
-        toast.success("Réponse enregistrée");
+        toast.success(t("responseSuccess"));
         queryClient.invalidateQueries({ queryKey: ["notifications"] });
         queryClient.invalidateQueries({ queryKey: ["meetings"] });
       } else {
         toast.error(result.error);
       }
     },
-    onError: () => toast.error("Une erreur est survenue"),
+    onError: () => toast.error(t("responseError")),
   });
 
   if (isLoading) {
@@ -100,9 +137,11 @@ export function NotificationsList() {
       {/* Header actions */}
       <div className="flex items-center justify-between">
         <p className="text-sm text-[--text-secondary]">
-          {unreadCount === 0
-            ? "0 notification non lue"
-            : `${unreadCount} notification${unreadCount > 1 ? "s" : ""} non lue${unreadCount > 1 ? "s" : ""}`}
+        {unreadCount === 0
+          ? t("unreadCount_zero")
+          : unreadCount === 1
+            ? t("unreadCount_one", { count: unreadCount })
+            : t("unreadCount_other", { count: unreadCount })}
         </p>
         {unreadCount > 0 && (
           <Button
@@ -113,7 +152,7 @@ export function NotificationsList() {
             onClick={() => markAllMutation.mutate()}
           >
             <CheckCheck className="h-4 w-4" />
-            Tout marquer comme lu
+            {t("markAllRead")}
           </Button>
         )}
       </div>
@@ -124,7 +163,7 @@ export function NotificationsList() {
           <CardContent className="flex flex-col items-center justify-center py-12 gap-2">
             <Bell className="h-8 w-8 text-[--text-muted]" />
             <p className="text-sm text-[--text-muted]">
-              Aucune notification pour le moment.
+              {t("empty")}
             </p>
           </CardContent>
         </Card>
@@ -134,102 +173,150 @@ export function NotificationsList() {
             const invitationId = (notif.metadata as Record<string, string>)
               ?.invitationId;
             const isMeetingInvitation = notif.type === "meeting_invitation";
-            // Check if already responded (metadata.responded will be set
-            // after action completes, but we infer from button disabling in mutation)
-            const alreadyResponded =
-              (notif.metadata as Record<string, unknown>)?.responded === true;
+            const hasResponded =
+              notif.invitationStatus === "accepted" ||
+              notif.invitationStatus === "declined";
+
+            const Icon = notificationIcons[notif.type] ?? Bell;
 
             return (
               <Card
                 key={notif.id}
-                className={`border-[--border-default] transition-colors ${
-                  notif.isRead ? "bg-[--bg-card]" : "bg-[--bg-elevated]"
-                }`}
+                className={cn(
+                  "transition-colors",
+                  !notif.isRead
+                    ? "border-s-2 border-[--accent-primary] bg-[--bg-elevated]"
+                    : "border-[--border-default] bg-[--bg-card]"
+                )}
               >
-                <CardContent className="flex items-start gap-3 py-4">
-                  {/* Read indicator */}
-                  <button
-                    type="button"
-                    className="mt-1 shrink-0 rounded-[8px] p-2 hover:bg-[--bg-elevated]"
-                    onClick={() => {
-                      if (!notif.isRead) markReadMutation.mutate(notif.id);
-                    }}
-                    title={
-                      notif.isRead ? "Déjà lu" : "Marquer comme lu"
-                    }
-                  >
-                    {notif.isRead ? (
-                      <MailOpen className="h-4 w-4 text-[--text-muted]" />
-                    ) : (
-                      <Mail className="h-4 w-4 text-[--accent-primary]" />
-                    )}
-                  </button>
-
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p
-                        className={`text-sm font-medium ${
-                          notif.isRead
-                            ? "text-[--text-secondary]"
-                            : "text-[--text-primary]"
-                        }`}
+                <CardContent className="py-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex items-start gap-3 flex-1 min-w-0">
+                      {/* Read toggle button */}
+                      <button
+                        type="button"
+                        className="mt-0.5 shrink-0 rounded-[8px] p-1.5 hover:bg-[--bg-elevated]"
+                        onClick={() => {
+                          if (!notif.isRead) markReadMutation.mutate(notif.id);
+                        }}
+                        title={notif.isRead ? t("alreadyRead") : t("markAsRead")}
                       >
-                        {notif.title}
-                      </p>
-                      {!notif.isRead && (
-                        <span className="h-2 w-2 rounded-full bg-[--accent-primary] shrink-0" />
-                      )}
-                    </div>
-                    <p className="text-sm text-[--text-muted] mt-0.5">
-                      {notif.message}
-                    </p>
+                        {notif.isRead ? (
+                          <MailOpen className="h-4 w-4 text-[--text-muted]" />
+                        ) : (
+                          <Mail className="h-4 w-4 text-[--accent-primary]" />
+                        )}
+                      </button>
 
-                    {/* Meeting invitation actions */}
-                    {isMeetingInvitation && invitationId && !alreadyResponded && (
-                      <div className="flex gap-2 mt-3">
-                        <Button
-                          size="sm"
-                          disabled={respondMutation.isPending}
-                          onClick={() =>
-                            respondMutation.mutate({
-                              invitationId,
-                              response: "accepted",
-                            })
-                          }
-                        >
-                          Accepter
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          disabled={respondMutation.isPending}
-                          onClick={() =>
-                            respondMutation.mutate({
-                              invitationId,
-                              response: "declined",
-                            })
-                          }
-                        >
-                          Décliner
-                        </Button>
+                      {/* Type icon */}
+                      <div className="shrink-0 mt-0.5">
+                        <Icon
+                          className={cn(
+                            "size-4",
+                            notif.type === "payment_confirmation" &&
+                              "text-[--status-success]",
+                            notif.type === "payment_reminder" &&
+                              "text-[--status-warning]",
+                            (notif.type === "meeting_invitation" ||
+                              notif.type === "payment_notice") &&
+                              "text-[--text-secondary]"
+                          )}
+                        />
                       </div>
-                    )}
-                  </div>
 
-                  {/* Timestamp */}
-                  <span className="text-xs text-[--text-muted] whitespace-nowrap">
-                    {(() => {
-                      try {
-                        return formatDistanceToNow(
-                          new Date(notif.createdAt),
-                          { addSuffix: true, locale: fr }
-                        );
-                      } catch {
-                        return "";
-                      }
-                    })()}
-                  </span>
+                      {/* Content */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <p
+                            className={cn(
+                              "text-sm font-medium",
+                              notif.isRead
+                                ? "text-[--text-secondary]"
+                                : "text-[--text-primary]"
+                            )}
+                          >
+                            {notif.title}
+                          </p>
+                        </div>
+                        <p className="text-sm text-[--text-muted] mt-0.5">
+                          {formatNotificationMessage(notif.message)}
+                        </p>
+
+                        {/* Meeting invitation actions */}
+                        {isMeetingInvitation && invitationId && !hasResponded && (
+                          <div className="flex gap-2 mt-3">
+                            <Button
+                              size="sm"
+                              disabled={respondMutation.isPending}
+                              onClick={() =>
+                                respondMutation.mutate({
+                                  invitationId,
+                                  response: "accepted",
+                                })
+                              }
+                            >
+                              {t("accept")}
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              disabled={respondMutation.isPending}
+                              onClick={() =>
+                                respondMutation.mutate({
+                                  invitationId,
+                                  response: "declined",
+                                })
+                              }
+                            >
+                              {t("decline")}
+                            </Button>
+                          </div>
+                        )}
+
+                        {/* Response status badge */}
+                        {isMeetingInvitation && hasResponded && (
+                          <div className="flex items-center gap-2 mt-2">
+                            {notif.invitationStatus === "accepted" ? (
+                              <Badge
+                                variant="outline"
+                                className="text-[--status-success] border-[--status-success-border] bg-[--status-success-bg] gap-1.5"
+                              >
+                                <Check className="size-3" />
+                                {t("statusAccepted")}
+                              </Badge>
+                            ) : (
+                              <Badge
+                                variant="outline"
+                                className="text-[--text-muted] border-[--border-default] bg-[--bg-elevated] gap-1.5"
+                              >
+                                <X className="size-3" />
+                                {t("statusDeclined")}
+                              </Badge>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Timestamp + unread dot */}
+                    <div className="flex items-center gap-2 shrink-0">
+                      {!notif.isRead && (
+                        <span className="size-2 rounded-full bg-[--accent-primary] mt-1" />
+                      )}
+                      <span className="text-xs text-[--text-muted] whitespace-nowrap">
+                        {(() => {
+                          try {
+                            return formatDistanceToNow(
+                              new Date(notif.createdAt),
+                              { addSuffix: true, locale: dateFnsLocale }
+                            );
+                          } catch {
+                            return "";
+                          }
+                        })()}
+                      </span>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             );

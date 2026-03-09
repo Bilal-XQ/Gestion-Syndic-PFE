@@ -12,7 +12,8 @@ import {
   auditLogs,
 } from "@/lib/db/schema";
 import { createClient } from "@/utils/supabase/server";
-import { meetingSchema } from "@/lib/validations/meeting";
+import { getTranslations } from "next-intl/server";
+import { createMeetingSchema } from "@/lib/validations/meeting";
 import { getBuildingBySyndicId } from "@/lib/db/queries/buildings";
 import { getMeetingById } from "@/lib/db/queries/meetings";
 import { MeetingInvitationEmail } from "@/lib/email/templates/meeting-invitation";
@@ -50,7 +51,9 @@ export async function createMeeting(
   values: unknown
 ): Promise<ActionResult<{ id: string }>> {
   // 1. Validate
-  const parsed = meetingSchema.safeParse(values);
+  const t = await getTranslations("validation");
+  const schema = createMeetingSchema(t);
+  const parsed = schema.safeParse(values);
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0].message };
   }

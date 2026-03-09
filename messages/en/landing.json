@@ -1,0 +1,55 @@
+{
+  "nav": {
+    "login": "Sign in"
+  },
+  "hero": {
+    "badge": "Condominium management",
+    "headline": "Simplify your condominium management",
+    "subheadline": "A modern platform for syndics and co-owners. Payments, meetings, charges — all in one place.",
+    "cta": "Get started",
+    "ctaSecondary": "Explore features"
+  },
+  "features": {
+    "badge": "Features",
+    "heading": "Everything you need",
+    "buildings": {
+      "title": "Building management",
+      "description": "Track your buildings, apartments and units with a centralized, hierarchical view."
+    },
+    "owners": {
+      "title": "Co-owners",
+      "description": "Manage profiles, ownership shares and invite owners to their portal."
+    },
+    "payments": {
+      "title": "Payments & Charges",
+      "description": "Generate charge calls, record payments and track receivables in real time."
+    },
+    "meetings": {
+      "title": "Meetings & Minutes",
+      "description": "Schedule assemblies, draft agendas and archive meeting minutes."
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Key indicators, collection rates and payment trends at a glance."
+    },
+    "security": {
+      "title": "Security & Audit",
+      "description": "Secure authentication, immutable audit log and role-based access control."
+    }
+  },
+  "stats": {
+    "openSource": "Open Source",
+    "secureRoles": "Secure roles",
+    "integratedModules": "Integrated modules",
+    "hiddenFees": "Hidden fees"
+  },
+  "cta": {
+    "heading": "Ready to modernize your management?",
+    "description": "Join the syndics who have chosen a simple, secure and efficient solution.",
+    "button": "Access the platform"
+  },
+  "footer": {
+    "brand": "Syndic — Condominium Management",
+    "copyright": "© {year} Syndic. All rights reserved."
+  }
+}

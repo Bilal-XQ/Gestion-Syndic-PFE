@@ -1,14 +1,16 @@
 import { z } from "zod";
 
-export const chargeSchema = z.object({
-  title: z.string().min(1, "Le titre est requis"),
-  description: z.string().optional(),
-  category: z.enum(["electricity", "water", "maintenance", "repair", "other"], {
-    message: "Catégorie invalide",
-  }),
-  totalAmount: z.coerce.number().positive("Le montant doit être positif"),
-  dueDate: z.string().min(1, "La date d'échéance est requise"),
-  apartmentId: z.string().uuid("Appartement invalide"),
-});
+export function createChargeSchema(t: (key: string) => string) {
+  return z.object({
+    title: z.string().min(1, t("charge.titleRequired")),
+    description: z.string().optional(),
+    category: z.enum(["electricity", "water", "maintenance", "repair", "other"], {
+      message: t("charge.categoryInvalid"),
+    }),
+    totalAmount: z.coerce.number().positive(t("charge.amountPositive")),
+    dueDate: z.string().min(1, t("charge.dueDateRequired")),
+    apartmentId: z.string().uuid(t("charge.apartmentInvalid")),
+  });
+}
 
-export type ChargeFormValues = z.infer<typeof chargeSchema>;
+export type ChargeFormValues = z.infer<ReturnType<typeof createChargeSchema>>;

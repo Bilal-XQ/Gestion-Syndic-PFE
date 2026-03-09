@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 import {
@@ -28,8 +29,8 @@ export function DeleteChargeDialog({
   onOpenChange,
   chargeId,
   chargeTitle,
-}: DeleteChargeDialogProps) {
-  const queryClient = useQueryClient();
+}: DeleteChargeDialogProps) {  const t = useTranslations("charges");
+  const tc = useTranslations("common");  const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -38,7 +39,7 @@ export function DeleteChargeDialog({
     },
     onSuccess: (result) => {
       if (result.success) {
-        toast.success("Charge supprimée");
+        toast.success(t("delete.success"));
         queryClient.invalidateQueries({ queryKey: ["charges"] });
         onOpenChange(false);
       } else {
@@ -46,7 +47,7 @@ export function DeleteChargeDialog({
       }
     },
     onError: () => {
-      toast.error("Une erreur est survenue");
+      toast.error(tc("errorOccurred"));
     },
   });
 
@@ -55,16 +56,15 @@ export function DeleteChargeDialog({
       <AlertDialogContent className="border-[--border-default] bg-[--bg-elevated]">
         <AlertDialogHeader>
           <AlertDialogTitle className="text-[--text-primary]">
-            Êtes-vous sûr ?
+            {t("delete.title")}
           </AlertDialogTitle>
           <AlertDialogDescription className="text-[--text-secondary]">
-            La charge <strong>{chargeTitle}</strong> sera archivée. Cette action
-            est réversible.
+            {t("delete.description", { chargeTitle })}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={mutation.isPending}>
-            Annuler
+            {tc("cancel")}
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={(e) => {
@@ -74,7 +74,7 @@ export function DeleteChargeDialog({
             disabled={mutation.isPending}
             className="bg-[--status-error] text-white hover:bg-[--status-error]/90"
           >
-            {mutation.isPending ? "Suppression…" : "Supprimer"}
+            {mutation.isPending ? t("delete.submitting") : t("delete.submit")}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

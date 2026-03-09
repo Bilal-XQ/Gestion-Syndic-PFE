@@ -2,7 +2,8 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { createServerClient } from "@supabase/ssr";
-import { loginSchema, resetPasswordSchema, updatePasswordSchema } from "@/lib/validations/auth";
+import { getTranslations } from "next-intl/server";
+import { createLoginSchema, createResetPasswordSchema, createUpdatePasswordSchema } from "@/lib/validations/auth";
 import { redirect } from "next/navigation";
 import { cookies, headers } from "next/headers";
 
@@ -24,7 +25,8 @@ export async function login(
     password: formData.get("password"),
   };
 
-  const parsed = loginSchema.safeParse(raw);
+  const t = await getTranslations("validation");
+  const parsed = createLoginSchema(t).safeParse(raw);
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0].message };
   }
@@ -101,7 +103,8 @@ export async function requestPasswordReset(
 ): Promise<ActionResult> {
   const raw = { email: formData.get("email") };
 
-  const parsed = resetPasswordSchema.safeParse(raw);
+  const t = await getTranslations("validation");
+  const parsed = createResetPasswordSchema(t).safeParse(raw);
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0].message };
   }
@@ -137,7 +140,8 @@ export async function updatePassword(
     confirmPassword: formData.get("confirmPassword"),
   };
 
-  const parsed = updatePasswordSchema.safeParse(raw);
+  const t = await getTranslations("validation");
+  const parsed = createUpdatePasswordSchema(t).safeParse(raw);
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0].message };
   }

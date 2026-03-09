@@ -5,7 +5,8 @@ import { Resend } from "resend";
 import { db } from "@/lib/db";
 import { charges, auditLogs } from "@/lib/db/schema";
 import { createClient } from "@/utils/supabase/server";
-import { chargeSchema } from "@/lib/validations/charge";
+import { getTranslations } from "next-intl/server";
+import { createChargeSchema } from "@/lib/validations/charge";
 import { getBuildingBySyndicId, getBuildingById } from "@/lib/db/queries/buildings";
 import { getChargeById } from "@/lib/db/queries/charges";
 import { getApartmentById } from "@/lib/db/queries/apartments";
@@ -46,7 +47,9 @@ export async function createCharge(
   values: unknown
 ): Promise<ActionResult<{ id: string }>> {
   // 1. Validate
-  const parsed = chargeSchema.safeParse(values);
+  const t = await getTranslations("validation");
+  const schema = createChargeSchema(t);
+  const parsed = schema.safeParse(values);
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0].message };
   }

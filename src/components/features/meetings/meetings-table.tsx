@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Plus, Search, MoreHorizontal, Trash2, XCircle, Eye } from "lucide-react";
 import { toast } from "sonner";
 
@@ -61,6 +62,8 @@ async function fetchMeetings(): Promise<Meeting[]> {
 // ---------------------------------------------------------------------------
 export function MeetingsTable() {
   const router = useRouter();
+  const t = useTranslations("meetings");
+  const tc = useTranslations("common");
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [panelOpen, setPanelOpen] = useState(false);
@@ -81,7 +84,7 @@ export function MeetingsTable() {
   async function handleCancel(id: string) {
     const result = await cancelMeeting(id);
     if (result.success) {
-      toast.success("Réunion annulée");
+      toast.success(t("table.cancelSuccess"));
       queryClient.invalidateQueries({ queryKey: ["meetings"] });
     } else {
       toast.error(result.error);
@@ -93,17 +96,17 @@ export function MeetingsTable() {
       {/* Header */}
       <div className="flex items-center justify-between gap-4">
         <div className="relative max-w-sm flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[--text-muted]" />
+          <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[--text-muted]" />
           <Input
-            placeholder="Rechercher une réunion…"
+            placeholder={t("searchPlaceholder")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9"
+            className="ps-9"
           />
         </div>
         <Button onClick={() => setPanelOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
-          Nouvelle réunion
+          <Plus className="me-2 h-4 w-4" />
+          {t("addButton")}
         </Button>
       </div>
 
@@ -114,25 +117,25 @@ export function MeetingsTable() {
           <TableHeader>
             <TableRow className="border-[--border-default] hover:bg-transparent">
               <TableHead className="text-[--text-muted] text-xs uppercase tracking-wider">
-                Titre
+                {t("table.title")}
               </TableHead>
               <TableHead className="text-[--text-muted] text-xs uppercase tracking-wider">
-                Date
+                {t("table.date")}
               </TableHead>
               <TableHead className="text-[--text-muted] text-xs uppercase tracking-wider">
-                Horaire
+                {t("table.time")}
               </TableHead>
               <TableHead className="text-[--text-muted] text-xs uppercase tracking-wider">
-                Lieu
+                {t("table.location")}
               </TableHead>
               <TableHead className="text-[--text-muted] text-xs uppercase tracking-wider">
-                Statut
+                {t("table.status")}
               </TableHead>
               <TableHead className="text-[--text-muted] text-xs uppercase tracking-wider">
-                Invitations
+                {t("table.invitations")}
               </TableHead>
-              <TableHead className="text-right text-[--text-muted] text-xs uppercase tracking-wider">
-                Actions
+              <TableHead className="text-end text-[--text-muted] text-xs uppercase tracking-wider">
+                {t("table.actions")}
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -143,7 +146,7 @@ export function MeetingsTable() {
                   colSpan={7}
                   className="h-24 text-center text-[--text-muted]"
                 >
-                  Chargement…
+                  {tc("loading")}
                 </TableCell>
               </TableRow>
             ) : filtered.length === 0 ? (
@@ -152,7 +155,7 @@ export function MeetingsTable() {
                   colSpan={7}
                   className="h-24 text-center text-[--text-muted]"
                 >
-                  Aucune réunion trouvée
+                  {t("table.empty")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -187,9 +190,9 @@ export function MeetingsTable() {
                     <span className="font-mono">
                       {meeting.acceptedCount}/{meeting.totalInvitations}
                     </span>{" "}
-                    accepté{meeting.acceptedCount !== 1 ? "s" : ""}
+                    {meeting.acceptedCount !== 1 ? t("table.accepted_other") : t("table.accepted_one")}
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-end">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
@@ -211,15 +214,15 @@ export function MeetingsTable() {
                             )
                           }
                         >
-                          <Eye className="mr-2 h-4 w-4" />
-                          Voir détails
+                          <Eye className="me-2 h-4 w-4" />
+                          {t("table.viewDetails")}
                         </DropdownMenuItem>
                         {meeting.status === "scheduled" && (
                           <DropdownMenuItem
                             onClick={() => handleCancel(meeting.id)}
                           >
-                            <XCircle className="mr-2 h-4 w-4" />
-                            Annuler
+                            <XCircle className="me-2 h-4 w-4" />
+                            {t("table.cancel")}
                           </DropdownMenuItem>
                         )}
                         <DropdownMenuItem
@@ -231,8 +234,8 @@ export function MeetingsTable() {
                           }
                           className="text-[--status-error]"
                         >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Supprimer
+                          <Trash2 className="me-2 h-4 w-4" />
+                          {t("table.delete")}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

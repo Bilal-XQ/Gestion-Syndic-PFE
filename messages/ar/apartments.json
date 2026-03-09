@@ -1,0 +1,37 @@
+{
+  "pageTitle": "الشقق",
+  "searchPlaceholder": "البحث برقم الوحدة…",
+  "addButton": "إضافة",
+  "table": {
+    "unitNumber": "الوحدة",
+    "floor": "الطابق",
+    "surfaceArea": "المساحة",
+    "rooms": "الغرف",
+    "status": "الحالة",
+    "actions": "الإجراءات",
+    "empty": "لا توجد شقق"
+  },
+  "panel": {
+    "createTitle": "إضافة شقة",
+    "editTitle": "تعديل الشقة",
+    "createDescription": "أدخل بيانات الشقة الجديدة.",
+    "editDescription": "حدّث بيانات الشقة.",
+    "unitNumberLabel": "رقم الوحدة",
+    "unitNumberPlaceholder": "A101",
+    "floorLabel": "الطابق",
+    "surfaceAreaLabel": "المساحة (م²)",
+    "roomCountLabel": "عدد الغرف",
+    "submitting": "جارٍ الحفظ…",
+    "createButton": "إنشاء",
+    "updateButton": "تحديث",
+    "createSuccess": "تم إنشاء الشقة بنجاح",
+    "updateSuccess": "تم تحديث الشقة"
+  },
+  "delete": {
+    "title": "هل أنت متأكد؟",
+    "description": "سيتم أرشفة الشقة {unitNumber}. هذا الإجراء قابل للعكس.",
+    "submitting": "جارٍ الحذف…",
+    "submit": "حذف",
+    "success": "تم حذف الشقة"
+  }
+}

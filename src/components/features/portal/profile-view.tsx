@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { User, Building2, Home, Pencil, X, Check, Lock } from "lucide-react";
 
@@ -14,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import {
-  changePasswordSchema,
+  createChangePasswordSchema,
   type ChangePasswordFormValues,
 } from "@/lib/validations/profile";
 import { updatePhone, changePassword } from "@/lib/actions/portal";
@@ -45,6 +46,9 @@ type ProfileData = {
 // ---------------------------------------------------------------------------
 export function ProfileView() {
   const queryClient = useQueryClient();
+  const t = useTranslations("portal");
+  const tc = useTranslations("common");
+  const tv = useTranslations("validation");
   const [editingPhone, setEditingPhone] = useState(false);
   const [phoneValue, setPhoneValue] = useState("");
 
@@ -64,7 +68,7 @@ export function ProfileView() {
     },
     onSuccess: (result) => {
       if (result.success) {
-        toast.success("Téléphone mis à jour");
+        toast.success(t("profile.phoneSuccess"));
         queryClient.invalidateQueries({ queryKey: ["portal", "profile"] });
         setEditingPhone(false);
       } else {
@@ -72,14 +76,14 @@ export function ProfileView() {
       }
     },
     onError: () => {
-      toast.error("Une erreur est survenue");
+      toast.error(tc("errorOccurred"));
     },
   });
 
   // — Password form —
   const passwordForm = useForm<ChangePasswordFormValues>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(changePasswordSchema) as any,
+    resolver: zodResolver(createChangePasswordSchema(tv)) as any,
     defaultValues: { password: "", confirmPassword: "" },
   });
 
@@ -89,14 +93,14 @@ export function ProfileView() {
     },
     onSuccess: (result) => {
       if (result.success) {
-        toast.success("Mot de passe modifié avec succès");
+        toast.success(t("profile.changePasswordSuccess"));
         passwordForm.reset();
       } else {
         toast.error(result.error);
       }
     },
     onError: () => {
-      toast.error("Une erreur est survenue");
+      toast.error(tc("errorOccurred"));
     },
   });
 
@@ -112,7 +116,7 @@ export function ProfileView() {
   if (!profile?.owner) {
     return (
       <p className="text-sm text-[--text-secondary]">
-        Impossible de charger le profil.
+        {t("profile.errorLoading")}
       </p>
     );
   }
@@ -127,21 +131,21 @@ export function ProfileView() {
           {/* Personal info */}
           <div className="space-y-4">
             <div className="flex items-center gap-2 text-sm font-medium text-[--text-primary]">
-              <User className="h-4 w-4" /> Informations personnelles
+              <User className="h-4 w-4" /> {t("profile.personalInfo")}
             </div>
             <dl className="space-y-3 text-sm">
               <div className="space-y-1.5">
-                <dt className="text-[--text-secondary]">Nom</dt>
+                <dt className="text-[--text-secondary]">{t("profile.nameLabel")}</dt>
                 <dd className="text-[--text-primary]">
                   {owner.firstName} {owner.lastName}
                 </dd>
               </div>
               <div className="space-y-1.5">
-                <dt className="text-[--text-secondary]">Email</dt>
+                <dt className="text-[--text-secondary]">{t("profile.emailLabel")}</dt>
                 <dd className="text-[--text-primary]">{owner.email}</dd>
               </div>
               <div className="space-y-1.5">
-                <dt className="text-[--text-secondary]">Date de propriété</dt>
+                <dt className="text-[--text-secondary]">{t("profile.ownershipDateLabel")}</dt>
                 <dd className="text-[--text-primary]">{formatDate(owner.ownershipDate)}</dd>
               </div>
             </dl>
@@ -150,27 +154,27 @@ export function ProfileView() {
           {/* Apartment info */}
           <div className="space-y-4">
             <div className="flex items-center gap-2 text-sm font-medium text-[--text-primary]">
-              <Home className="h-4 w-4" /> Appartement
+              <Home className="h-4 w-4" /> {t("profile.apartmentSection")}
             </div>
             <dl className="space-y-3 text-sm">
               <div className="space-y-1.5">
-                <dt className="text-[--text-secondary]">Unité</dt>
+                <dt className="text-[--text-secondary]">{t("profile.unitLabel")}</dt>
                 <dd className="text-[--text-primary]">
                   {apartment.unitNumber}
                 </dd>
               </div>
               <div className="space-y-1.5">
-                <dt className="text-[--text-secondary]">Étage</dt>
+                <dt className="text-[--text-secondary]">{t("profile.floorLabel")}</dt>
                 <dd className="text-[--text-primary]">{apartment.floor}</dd>
               </div>
               <div className="space-y-1.5">
-                <dt className="text-[--text-secondary]">Surface</dt>
+                <dt className="text-[--text-secondary]">{t("profile.surfaceLabel")}</dt>
                 <dd className="text-[--text-primary]">
                   {apartment.surfaceArea} m²
                 </dd>
               </div>
               <div className="space-y-1.5">
-                <dt className="text-[--text-secondary]">Pièces</dt>
+                <dt className="text-[--text-secondary]">{t("profile.roomsLabel")}</dt>
                 <dd className="text-[--text-primary]">
                   {apartment.roomCount}
                 </dd>
@@ -182,15 +186,15 @@ export function ProfileView() {
           {building && (
             <div className="space-y-4">
               <div className="flex items-center gap-2 text-sm font-medium text-[--text-primary]">
-                <Building2 className="h-4 w-4" /> Immeuble
+                <Building2 className="h-4 w-4" /> {t("profile.buildingSection")}
               </div>
               <dl className="space-y-3 text-sm">
                 <div className="space-y-1.5">
-                  <dt className="text-[--text-secondary]">Nom</dt>
+                  <dt className="text-[--text-secondary]">{t("profile.buildingNameLabel")}</dt>
                   <dd className="text-[--text-primary]">{building.name}</dd>
                 </div>
                 <div className="space-y-1.5">
-                  <dt className="text-[--text-secondary]">Adresse</dt>
+                  <dt className="text-[--text-secondary]">{t("profile.buildingAddressLabel")}</dt>
                   <dd className="text-[--text-primary]">{building.address}</dd>
                 </div>
               </dl>
@@ -203,7 +207,7 @@ export function ProfileView() {
       <Card className="border-[--border-default] bg-[--bg-elevated] p-6">
         <div className="space-y-3">
           <Label className="text-sm font-medium text-[--text-primary]">
-            Téléphone
+            {t("profile.phoneLabel")}
           </Label>
 
           {editingPhone ? (
@@ -211,7 +215,7 @@ export function ProfileView() {
               <Input
                 value={phoneValue}
                 onChange={(e) => setPhoneValue(e.target.value)}
-                placeholder="06 12 34 56 78"
+                placeholder={t("profile.phonePlaceholder")}
                 className="max-w-xs"
               />
               <div className="flex items-center gap-2">
@@ -221,7 +225,7 @@ export function ProfileView() {
                 disabled={phoneMutation.isPending}
               >
                 <Check className="h-4 w-4" />
-                Enregistrer
+                {t("profile.phoneSubmit")}
               </Button>
               <Button
                 size="sm"
@@ -229,14 +233,14 @@ export function ProfileView() {
                 onClick={() => setEditingPhone(false)}
               >
                 <X className="h-4 w-4" />
-                Annuler
+                {t("profile.phoneCancel")}
               </Button>
               </div>
             </div>
           ) : (
             <div className="flex items-center gap-2">
               <span className="text-sm text-[--text-primary]">
-                {owner.phone || "Non renseigné"}
+                {owner.phone || t("profile.phoneNotSet")}
               </span>
               <Button
                 size="sm"
@@ -247,7 +251,7 @@ export function ProfileView() {
                 }}
               >
                 <Pencil className="h-4 w-4" />
-                Modifier
+                {t("profile.phoneEditButton")}
               </Button>
             </div>
           )}
@@ -258,7 +262,7 @@ export function ProfileView() {
       <Card className="border-[--border-default] bg-[--bg-elevated] p-6">
         <div className="space-y-4">
           <div className="flex items-center gap-2 text-sm font-medium text-[--text-primary]">
-            <Lock className="h-4 w-4" /> Changer le mot de passe
+            <Lock className="h-4 w-4" /> {t("profile.changePassword")}
           </div>
 
           <form
@@ -268,7 +272,7 @@ export function ProfileView() {
             className="flex max-w-sm flex-col gap-4"
           >
             <div className="space-y-2">
-              <Label htmlFor="password">Nouveau mot de passe</Label>
+              <Label htmlFor="password">{t("profile.newPasswordLabel")}</Label>
               <Input
                 id="password"
                 type="password"
@@ -282,7 +286,7 @@ export function ProfileView() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirmer le mot de passe</Label>
+              <Label htmlFor="confirmPassword">{t("profile.confirmPasswordLabel")}</Label>
               <Input
                 id="confirmPassword"
                 type="password"
@@ -301,8 +305,8 @@ export function ProfileView() {
               className="w-fit"
             >
               {passwordMutation.isPending
-                ? "Modification…"
-                : "Modifier le mot de passe"}
+                ? t("profile.changePasswordSubmitting")
+                : t("profile.changePasswordSubmit")}
             </Button>
           </form>
         </div>

@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Search } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { Search, Download } from "lucide-react";
 
 import {
   Table,
@@ -21,9 +22,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { DatePicker } from "@/components/ui/date-picker";
 import { formatDate, formatMAD } from "@/lib/formatters";
+import { exportPayments, type ExportColumns } from "@/lib/export/excel";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -111,6 +114,33 @@ async function fetchOwners(): Promise<Owner[]> {
 // Component
 // ---------------------------------------------------------------------------
 export function PaymentsTable() {
+  const t = useTranslations("payments");
+  const tc = useTranslations("common");
+  const exportCols: ExportColumns = {
+    ownerName: tc("export.columns.ownerName"),
+    chargeTitle: tc("export.columns.chargeTitle"),
+    amount: tc("export.columns.amount"),
+    currency: tc("export.columns.currency"),
+    paymentDate: tc("export.columns.paymentDate"),
+    method: tc("export.columns.method"),
+    reference: tc("export.columns.reference"),
+    fullName: "", email: "", phone: "", apartment: "", ownershipDate: "",
+    title: "", category: "", totalAmount: "", amountPaid: "",
+    remaining: "", dueDate: "", status: "",
+  };
+  const methodLabels: Record<string, string> = {
+    bank_transfer: tc("paymentMethods.transfer"),
+    check: tc("paymentMethods.check"),
+    cash: tc("paymentMethods.cash"),
+  };
+  const categoryOptions = [
+    { value: "all", label: t("filters.allCategories") },
+    { value: "electricity", label: tc("categories.electricity") },
+    { value: "water", label: tc("categories.water") },
+    { value: "maintenance", label: tc("categories.maintenance") },
+    { value: "repair", label: tc("categories.repair") },
+    { value: "other", label: tc("categories.other") },
+  ];
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [ownerId, setOwnerId] = useState("all");
@@ -139,7 +169,7 @@ export function PaymentsTable() {
       <div className="grid gap-4 sm:grid-cols-3">
         <Card className="border-[--border-default] bg-[--bg-card] p-5">
           <p className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-            Total charges
+            {t("summary.totalCharges")}
           </p>
           <p className="mt-1 font-mono text-xl font-semibold text-[--text-primary]">
             {formatMAD(summary.totalChargesIssued)}
@@ -147,7 +177,7 @@ export function PaymentsTable() {
         </Card>
         <Card className="border-[--border-default] bg-[--bg-card] p-5">
           <p className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-            Total encaissé
+            {t("summary.totalCollected")}
           </p>
           <p className="mt-1 font-mono text-xl font-semibold text-[--status-success]">
             {formatMAD(summary.totalCollected)}
@@ -155,7 +185,7 @@ export function PaymentsTable() {
         </Card>
         <Card className="border-[--border-default] bg-[--bg-card] p-5">
           <p className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-            Solde restant
+            {t("summary.remainingBalance")}
           </p>
           <p className="mt-1 font-mono text-xl font-semibold text-[--status-error]">
             {formatMAD(summary.totalOutstanding)}
@@ -166,33 +196,33 @@ export function PaymentsTable() {
       {/* Filters */}
       <div className="flex flex-wrap items-end gap-4">
         <div className="space-y-1">
-          <Label className="text-xs text-[--text-muted]">Du</Label>
+          <Label className="text-xs text-[--text-muted]">{t("filters.from")}</Label>
           <DatePicker
             value={dateFrom}
             onChange={setDateFrom}
             allowClear
-            placeholder="Choisir une date"
+            placeholder={tc("selectDate")}
             buttonClassName="w-full sm:w-40"
           />
         </div>
         <div className="space-y-1">
-          <Label className="text-xs text-[--text-muted]">Au</Label>
+          <Label className="text-xs text-[--text-muted]">{t("filters.to")}</Label>
           <DatePicker
             value={dateTo}
             onChange={setDateTo}
             allowClear
-            placeholder="Choisir une date"
+            placeholder={tc("selectDate")}
             buttonClassName="w-full sm:w-40"
           />
         </div>
         <div className="space-y-1">
-          <Label className="text-xs text-[--text-muted]">Propriétaire</Label>
+          <Label className="text-xs text-[--text-muted]">{t("filters.owner")}</Label>
           <Select value={ownerId} onValueChange={setOwnerId}>
             <SelectTrigger className="w-full sm:w-48">
-              <SelectValue placeholder="Tous" />
+              <SelectValue placeholder={t("filters.all")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Tous</SelectItem>
+              <SelectItem value="all">{t("filters.all")}</SelectItem>
               {owners.map((o) => (
                 <SelectItem key={o.id} value={o.id}>
                   {o.firstName} {o.lastName}
@@ -202,7 +232,7 @@ export function PaymentsTable() {
           </Select>
         </div>
         <div className="space-y-1">
-          <Label className="text-xs text-[--text-muted]">Catégorie</Label>
+          <Label className="text-xs text-[--text-muted]">{t("filters.category")}</Label>
           <Select value={category} onValueChange={setCategory}>
             <SelectTrigger className="w-full sm:w-44">
               <SelectValue placeholder="Toutes" />
@@ -216,6 +246,14 @@ export function PaymentsTable() {
             </SelectContent>
           </Select>
         </div>
+        <Button
+          variant="outline"
+          onClick={() => exportPayments(payments, exportCols, tc("export.sheetName"))}
+          disabled={payments.length === 0}
+        >
+          <Download className="size-4" />
+          {tc("export.button")}
+        </Button>
       </div>
 
       {/* Table */}
@@ -225,22 +263,22 @@ export function PaymentsTable() {
           <TableHeader>
             <TableRow className="border-[--border-subtle] hover:bg-transparent">
               <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-                Propriétaire
+                {t("table.owner")}
               </TableHead>
               <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-                Charge
+                {t("table.charge")}
               </TableHead>
               <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-                Montant
+                {t("table.amount")}
               </TableHead>
               <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-                Date
+                {t("table.date")}
               </TableHead>
               <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-                Méthode
+                {t("table.method")}
               </TableHead>
               <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
-                Référence
+                {t("table.reference")}
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -248,13 +286,13 @@ export function PaymentsTable() {
             {isLoading ? (
               <TableRow>
                 <TableCell colSpan={6} className="h-24 text-center text-[--text-muted]">
-                  Chargement…
+                  {tc("loading")}
                 </TableCell>
               </TableRow>
             ) : payments.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} className="h-24 text-center text-[--text-muted]">
-                  Aucun paiement trouvé
+                  {t("table.empty")}
                 </TableCell>
               </TableRow>
             ) : (

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { LogOut, User } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { signOut } from "@/lib/actions/auth";
 import {
   DropdownMenu,
@@ -25,6 +26,7 @@ export function SidebarUserMenu({
   roleLabel,
   profileHref,
 }: SidebarUserMenuProps) {
+  const t = useTranslations("common");
   const { open } = useSidebar();
 
   const initials =
@@ -33,7 +35,7 @@ export function SidebarUserMenu({
       .toUpperCase() || "?";
 
   const fullName =
-    [firstName, lastName].filter(Boolean).join(" ") || "Utilisateur";
+    [firstName, lastName].filter(Boolean).join(" ") || t("fallbackUserName");
 
   return (
     <DropdownMenu>
@@ -63,7 +65,7 @@ export function SidebarUserMenu({
         <DropdownMenuItem asChild>
           <Link href={profileHref} className="flex items-center gap-2">
             <User className="size-4" />
-            Mon profil
+            {t("userMenu.myProfile")}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
@@ -74,7 +76,7 @@ export function SidebarUserMenu({
           }}
         >
           <LogOut className="size-4" />
-          Déconnexion
+          {t("userMenu.signOut")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

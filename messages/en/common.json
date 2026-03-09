@@ -1,0 +1,119 @@
+{
+  "appName": "Syndic",
+  "navigation": "Navigation",
+  "actions": "Actions",
+  "save": "Save",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "edit": "Edit",
+  "create": "Create",
+  "add": "Add",
+  "update": "Update",
+  "search": "Search",
+  "loading": "Loading…",
+  "retry": "Retry",
+  "back": "Back",
+  "noResults": "No results",
+  "selectDate": "Pick a date",
+  "errorOccurred": "An error occurred",
+  "somethingWentWrong": "Something went wrong. Please try again.",
+  "status": {
+    "paid": "Paid",
+    "partial": "Partial",
+    "unpaid": "Unpaid",
+    "occupied": "Occupied",
+    "vacant": "Vacant",
+    "scheduled": "Scheduled",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "accepted": "Accepted",
+    "declined": "Declined",
+    "invited": "Invited"
+  },
+  "categories": {
+    "electricity": "Electricity",
+    "water": "Water",
+    "maintenance": "Maintenance",
+    "repair": "Repair",
+    "other": "Other"
+  },
+  "paymentMethods": {
+    "transfer": "Transfer",
+    "transferFull": "Bank transfer",
+    "check": "Check",
+    "cash": "Cash"
+  },
+  "currency": "MAD",
+  "unitSuffix": "m²",
+  "floor": "Floor",
+  "userMenu": {
+    "myProfile": "My profile",
+    "signOut": "Sign out"
+  },
+  "themeToggle": {
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode"
+  },
+  "languageSwitcher": {
+    "fr": "FR",
+    "en": "EN",
+    "ar": "عر"
+  },
+  "fallbackUserName": "User",
+  "roleLabels": {
+    "admin": "Administrator",
+    "owner": "Co-owner"
+  },
+  "syndicNav": {
+    "overview": "Overview",
+    "owners": "Co-owners",
+    "apartments": "Apartments",
+    "charges": "Charges",
+    "meetings": "Meetings",
+    "payments": "Payments",
+    "settings": "Settings"
+  },
+  "ownerNav": {
+    "mySpace": "My space",
+    "payments": "Payments",
+    "notifications": "Notifications"
+  },
+  "notFound": {
+    "subtitle": "Page not found",
+    "description": "The page you are looking for does not exist or has been moved.",
+    "backHome": "Back to home"
+  },
+  "export": {
+    "button": "Export",
+    "owners": "Export owners",
+    "charges": "Export charges",
+    "payments": "Export payments",
+    "ownerPayments": "Export my payments",
+    "sheetName": "Data",
+    "columns": {
+      "fullName": "Full name",
+      "email": "Email",
+      "phone": "Phone",
+      "apartment": "Apartment",
+      "ownershipDate": "Ownership date",
+      "title": "Title",
+      "category": "Category",
+      "totalAmount": "Total amount",
+      "amountPaid": "Amount paid",
+      "remaining": "Remaining",
+      "dueDate": "Due date",
+      "status": "Status",
+      "currency": "Currency",
+      "ownerName": "Owner",
+      "chargeTitle": "Charge",
+      "amount": "Amount",
+      "paymentDate": "Payment date",
+      "method": "Method",
+      "reference": "Reference"
+    }
+  },
+  "errorPage": {
+    "title": "An error occurred",
+    "retry": "Try again"
+  }
+}
