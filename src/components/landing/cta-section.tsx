@@ -18,6 +18,8 @@ export default function CtaSection() {
 
   const isDark = !mounted || resolvedTheme === "dark";
   const particleColor = isDark ? "#ffffff" : "#000000";
+  const beamFrom = isDark ? "#D4A853" : "#8B6520";
+  const beamTo = isDark ? "#A07A32" : "#6B4E18";
 
   return (
     <section className="relative overflow-hidden border-y border-[--border-subtle] bg-[--bg-card] py-28">
@@ -26,7 +28,7 @@ export default function CtaSection() {
         className="pointer-events-none absolute inset-0 z-0"
         style={{
           background:
-            "radial-gradient(ellipse 70% 60% at 50% 50%, rgba(255,255,255,0.05) 0%, transparent 70%)",
+            "radial-gradient(ellipse 60% 50% at 50% 50%, var(--accent-glow), transparent 70%)",
         }}
       />
 
@@ -73,8 +75,8 @@ export default function CtaSection() {
               <BorderBeam
                 size={120}
                 duration={6}
-                colorFrom="#ffffff"
-                colorTo="#555555"
+                colorFrom={beamFrom}
+                colorTo={beamTo}
               />
             </Link>
           </div>

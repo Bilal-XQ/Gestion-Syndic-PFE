@@ -63,19 +63,19 @@ export default function HowItWorksSection() {
                 <div className="relative flex items-start gap-8 pb-16 last:pb-0">
                   {/* Left column */}
                   <div className="flex shrink-0 flex-col items-center gap-0">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[--border-default] bg-[--bg-card] shadow-[0_1px_8px_rgba(0,0,0,0.3)]">
-                      <span className="font-[family-name:var(--font-syne)] text-xs font-bold text-[--text-primary]">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[--accent-border] bg-[--accent-bg] shadow-[0_1px_8px_rgba(0,0,0,0.3)]">
+                      <span className="font-[family-name:var(--font-syne)] text-xs font-bold text-[--accent]">
                         {step.n}
                       </span>
                     </div>
                     {!isLast && (
-                      <div className="mt-2 min-h-[60px] w-px bg-gradient-to-b from-[--border-default] to-transparent" />
+                      <div className="mt-2 min-h-[60px] w-px bg-gradient-to-b from-[--accent-border] to-transparent" />
                     )}
                   </div>
 
                   {/* Right column */}
                   <div className="pb-8 pt-1.5">
-                    <p className="mb-1 font-[family-name:var(--font-syne)] text-[10px] font-semibold uppercase tracking-[0.12em] text-[--text-muted]">
+                    <p className="mb-1 font-[family-name:var(--font-syne)] text-[10px] font-semibold uppercase tracking-[0.12em] text-[--accent-muted]">
                       Étape 0{step.n}
                     </p>
                     <h3 className="mb-3 text-xl font-medium leading-snug text-[--text-primary]">
