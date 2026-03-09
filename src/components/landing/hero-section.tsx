@@ -21,6 +21,8 @@ export default function HeroSection() {
 
   const isDark = !mounted || resolvedTheme === "dark";
   const particleColor = isDark ? "#ffffff" : "#000000";
+  const beamFrom = isDark ? "#D4A853" : "#8B6520";
+  const beamTo = isDark ? "#A07A32" : "#6B4E18";
 
   return (
     <section className="relative min-h-screen overflow-hidden flex items-center justify-center">
@@ -55,13 +57,13 @@ export default function HeroSection() {
         />
       )}
 
-      {/* Layer 4 — Centre glow (dark only) */}
+      {/* Layer 4 — Centre glow (amber) */}
       {isDark && (
         <div
           className="pointer-events-none absolute inset-0 z-[3]"
           style={{
             background:
-              "radial-gradient(ellipse 60% 40% at 50% 40%, rgba(255,255,255,0.04), transparent 70%)",
+              "radial-gradient(ellipse 50% 35% at 50% 45%, var(--accent-glow), transparent 70%)",
           }}
         />
       )}
@@ -79,7 +81,7 @@ export default function HeroSection() {
         {/* 1. Top badge */}
         <BlurFade delay={0.1} inView>
           <div className="mb-8 inline-flex items-center justify-center">
-            <div className="cursor-default rounded-full border border-[--border-default] bg-[--bg-card] px-4 py-1.5">
+            <div className="cursor-default rounded-full border border-[--accent-border] bg-[--accent-bg] px-4 py-1.5">
               <AnimatedShinyText className="font-[family-name:var(--font-syne)] text-xs font-semibold uppercase tracking-widest text-[--text-secondary]">
                 ✦ Gestion de copropriété
               </AnimatedShinyText>
@@ -126,8 +128,8 @@ export default function HeroSection() {
                 <BorderBeam
                   size={100}
                   duration={8}
-                  colorFrom="#ffffff"
-                  colorTo="#666666"
+                  colorFrom={beamFrom}
+                  colorTo={beamTo}
                 />
               </Link>
             </div>
@@ -150,7 +152,7 @@ export default function HeroSection() {
               animate={{ y: [0, 8, 0] }}
               transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
             >
-              <div className="h-10 w-px bg-gradient-to-b from-transparent via-[--border-default] to-transparent" />
+              <div className="h-10 w-px bg-gradient-to-b from-transparent via-[--accent] to-transparent opacity-60" />
             </motion.div>
           </div>
         </BlurFade>
