@@ -78,7 +78,7 @@ export default function FeaturesSection() {
         <BlurFade delay={0.1} inView>
           <div className="mb-20 text-center">
             <div className="mb-6 inline-flex items-center justify-center">
-              <div className="cursor-default rounded-full border border-[--border-default] bg-[--bg-card] px-4 py-1.5">
+              <div className="cursor-default rounded-full border border-[--accent-border] bg-[--accent-bg] px-4 py-1.5">
                 <span className="font-[family-name:var(--font-syne)] text-xs font-semibold uppercase tracking-widest text-[--text-secondary]">
                   Fonctionnalités
                 </span>
@@ -106,13 +106,13 @@ export default function FeaturesSection() {
             return (
               <BlurFade key={feature.title} delay={0.2 + index * 0.1} inView>
                 <MagicCard
-                  className="rounded-[--radius-xl] border border-[--border-subtle] bg-[--bg-card] p-6 cursor-default"
+                  className="rounded-[--radius-xl] border border-[--border-subtle] bg-[--bg-card] p-6 cursor-default group"
                   gradientColor={gradientColor}
                   gradientOpacity={0.6}
                 >
                   <div className="flex h-full min-h-[200px] flex-col">
-                    <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-[--radius-md] border border-[--border-default] bg-[--bg-subtle]">
-                      <Icon className="h-4 w-4 text-[--text-secondary]" />
+                    <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-[--radius-md] border border-[--border-default] bg-[--bg-subtle] transition-colors duration-[250ms] group-hover:border-[--accent-border] group-hover:bg-[--accent-bg]">
+                      <Icon className="h-4 w-4 text-[--text-secondary] transition-colors duration-[250ms] group-hover:text-[--accent]" />
                     </div>
                     <h3 className="mb-2 text-[15px] font-medium leading-snug text-[--text-primary]">
                       {feature.title}

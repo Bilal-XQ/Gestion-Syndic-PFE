@@ -103,6 +103,16 @@ Extracted and extrapolated from the reference dashboard.
 | `--btn-secondary-hover-bg` | `rgba(255,255,255,0.04)` | Ghost button hover fill |
 | `--btn-secondary-hover-border` | `#3A3A3A` | Ghost button hover border |
 
+#### Accent Color — Amber Gold
+
+| Token | Dark Hex | Light Hex | Usage |
+|---|---|---|---|
+| `--accent` | `#D4A853` | `#8B6520` | Icon hover, step numbers, active states |
+| `--accent-muted` | `#A07A32` | `#6B4E18` | Subdued accent text |
+| `--accent-bg` | `rgba(212,168,83,0.08)` | `rgba(139,101,32,0.08)` | Badge backgrounds, icon bg on hover |
+| `--accent-border` | `rgba(212,168,83,0.18)` | `rgba(139,101,32,0.20)` | Badge borders, card borders |
+| `--accent-glow` | `rgba(212,168,83,0.12)` | `rgba(139,101,32,0.12)` | Radial glow backgrounds |
+
 #### Status & Semantic
 
 | Token | Hex | Usage |

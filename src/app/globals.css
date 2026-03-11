@@ -176,6 +176,13 @@
   --space-24: 96px;
   --space-30: 120px;
 
+  /* Accent — Amber Gold */
+  --accent:           #8B6520;
+  --accent-muted:     #6B4E18;
+  --accent-bg:        rgba(139, 101, 32, 0.08);
+  --accent-border:    rgba(139, 101, 32, 0.20);
+  --accent-glow:      rgba(139, 101, 32, 0.12);
+
   /* shadcn tokens */
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -320,6 +327,13 @@
   --space-20: 80px;
   --space-24: 96px;
   --space-30: 120px;
+
+  /* Accent — Amber Gold (dark) */
+  --accent:           #D4A853;
+  --accent-muted:     #A07A32;
+  --accent-bg:        rgba(212, 168, 83, 0.08);
+  --accent-border:    rgba(212, 168, 83, 0.18);
+  --accent-glow:      rgba(212, 168, 83, 0.12);
 
   /* shadcn tokens */
   --background: oklch(0.145 0 0);

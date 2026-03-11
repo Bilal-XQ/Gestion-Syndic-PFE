@@ -21,6 +21,10 @@ export default function HeroSection() {
 
   const isDark = !mounted || resolvedTheme === "dark";
   const particleColor = isDark ? "#ffffff" : "#000000";
+  const beamFrom = isDark ? "#D4A853" : "#8B6520";
+  const beamTo = isDark ? "#A07A32" : "#6B4E18";
+  const ambientGlow =
+    resolvedTheme === "dark" ? "rgba(212,168,83,0.05)" : "rgba(139,101,32,0.05)";
 
   return (
     <section className="relative min-h-screen overflow-hidden flex items-center justify-center">
@@ -31,6 +35,17 @@ export default function HeroSection() {
           background: isDark
             ? "radial-gradient(ellipse 130% 80% at 50% -10%, #1f1f1f 0%, #111111 40%, #0a0a0a 70%)"
             : "radial-gradient(ellipse 130% 80% at 50% -10%, #e8e8e6 0%, #efefed 40%, #f7f7f5 70%)",
+        }}
+      />
+
+      {/* Layer 1b — Faint amber top gradient */}
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-64 z-0"
+        style={{
+          background:
+            resolvedTheme === "dark"
+              ? "linear-gradient(to bottom, rgba(212,168,83,0.07) 0%, transparent 100%)"
+              : "linear-gradient(to bottom, rgba(139,101,32,0.04) 0%, transparent 100%)",
         }}
       />
 
@@ -55,16 +70,23 @@ export default function HeroSection() {
         />
       )}
 
-      {/* Layer 4 — Centre glow (dark only) */}
-      {isDark && (
-        <div
-          className="pointer-events-none absolute inset-0 z-[3]"
-          style={{
-            background:
-              "radial-gradient(ellipse 60% 40% at 50% 40%, rgba(255,255,255,0.04), transparent 70%)",
-          }}
-        />
-      )}
+      {/* Layer 4 — Centre glow (amber) */}
+      <div
+        className="pointer-events-none absolute inset-0 z-[3]"
+        style={{
+          background:
+            "radial-gradient(ellipse 65% 45% at 50% 48%, var(--accent-glow), transparent 65%)",
+          opacity: 1.0,
+        }}
+      />
+
+      {/* Layer 4b — Wider ambient glow */}
+      <div
+        className="pointer-events-none absolute inset-0 z-[3]"
+        style={{
+          background: `radial-gradient(ellipse 90% 55% at 50% 30%, ${ambientGlow}, transparent 70%)`,
+        }}
+      />
 
       {/* Layer 5 — Bottom fade */}
       <div
@@ -79,8 +101,8 @@ export default function HeroSection() {
         {/* 1. Top badge */}
         <BlurFade delay={0.1} inView>
           <div className="mb-8 inline-flex items-center justify-center">
-            <div className="cursor-default rounded-full border border-[--border-default] bg-[--bg-card] px-4 py-1.5">
-              <AnimatedShinyText className="font-[family-name:var(--font-syne)] text-xs font-semibold uppercase tracking-widest text-[--text-secondary]">
+            <div className="cursor-default rounded-full border border-[--accent-border] bg-[--accent-bg] px-4 py-1.5">
+              <AnimatedShinyText className="font-[family-name:var(--font-syne)] text-xs font-semibold uppercase tracking-widest text-[--accent]">
                 ✦ Gestion de copropriété
               </AnimatedShinyText>
             </div>
@@ -126,8 +148,8 @@ export default function HeroSection() {
                 <BorderBeam
                   size={100}
                   duration={8}
-                  colorFrom="#ffffff"
-                  colorTo="#666666"
+                  colorFrom={beamFrom}
+                  colorTo={beamTo}
                 />
               </Link>
             </div>
@@ -150,7 +172,7 @@ export default function HeroSection() {
               animate={{ y: [0, 8, 0] }}
               transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
             >
-              <div className="h-10 w-px bg-gradient-to-b from-transparent via-[--border-default] to-transparent" />
+              <div className="h-10 w-px bg-gradient-to-b from-transparent via-[--accent] to-transparent opacity-60" />
             </motion.div>
           </div>
         </BlurFade>
