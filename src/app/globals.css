@@ -438,3 +438,15 @@
 .modal-scroll::-webkit-scrollbar-thumb:hover { background: #3A3A3A; }
 
 html { scroll-behavior: smooth; }
+
+/* ─── Arabic Font Activation ───────────────────────────────────────── */
+:root[lang="ar"] body,
+html[dir="rtl"] body {
+  font-family: var(--font-noto-naskh-arabic), serif;
+}
+
+html[dir="rtl"] .font-instrument-serif,
+html[dir="rtl"] h1,
+html[dir="rtl"] h2 {
+  font-family: var(--font-noto-naskh-arabic), serif;
+}

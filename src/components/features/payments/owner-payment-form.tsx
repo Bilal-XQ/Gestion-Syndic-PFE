@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
@@ -75,10 +74,11 @@ export function OwnerPaymentForm({
   ];
   const queryClient = useQueryClient();
   const [serverError, setServerError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<
+    Partial<Record<keyof PaymentFormValues, string>>
+  >({});
 
   const form = useForm<PaymentFormValues>({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(createPaymentSchema(tv)) as any,
     defaultValues: {
       chargeId: charge?.id ?? "",
       ownerId: ownerId,
@@ -149,6 +149,30 @@ export function OwnerPaymentForm({
 
   const remaining = charge ? Number(charge.remainingAmount) : 0;
 
+  const handleManualSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setFieldErrors({});
+    setServerError("");
+
+    const values = form.getValues();
+    const schema = createPaymentSchema(tv);
+    const result = schema.safeParse(values);
+
+    if (!result.success) {
+      const flat = result.error.flatten().fieldErrors;
+      const mapped: Partial<Record<keyof PaymentFormValues, string>> = {};
+      for (const [key, msgs] of Object.entries(flat)) {
+        if (msgs && msgs.length > 0) {
+          mapped[key as keyof PaymentFormValues] = msgs[0];
+        }
+      }
+      setFieldErrors(mapped);
+      return;
+    }
+
+    mutation.mutate(result.data);
+  };
+
   const inputClass =
     "h-auto w-full rounded-[10px] border border-[--border-default] bg-[--bg-input] px-[14px] py-[10px] text-[14px] text-[--text-primary] shadow-none placeholder:text-[--text-placeholder] transition-[border-color,box-shadow] duration-150 focus:border-[--border-focus] focus:ring-0 focus:outline-none focus:shadow-[0_0_0_3px_var(--glow-soft)] focus-visible:ring-0 focus-visible:outline-none";
   const labelClass =
@@ -172,17 +196,8 @@ export function OwnerPaymentForm({
         </div>
 
         <form
-          onSubmit={form.handleSubmit(
-            (data) => mutation.mutate(data),
-            (errors) => {
-              console.error("[PaymentForm] Validation errors:", errors);
-            }
-          )}
+          onSubmit={handleManualSubmit}
         >
-          {/* Hidden registered fields — required for zodResolver to validate them */}
-          <input type="hidden" {...form.register("chargeId")} />
-          <input type="hidden" {...form.register("ownerId")} />
-
           {/* BODY */}
           <div className="px-7 py-6 space-y-[18px] overflow-visible">
             {/* Amount */}
@@ -199,9 +214,9 @@ export function OwnerPaymentForm({
                 className={inputClass}
                 {...form.register("amount", { valueAsNumber: true })}
               />
-              {form.formState.errors.amount && (
+              {fieldErrors.amount && (
                 <p className="text-[12px] text-[#EF4444] mt-1">
-                  {form.formState.errors.amount.message}
+                  {fieldErrors.amount}
                 </p>
               )}
             </div>
@@ -222,9 +237,9 @@ export function OwnerPaymentForm({
                 placeholder={tc("selectDate")}
                 buttonClassName={inputClass}
               />
-              {form.formState.errors.paymentDate && (
+              {fieldErrors.paymentDate && (
                 <p className="text-[12px] text-[#EF4444] mt-1">
-                  {form.formState.errors.paymentDate.message}
+                  {fieldErrors.paymentDate}
                 </p>
               )}
             </div>
@@ -282,9 +297,9 @@ export function OwnerPaymentForm({
                 className={inputClass}
                 {...form.register("reference")}
               />
-              {form.formState.errors.reference && (
+              {fieldErrors.reference && (
                 <p className="text-[12px] text-[#EF4444] mt-1">
-                  {form.formState.errors.reference.message}
+                  {fieldErrors.reference}
                 </p>
               )}
             </div>

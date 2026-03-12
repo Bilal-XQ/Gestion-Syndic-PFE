@@ -6,6 +6,7 @@ import {
   Syne,
   DM_Sans,
   IBM_Plex_Sans_Arabic,
+  Noto_Naskh_Arabic,
 } from "next/font/google";
 import { getLocale, getMessages } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
@@ -52,6 +53,13 @@ const ibmPlexArabic = IBM_Plex_Sans_Arabic({
   weight: ["300", "400", "500", "600", "700"],
 });
 
+const notoNaskhArabic = Noto_Naskh_Arabic({
+  subsets: ["arabic"],
+  weight: ["400", "500", "700"],
+  variable: "--font-noto-naskh-arabic",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Syndic — Gestion de Copropriété",
   description:
@@ -79,6 +87,7 @@ export default async function RootLayout({
     syne.variable,
     dmSans.variable,
     locale === "ar" ? ibmPlexArabic.variable : "",
+    notoNaskhArabic.variable,
   ]
     .filter(Boolean)
     .join(" ");
