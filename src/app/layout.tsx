@@ -55,6 +55,10 @@ export const metadata: Metadata = {
   title: "Syndic — Gestion de Copropriété",
   description:
     "Application de gestion de copropriété pour syndics et copropriétaires.",
+  icons: {
+    icon: "/logo.svg",
+    shortcut: "/logo.svg",
+  },
 };
 
 export default async function RootLayout({

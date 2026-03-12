@@ -1,0 +1,12 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 32 32"
+  fill="none"
+>
+  <!-- Base building block — large rectangle, white/dark neutral -->
+  <rect x="4" y="14" width="16" height="14" rx="2" fill="currentColor" opacity="0.9"/>
+  <!-- Upper tower — smaller, offset right, amber gold accent -->
+  <rect x="13" y="4" width="15" height="18" rx="2" fill="#D4A853"/>
+  <!-- Window detail on tower — small cut-out rectangle, creates depth -->
+  <rect x="17" y="9" width="4" height="5" rx="1" fill="currentColor" opacity="0.25"/>
+</svg>

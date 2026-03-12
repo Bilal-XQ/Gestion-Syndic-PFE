@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { Loader2, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle, Building2, FileText, Wallet } from "lucide-react";
 
 import {
   Dialog,
@@ -57,9 +57,21 @@ export function OwnerPaymentForm({
   const tc = useTranslations("common");
   const tv = useTranslations("validation");
   const methodOptions = [
-    { value: "bank_transfer", label: tc("paymentMethods.transferFull") },
-    { value: "check", label: tc("paymentMethods.check") },
-    { value: "cash", label: tc("paymentMethods.cash") },
+    {
+      value: "bank_transfer",
+      label: tc("paymentMethods.transferFull"),
+      icon: Building2,
+    },
+    {
+      value: "check",
+      label: tc("paymentMethods.check"),
+      icon: FileText,
+    },
+    {
+      value: "cash",
+      label: tc("paymentMethods.cash"),
+      icon: Wallet,
+    },
   ];
   const queryClient = useQueryClient();
   const [serverError, setServerError] = useState("");
@@ -159,7 +171,17 @@ export function OwnerPaymentForm({
           </DialogDescription>
         </div>
 
-        <form onSubmit={form.handleSubmit((data) => mutation.mutate(data))}>
+        <form
+          onSubmit={form.handleSubmit(
+            (data) => mutation.mutate(data),
+            (errors) => {
+              console.error("[PaymentForm] Validation errors:", errors);
+            }
+          )}
+        >
+          {/* Hidden registered fields — required for zodResolver to validate them */}
+          <input type="hidden" {...form.register("chargeId")} />
+          <input type="hidden" {...form.register("ownerId")} />
 
           {/* BODY */}
           <div className="px-7 py-6 space-y-[18px] overflow-visible">
@@ -217,7 +239,20 @@ export function OwnerPaymentForm({
                 }
               >
                 <SelectTrigger className={selectTriggerClass}>
-                  <SelectValue />
+                  <SelectValue>
+                    {(() => {
+                      const selected = methodOptions.find(
+                        (o) => o.value === form.watch("method")
+                      );
+                      if (!selected) return null;
+                      return (
+                        <div className="flex items-center gap-2">
+                          <selected.icon className="h-4 w-4 text-[--text-muted] shrink-0" />
+                          <span>{selected.label}</span>
+                        </div>
+                      );
+                    })()}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent className="rounded-[10px] border border-[--border-default] bg-popover text-popover-foreground shadow-[var(--shadow-md)]">
                   {methodOptions.map((opt) => (
@@ -226,7 +261,10 @@ export function OwnerPaymentForm({
                       value={opt.value}
                       className="text-[14px] focus:bg-[--bg-card-hover] focus:text-[--text-primary]"
                     >
-                      {opt.label}
+                      <div className="flex items-center gap-2">
+                        <opt.icon className="h-4 w-4 text-[--text-muted] shrink-0" />
+                        <span>{opt.label}</span>
+                      </div>
                     </SelectItem>
                   ))}
                 </SelectContent>

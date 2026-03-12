@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -69,9 +70,14 @@ export function AppSidebar({
               <SidebarMenuButton size="lg" asChild tooltip="Accueil">
                 <Link href="/dashboard">
                   <div className="flex aspect-square size-8 items-center justify-center rounded-[8px] border border-[--border-default] bg-[--bg-card]">
-                    <span className="text-sm font-semibold text-[--text-primary]">
-                      S
-                    </span>
+                    <Image
+                      src="/logo.svg"
+                      alt="Syndic"
+                      width={20}
+                      height={20}
+                      className="text-[--text-primary]"
+                      style={{ color: "var(--text-primary)" }}
+                    />
                   </div>
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-semibold text-[--text-primary]">

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function FooterSection() {
@@ -9,9 +10,13 @@ export default function FooterSection() {
           {/* Logo */}
           <div className="flex items-center gap-2.5">
             <div className="flex h-7 w-7 items-center justify-center rounded-[6px] border border-[--border-default] bg-[--bg-card]">
-              <span className="font-[family-name:var(--font-syne)] text-xs font-bold text-[--text-primary]">
-                S
-              </span>
+              <Image
+                src="/logo.svg"
+                alt="Syndic"
+                width={18}
+                height={18}
+                style={{ color: "var(--text-primary)" }}
+              />
             </div>
             <span className="text-sm font-medium text-[--text-muted]">
               Syndic

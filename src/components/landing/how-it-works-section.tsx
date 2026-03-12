@@ -25,7 +25,7 @@ const steps = [
 
 export default function HowItWorksSection() {
   return (
-    <section className="relative overflow-hidden border-y border-[--border-subtle] bg-[--bg-subtle] py-32">
+    <section id="how-it-works" className="relative overflow-hidden border-y border-[--border-subtle] bg-[--bg-subtle] py-32">
       <div className="mx-auto max-w-6xl px-4 md:px-6">
         {/* Section header */}
         <BlurFade delay={0.1} inView>

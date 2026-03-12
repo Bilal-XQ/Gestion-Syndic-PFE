@@ -6,7 +6,6 @@ import {
   Bell,
   CheckCheck,
   Mail,
-  MailOpen,
   CheckCircle,
   AlertCircle,
   Check,
@@ -192,22 +191,6 @@ export function NotificationsList() {
                 <CardContent className="py-4">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex items-start gap-3 flex-1 min-w-0">
-                      {/* Read toggle button */}
-                      <button
-                        type="button"
-                        className="mt-0.5 shrink-0 rounded-[8px] p-1.5 hover:bg-[--bg-elevated]"
-                        onClick={() => {
-                          if (!notif.isRead) markReadMutation.mutate(notif.id);
-                        }}
-                        title={notif.isRead ? t("alreadyRead") : t("markAsRead")}
-                      >
-                        {notif.isRead ? (
-                          <MailOpen className="h-4 w-4 text-[--text-muted]" />
-                        ) : (
-                          <Mail className="h-4 w-4 text-[--accent-primary]" />
-                        )}
-                      </button>
-
                       {/* Type icon */}
                       <div className="shrink-0 mt-0.5">
                         <Icon

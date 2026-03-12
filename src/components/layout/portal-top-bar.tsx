@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -27,9 +28,14 @@ export function PortalTopBar() {
           className="flex items-center gap-2"
         >
           <div className="flex h-8 w-8 items-center justify-center rounded-[8px] border border-[--border-default] bg-[--bg-card]">
-            <span className="text-sm font-semibold text-[--text-primary]">
-              S
-            </span>
+            <Image
+              src="/logo.svg"
+              alt="Syndic"
+              width={20}
+              height={20}
+              className="text-[--text-primary]"
+              style={{ color: "var(--text-primary)" }}
+            />
           </div>
           <span className="hidden text-sm font-semibold text-[--text-primary] sm:inline">
             Syndic

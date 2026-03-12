@@ -53,6 +53,7 @@ export default function FaqSection() {
 
   return (
     <section
+      id="faq"
       className="py-32"
       style={{
         background: isDark
