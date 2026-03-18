@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { Plus, Pencil, Trash2, Search } from "lucide-react";
+import { Plus, Pencil, Trash2, Download } from "lucide-react";
 
 import {
   Table,
@@ -14,28 +14,20 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/features/shared/StatusBadge";
+import { ApartmentTypeBadge } from "./apartment-type-badge";
 import { ApartmentPanel } from "./apartment-panel";
 import { DeleteApartmentDialog } from "./delete-apartment-dialog";
+import { ApartmentStats } from "./apartments-stats";
+import { ApartmentsFilterBar } from "./apartments-filter-bar";
+import { ApartmentDetailSheet } from "./apartment-detail-sheet";
+import { formatMAD } from "@/lib/formatters";
+import { exportApartments } from "@/lib/export/excel";
 
-import { getApartments } from "@/lib/db/queries/apartments";
+import type { ApartmentEnriched } from "@/types";
 
-type Apartment = {
-  id: string;
-  unitNumber: string;
-  floor: number;
-  surfaceArea: string;
-  roomCount: number;
-  status: string;
-  buildingId: string;
-  deletedAt: Date | null;
-  createdAt: Date;
-  updatedAt: Date;
-};
-
-async function fetchApartments(): Promise<Apartment[]> {
+async function fetchApartments(): Promise<ApartmentEnriched[]> {
   const res = await fetch("/api/apartments");
   if (!res.ok) throw new Error("Failed to fetch");
   return res.json();
@@ -45,48 +37,57 @@ export function ApartmentsTable({
   initialData,
   buildingId,
 }: {
-  initialData: Apartment[];
+  initialData: ApartmentEnriched[];
   buildingId: string;
 }) {
   const t = useTranslations("apartments");
-  const [search, setSearch] = useState("");
   const [panelOpen, setPanelOpen] = useState(false);
-  const [editApartment, setEditApartment] = useState<Apartment | null>(null);
+  const [editApartment, setEditApartment] = useState<ApartmentEnriched | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [deleteUnit, setDeleteUnit] = useState("");
+  const [filteredApartments, setFilteredApartments] = useState<ApartmentEnriched[]>(
+    initialData
+  );
+  const [selectedApartment, setSelectedApartment] = useState<ApartmentEnriched | null>(
+    null
+  );
 
-  const { data: apartments = initialData } = useQuery<Apartment[]>({
+  const { data: apartments = initialData } = useQuery<ApartmentEnriched[]>({
     queryKey: ["apartments"],
     queryFn: fetchApartments,
     initialData,
   });
 
-  const filtered = apartments.filter((a) =>
-    a.unitNumber.toLowerCase().includes(search.toLowerCase())
-  );
+  useEffect(() => {
+    setFilteredApartments(apartments);
+  }, [apartments]);
 
   return (
     <>
+      <ApartmentStats apartments={apartments} />
+
       {/* Toolbar */}
-      <div className="flex items-center justify-between gap-4">
-        <div className="relative max-w-xs flex-1">
-          <Search className="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-[--text-muted]" />
-          <Input
-            placeholder={t("searchPlaceholder")}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="ps-9"
-          />
+      <div className="flex flex-col gap-3">
+        <ApartmentsFilterBar
+          apartments={apartments}
+          onFilter={setFilteredApartments}
+        />
+
+        <div className="flex items-center justify-end gap-2">
+          <Button variant="outline" onClick={() => exportApartments(filteredApartments, t)}>
+            <Download className="size-4" />
+            {t("export.button")}
+          </Button>
+          <Button
+            onClick={() => {
+              setEditApartment(null);
+              setPanelOpen(true);
+            }}
+          >
+            <Plus className="size-4" />
+            {t("addButton")}
+          </Button>
         </div>
-        <Button
-          onClick={() => {
-            setEditApartment(null);
-            setPanelOpen(true);
-          }}
-        >
-          <Plus className="size-4" />
-          {t("addButton")}
-        </Button>
       </div>
 
       {/* Table */}
@@ -108,6 +109,15 @@ export function ApartmentsTable({
                 {t("table.rooms")}
               </TableHead>
               <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
+                {t("table.type")}
+              </TableHead>
+              <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
+                {t("table.owner")}
+              </TableHead>
+              <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
+                {t("table.monthlyCharges")}
+              </TableHead>
+              <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
                 {t("table.status")}
               </TableHead>
               <TableHead className="text-end text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
@@ -116,20 +126,21 @@ export function ApartmentsTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filtered.length === 0 ? (
+            {filteredApartments.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={6}
+                  colSpan={9}
                   className="h-24 text-center text-[--text-muted]"
                 >
                   {t("table.empty")}
                 </TableCell>
               </TableRow>
             ) : (
-              filtered.map((apt) => (
+              filteredApartments.map((apt) => (
                 <TableRow
                   key={apt.id}
-                  className="border-[--border-subtle] transition-colors duration-[150ms] hover:bg-[--bg-card-hover]"
+                  onClick={() => setSelectedApartment(apt)}
+                  className="cursor-pointer border-[--border-subtle] transition-colors duration-[150ms] hover:bg-[--bg-card-hover]"
                 >
                   <TableCell className="font-medium text-[--text-primary]">
                     {apt.unitNumber}
@@ -144,6 +155,21 @@ export function ApartmentsTable({
                     {apt.roomCount}
                   </TableCell>
                   <TableCell>
+                    <ApartmentTypeBadge type={apt.type} />
+                  </TableCell>
+                  <TableCell
+                    className={
+                      apt.ownerName
+                        ? "text-[--text-secondary]"
+                        : "text-[--text-muted]"
+                    }
+                  >
+                    {apt.ownerName ?? t("table.vacantLabel")}
+                  </TableCell>
+                  <TableCell className="font-[family-name:var(--font-geist-mono)] text-[--text-secondary]">
+                    {formatMAD(apt.totalActiveCharges)}
+                  </TableCell>
+                  <TableCell>
                     <StatusBadge
                       status={apt.status as "occupied" | "vacant"}
                     />
@@ -153,7 +179,8 @@ export function ApartmentsTable({
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setEditApartment(apt);
                           setPanelOpen(true);
                         }}
@@ -163,7 +190,8 @@ export function ApartmentsTable({
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setDeleteId(apt.id);
                           setDeleteUnit(apt.unitNumber);
                         }}
@@ -195,6 +223,14 @@ export function ApartmentsTable({
         }}
         apartmentId={deleteId}
         unitNumber={deleteUnit}
+      />
+
+      <ApartmentDetailSheet
+        apartment={selectedApartment}
+        open={!!selectedApartment}
+        onOpenChange={(open) => {
+          if (!open) setSelectedApartment(null);
+        }}
       />
     </>
   );

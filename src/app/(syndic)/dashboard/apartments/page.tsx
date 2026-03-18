@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { createClient } from "@/utils/supabase/server";
 import { getBuildingBySyndicId } from "@/lib/db/queries/buildings";
-import { getApartments } from "@/lib/db/queries/apartments";
+import { getApartmentsEnriched } from "@/lib/db/queries/apartments";
 import { ApartmentsTable } from "@/components/features/apartments/apartments-table";
 
 export default async function ApartmentsPage() {
@@ -11,13 +11,13 @@ export default async function ApartmentsPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  let apartments: Awaited<ReturnType<typeof getApartments>> = [];
+  let apartments: Awaited<ReturnType<typeof getApartmentsEnriched>> = [];
   let buildingId = "";
 
   if (user) {
     const building = await getBuildingBySyndicId(user.id);
     if (building) {
-      apartments = await getApartments(building.id);
+      apartments = await getApartmentsEnriched(user.id);
       buildingId = building.id;
     }
   }

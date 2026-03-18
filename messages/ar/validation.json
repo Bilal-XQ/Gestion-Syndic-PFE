@@ -12,7 +12,8 @@
     "floorInteger": "يجب أن يكون الطابق رقماً صحيحاً",
     "surfacePositive": "يجب أن تكون المساحة موجبة",
     "roomCountInteger": "يجب أن يكون عدد الغرف رقماً صحيحاً",
-    "roomCountMin": "غرفة واحدة على الأقل"
+    "roomCountMin": "غرفة واحدة على الأقل",
+    "typeRequired": "نوع الشقة مطلوب"
   },
   "charge": {
     "titleRequired": "العنوان مطلوب",

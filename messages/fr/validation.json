@@ -12,7 +12,8 @@
     "floorInteger": "L'étage doit être un entier",
     "surfacePositive": "La superficie doit être positive",
     "roomCountInteger": "Le nombre de pièces doit être un entier",
-    "roomCountMin": "Au moins 1 pièce"
+    "roomCountMin": "Au moins 1 pièce",
+    "typeRequired": "Le type de logement est requis"
   },
   "charge": {
     "titleRequired": "Le titre est requis",

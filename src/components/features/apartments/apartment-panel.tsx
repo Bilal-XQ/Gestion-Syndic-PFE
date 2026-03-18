@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
@@ -15,12 +14,21 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 import {
   createApartmentSchema,
   type ApartmentFormValues,
 } from "@/lib/validations/apartment";
 import { createApartment, updateApartment } from "@/lib/actions/apartments";
+
+type ApartmentType = ApartmentFormValues["type"];
 
 interface ApartmentPanelProps {
   open: boolean;
@@ -31,6 +39,7 @@ interface ApartmentPanelProps {
     floor: number;
     surfaceArea: string;
     roomCount: number;
+    type?: ApartmentType;
   } | null;
 }
 
@@ -38,18 +47,24 @@ export function ApartmentPanel({
   open,
   onOpenChange,
   apartment,
-}: ApartmentPanelProps) {  const t = useTranslations("apartments");  const tc = useTranslations("common");  const tv = useTranslations("validation");  const isEdit = !!apartment;
+}: ApartmentPanelProps) {
+  const t = useTranslations("apartments");
+  const tc = useTranslations("common");
+  const tv = useTranslations("validation");
+  const isEdit = !!apartment;
   const queryClient = useQueryClient();
   const [serverError, setServerError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<
+    Partial<Record<keyof ApartmentFormValues, string>>
+  >({});
 
   const form = useForm<ApartmentFormValues>({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(createApartmentSchema(tv)) as any,
     defaultValues: {
       unitNumber: apartment?.unitNumber ?? "",
       floor: apartment?.floor,
       surfaceArea: apartment ? Number(apartment.surfaceArea) : undefined,
       roomCount: apartment?.roomCount,
+      type: apartment?.type ?? "t2",
     },
   });
 
@@ -85,18 +100,46 @@ export function ApartmentPanel({
   const handleOpenChange = (v: boolean) => {
     if (v) {
       setServerError("");
+      setFieldErrors({});
       form.reset({
         unitNumber: apartment?.unitNumber ?? "",
         floor: apartment?.floor,
         surfaceArea: apartment ? Number(apartment.surfaceArea) : undefined,
         roomCount: apartment?.roomCount,
+        type: apartment?.type ?? "t2",
       });
     }
     onOpenChange(v);
   };
 
+  const handleManualSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setFieldErrors({});
+    setServerError("");
+
+    const values = form.getValues();
+    const schema = createApartmentSchema(tv);
+    const result = schema.safeParse(values);
+
+    if (!result.success) {
+      const flat = result.error.flatten().fieldErrors;
+      const mapped: Partial<Record<keyof ApartmentFormValues, string>> = {};
+      for (const [key, msgs] of Object.entries(flat)) {
+        if (msgs && msgs.length > 0) {
+          mapped[key as keyof ApartmentFormValues] = msgs[0];
+        }
+      }
+      setFieldErrors(mapped);
+      return;
+    }
+
+    mutation.mutate(result.data);
+  };
+
   const inputClass =
     "h-auto w-full rounded-[10px] border border-[--border-default] bg-[--bg-input] px-[14px] py-[10px] text-[14px] text-[--text-primary] shadow-none placeholder:text-[--text-placeholder] transition-[border-color,box-shadow] duration-150 focus:border-[--border-focus] focus:ring-0 focus:outline-none focus:shadow-[0_0_0_3px_var(--glow-soft)] focus-visible:ring-0 focus-visible:outline-none";
+  const selectTriggerClass =
+    "h-auto w-full rounded-[10px] border border-[--border-default] bg-[--bg-input] px-[14px] py-[10px] text-[14px] text-[--text-primary] shadow-none transition-[border-color,box-shadow] duration-150 data-[placeholder]:text-[--text-placeholder] focus:border-[--border-focus] focus:ring-0 focus:outline-none focus:shadow-[0_0_0_3px_var(--glow-soft)] focus-visible:ring-0 focus-visible:outline-none";
   const labelClass =
     "text-[12px] font-medium text-[--text-secondary]";
 
@@ -115,7 +158,7 @@ export function ApartmentPanel({
           </DialogDescription>
         </div>
 
-        <form onSubmit={form.handleSubmit((data) => mutation.mutate(data))}>
+        <form onSubmit={handleManualSubmit}>
           {/* BODY */}
           <div className="px-7 py-6 space-y-[18px] overflow-visible">
             <div className="grid grid-cols-2 gap-4">
@@ -129,9 +172,9 @@ export function ApartmentPanel({
                   className={inputClass}
                   {...form.register("unitNumber")}
                 />
-                {form.formState.errors.unitNumber && (
+                {fieldErrors.unitNumber && (
                   <p className="text-[12px] text-[#EF4444] mt-1">
-                    {form.formState.errors.unitNumber.message}
+                    {fieldErrors.unitNumber}
                   </p>
                 )}
               </div>
@@ -147,9 +190,9 @@ export function ApartmentPanel({
                   className={inputClass}
                   {...form.register("floor")}
                 />
-                {form.formState.errors.floor && (
+                {fieldErrors.floor && (
                   <p className="text-[12px] text-[#EF4444] mt-1">
-                    {form.formState.errors.floor.message}
+                    {fieldErrors.floor}
                   </p>
                 )}
               </div>
@@ -168,9 +211,9 @@ export function ApartmentPanel({
                   className={inputClass}
                   {...form.register("surfaceArea")}
                 />
-                {form.formState.errors.surfaceArea && (
+                {fieldErrors.surfaceArea && (
                   <p className="text-[12px] text-[#EF4444] mt-1">
-                    {form.formState.errors.surfaceArea.message}
+                    {fieldErrors.surfaceArea}
                   </p>
                 )}
               </div>
@@ -187,12 +230,36 @@ export function ApartmentPanel({
                   className={inputClass}
                   {...form.register("roomCount")}
                 />
-                {form.formState.errors.roomCount && (
+                {fieldErrors.roomCount && (
                   <p className="text-[12px] text-[#EF4444] mt-1">
-                    {form.formState.errors.roomCount.message}
+                    {fieldErrors.roomCount}
                   </p>
                 )}
               </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className={labelClass}>{t("panel.typeLabel")}</label>
+              <Select
+                value={form.watch("type")}
+                onValueChange={(v) =>
+                  form.setValue("type", v as ApartmentType)
+                }
+              >
+                <SelectTrigger className={selectTriggerClass}>
+                  <SelectValue placeholder={t("panel.typePlaceholder")} />
+                </SelectTrigger>
+                <SelectContent>
+                  {(["studio", "t1", "t2", "t3", "t4_plus"] as const).map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {t(`types.${type === "t4_plus" ? "t4Plus" : type}`)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {fieldErrors.type && (
+                <p className="text-[12px] text-[--status-error]">{fieldErrors.type}</p>
+              )}
             </div>
           </div>
 

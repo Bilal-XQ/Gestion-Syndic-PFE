@@ -71,6 +71,10 @@ export const apartments = pgTable(
     floor: integer("floor").notNull(),
     surfaceArea: numeric("surface_area").notNull(),
     roomCount: integer("room_count").notNull(),
+    type: text("type")
+      .notNull()
+      .default("t2")
+      .$type<"studio" | "t1" | "t2" | "t3" | "t4_plus">(),
     status: text("status").notNull(),
     deletedAt: timestamp("deleted_at"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
@@ -78,8 +82,13 @@ export const apartments = pgTable(
   },
   (table) => ({
     buildingIdIdx: index("apartments_building_id_idx").on(table.buildingId),
+    typeIdx: index("apartments_type_idx").on(table.type),
     statusIdx: index("apartments_status_idx").on(table.status),
     deletedAtIdx: index("apartments_deleted_at_idx").on(table.deletedAt),
+    typeCheck: check(
+      "apartments_type_check",
+      sql`${table.type} IN ('studio', 't1', 't2', 't3', 't4_plus')`
+    ),
     statusCheck: check(
       "apartments_status_check",
       sql`${table.status} IN ('occupied', 'vacant')`

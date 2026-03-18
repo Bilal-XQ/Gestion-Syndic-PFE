@@ -12,7 +12,8 @@
     "floorInteger": "Floor must be an integer",
     "surfacePositive": "Surface area must be positive",
     "roomCountInteger": "Number of rooms must be an integer",
-    "roomCountMin": "At least 1 room"
+    "roomCountMin": "At least 1 room",
+    "typeRequired": "Unit type is required"
   },
   "charge": {
     "titleRequired": "Title is required",

@@ -1,4 +1,5 @@
 import * as XLSX from "xlsx";
+import type { ApartmentEnriched } from "@/types";
 
 // ── Shared helper ────────────────────────────────────────────────────────────
 
@@ -218,5 +219,40 @@ export function exportOwnerPayments(
     `mes-paiements-${today()}.xlsx`,
     sheetName,
     [25, 15, 14, 8, 14, 16, 20]
+  );
+}
+
+export function exportApartments(
+  apartments: ApartmentEnriched[],
+  t: (key: string) => string
+): void {
+  const rows = apartments.map((a) => ({
+    unitNumber: a.unitNumber,
+    floor: a.floor,
+    type: a.type === "t4_plus" ? "T4+" : a.type.toUpperCase(),
+    surfaceArea: parseFloat(a.surfaceArea),
+    roomCount: a.roomCount,
+    status: a.status,
+    owner: a.ownerName ?? "",
+    monthlyCharges: parseFloat(a.totalActiveCharges),
+    currency: "MAD",
+  }));
+
+  downloadSheet(
+    rows,
+    [
+      t("export.columns.unitNumber"),
+      t("export.columns.floor"),
+      t("export.columns.type"),
+      t("export.columns.surfaceArea"),
+      t("export.columns.roomCount"),
+      t("export.columns.status"),
+      t("export.columns.owner"),
+      t("export.columns.monthlyCharges"),
+      t("export.columns.currency"),
+    ],
+    `${t("export.filePrefix")}_${Date.now()}.xlsx`,
+    t("export.sheetName"),
+    [12, 8, 10, 12, 10, 12, 25, 15, 8]
   );
 }

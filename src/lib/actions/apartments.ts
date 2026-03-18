@@ -55,6 +55,7 @@ export async function createApartment(
       floor: parsed.data.floor,
       surfaceArea: String(parsed.data.surfaceArea),
       roomCount: parsed.data.roomCount,
+      type: parsed.data.type,
       status: "vacant",
     })
     .returning({ id: apartments.id });
@@ -113,6 +114,7 @@ export async function updateApartment(
       floor: parsed.data.floor,
       surfaceArea: String(parsed.data.surfaceArea),
       roomCount: parsed.data.roomCount,
+      type: parsed.data.type,
       updatedAt: new Date(),
     })
     .where(eq(apartments.id, id));

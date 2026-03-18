@@ -1,15 +1,64 @@
 {
   "pageTitle": "Apartments",
-  "searchPlaceholder": "Search by unit number…",
   "addButton": "Add",
   "table": {
     "unitNumber": "Unit",
     "floor": "Floor",
     "surfaceArea": "Surface",
     "rooms": "Rooms",
+    "type": "Type",
+    "owner": "Owner",
+    "monthlyCharges": "Active charges",
+    "vacantLabel": "Vacant",
     "status": "Status",
     "actions": "Actions",
     "empty": "No apartments found"
+  },
+  "stats": {
+    "total": "Total",
+    "occupied": "Occupied",
+    "vacant": "Vacant",
+    "occupancyRate": "Occupancy rate"
+  },
+  "filters": {
+    "searchPlaceholder": "Search by unit number…",
+    "statusLabel": "Status",
+    "statusAll": "All",
+    "statusOccupied": "Occupied",
+    "statusVacant": "Vacant",
+    "typeLabel": "Type",
+    "typeAll": "All types",
+    "floorLabel": "Floor",
+    "floorAll": "All floors",
+    "clear": "Reset"
+  },
+  "export": {
+    "button": "Export",
+    "filePrefix": "apartments",
+    "sheetName": "Apartments",
+    "columns": {
+      "unitNumber": "Unit",
+      "floor": "Floor",
+      "type": "Type",
+      "surfaceArea": "Surface",
+      "roomCount": "Rooms",
+      "status": "Status",
+      "owner": "Owner",
+      "monthlyCharges": "Active charges",
+      "currency": "Currency"
+    }
+  },
+  "detail": {
+    "title": "Apartment details",
+    "apartmentInfo": "Unit information",
+    "ownerCardTitle": "Current owner",
+    "ownerNone": "No owner assigned",
+    "chargesTitle": "Active charges",
+    "chargesEmpty": "No active charges",
+    "paymentSummaryTitle": "Payment summary",
+    "totalCharged": "Total charged",
+    "totalPaid": "Total paid",
+    "remaining": "Remaining"
   },
   "panel": {
     "createTitle": "Add apartment",
@@ -21,11 +70,20 @@
     "floorLabel": "Floor",
     "surfaceAreaLabel": "Surface area (m²)",
     "roomCountLabel": "Number of rooms",
+    "typeLabel": "Unit type",
+    "typePlaceholder": "Select a type",
     "submitting": "Saving…",
     "createButton": "Create",
     "updateButton": "Update",
     "createSuccess": "Apartment created successfully",
     "updateSuccess": "Apartment updated"
+  },
+  "types": {
+    "studio": "Studio",
+    "t1": "1BR",
+    "t2": "2BR",
+    "t3": "3BR",
+    "t4Plus": "4BR+"
   },
   "delete": {
     "title": "Are you sure?",

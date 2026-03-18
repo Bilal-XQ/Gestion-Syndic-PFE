@@ -9,6 +9,9 @@ export function createApartmentSchema(t: (key: string) => string) {
       .number()
       .int(t("apartment.roomCountInteger"))
       .min(1, t("apartment.roomCountMin")),
+    type: z.enum(["studio", "t1", "t2", "t3", "t4_plus"], {
+      error: t("apartment.typeRequired"),
+    }),
   });
 }
 

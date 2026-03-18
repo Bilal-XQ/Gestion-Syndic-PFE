@@ -1,15 +1,64 @@
 {
   "pageTitle": "الشقق",
-  "searchPlaceholder": "البحث برقم الوحدة…",
   "addButton": "إضافة",
   "table": {
     "unitNumber": "الوحدة",
     "floor": "الطابق",
     "surfaceArea": "المساحة",
     "rooms": "الغرف",
+    "type": "النوع",
+    "owner": "المالك",
+    "monthlyCharges": "الرسوم النشطة",
+    "vacantLabel": "شاغرة",
     "status": "الحالة",
     "actions": "الإجراءات",
     "empty": "لا توجد شقق"
+  },
+  "stats": {
+    "total": "الإجمالي",
+    "occupied": "المشغولة",
+    "vacant": "الشاغرة",
+    "occupancyRate": "نسبة الإشغال"
+  },
+  "filters": {
+    "searchPlaceholder": "البحث برقم الوحدة…",
+    "statusLabel": "الحالة",
+    "statusAll": "الكل",
+    "statusOccupied": "مشغولة",
+    "statusVacant": "شاغرة",
+    "typeLabel": "النوع",
+    "typeAll": "كل الأنواع",
+    "floorLabel": "الطابق",
+    "floorAll": "كل الطوابق",
+    "clear": "إعادة التعيين"
+  },
+  "export": {
+    "button": "تصدير",
+    "filePrefix": "apartments",
+    "sheetName": "الشقق",
+    "columns": {
+      "unitNumber": "الوحدة",
+      "floor": "الطابق",
+      "type": "النوع",
+      "surfaceArea": "المساحة",
+      "roomCount": "الغرف",
+      "status": "الحالة",
+      "owner": "المالك",
+      "monthlyCharges": "الرسوم النشطة",
+      "currency": "العملة"
+    }
+  },
+  "detail": {
+    "title": "تفاصيل الشقة",
+    "apartmentInfo": "معلومات الشقة",
+    "ownerCardTitle": "المالك الحالي",
+    "ownerNone": "لا يوجد مالك معين",
+    "chargesTitle": "الرسوم النشطة",
+    "chargesEmpty": "لا توجد رسوم نشطة",
+    "paymentSummaryTitle": "الملخص المالي",
+    "totalCharged": "إجمالي المفوتر",
+    "totalPaid": "إجمالي المدفوع",
+    "remaining": "المتبقي"
   },
   "panel": {
     "createTitle": "إضافة شقة",
@@ -21,11 +70,20 @@
     "floorLabel": "الطابق",
     "surfaceAreaLabel": "المساحة (م²)",
     "roomCountLabel": "عدد الغرف",
+    "typeLabel": "نوع الشقة",
+    "typePlaceholder": "اختر نوعاً",
     "submitting": "جارٍ الحفظ…",
     "createButton": "إنشاء",
     "updateButton": "تحديث",
     "createSuccess": "تم إنشاء الشقة بنجاح",
     "updateSuccess": "تم تحديث الشقة"
+  },
+  "types": {
+    "studio": "استوديو",
+    "t1": "T1",
+    "t2": "T2",
+    "t3": "T3",
+    "t4Plus": "T4+"
   },
   "delete": {
     "title": "هل أنت متأكد؟",

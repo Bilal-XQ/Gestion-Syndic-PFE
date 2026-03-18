@@ -1,15 +1,64 @@
 {
   "pageTitle": "Appartements",
-  "searchPlaceholder": "Rechercher par numéro…",
   "addButton": "Ajouter",
   "table": {
     "unitNumber": "Numéro",
     "floor": "Étage",
     "surfaceArea": "Superficie",
     "rooms": "Pièces",
+    "type": "Type",
+    "owner": "Propriétaire",
+    "monthlyCharges": "Charges actives",
+    "vacantLabel": "Vacant",
     "status": "Statut",
     "actions": "Actions",
     "empty": "Aucun appartement trouvé"
+  },
+  "stats": {
+    "total": "Total",
+    "occupied": "Occupés",
+    "vacant": "Vacants",
+    "occupancyRate": "Taux d'occupation"
+  },
+  "filters": {
+    "searchPlaceholder": "Rechercher par numéro…",
+    "statusLabel": "Statut",
+    "statusAll": "Tous",
+    "statusOccupied": "Occupé",
+    "statusVacant": "Vacant",
+    "typeLabel": "Type",
+    "typeAll": "Tous les types",
+    "floorLabel": "Étage",
+    "floorAll": "Tous les étages",
+    "clear": "Réinitialiser"
+  },
+  "export": {
+    "button": "Exporter",
+    "filePrefix": "appartements",
+    "sheetName": "Appartements",
+    "columns": {
+      "unitNumber": "Numéro",
+      "floor": "Étage",
+      "type": "Type",
+      "surfaceArea": "Superficie",
+      "roomCount": "Pièces",
+      "status": "Statut",
+      "owner": "Propriétaire",
+      "monthlyCharges": "Charges actives",
+      "currency": "Devise"
+    }
+  },
+  "detail": {
+    "title": "Détails de l'appartement",
+    "apartmentInfo": "Informations du logement",
+    "ownerCardTitle": "Propriétaire actuel",
+    "ownerNone": "Aucun propriétaire assigné",
+    "chargesTitle": "Charges actives",
+    "chargesEmpty": "Aucune charge active",
+    "paymentSummaryTitle": "Résumé financier",
+    "totalCharged": "Total facturé",
+    "totalPaid": "Total payé",
+    "remaining": "Reste à payer"
   },
   "panel": {
     "createTitle": "Ajouter un appartement",
@@ -21,11 +70,20 @@
     "floorLabel": "Étage",
     "surfaceAreaLabel": "Superficie (m²)",
     "roomCountLabel": "Nombre de pièces",
+    "typeLabel": "Type de logement",
+    "typePlaceholder": "Sélectionner un type",
     "submitting": "Enregistrement…",
     "createButton": "Créer",
     "updateButton": "Mettre à jour",
     "createSuccess": "Appartement créé avec succès",
     "updateSuccess": "Appartement mis à jour"
+  },
+  "types": {
+    "studio": "Studio",
+    "t1": "T1",
+    "t2": "T2",
+    "t3": "T3",
+    "t4Plus": "T4 et plus"
   },
   "delete": {
     "title": "Êtes-vous sûr ?",
