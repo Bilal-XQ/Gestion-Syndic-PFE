@@ -52,8 +52,8 @@ export default function Navbar() {
             <Image
               src="/logo.svg"
               alt="Syndic"
-              width={20}
-              height={20}
+              width={28}
+              height={28}
               style={{ color: "var(--text-primary)" }}
             />
           </div>

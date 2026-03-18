@@ -31,8 +31,8 @@ export function PortalTopBar() {
             <Image
               src="/logo.svg"
               alt="Syndic"
-              width={20}
-              height={20}
+              width={22}
+              height={22}
               className="text-[--text-primary]"
               style={{ color: "var(--text-primary)" }}
             />

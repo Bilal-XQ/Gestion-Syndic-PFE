@@ -90,6 +90,15 @@ export function OwnerPaymentsView() {
   const [paymentOpen, setPaymentOpen] = useState(false);
   const [selectedCharge, setSelectedCharge] = useState<Charge | null>(null);
 
+  const { data: profile } = useQuery<{ ownerId: string } | null>({
+    queryKey: ["portal", "profile"],
+    queryFn: async () => {
+      const r = await fetch("/api/portal/profile");
+      if (!r.ok) return null;
+      return r.json() as Promise<{ ownerId: string }>;
+    },
+  });
+
   const { data: charges = [], isLoading: chargesLoading } = useQuery<Charge[]>({
     queryKey: ["portal", "charges"],
     queryFn: async () => {
@@ -302,7 +311,7 @@ export function OwnerPaymentsView() {
         open={paymentOpen}
         onOpenChange={setPaymentOpen}
         charge={selectedCharge}
-        ownerId=""
+        ownerId={profile?.ownerId ?? ""}
       />
     </>
   );

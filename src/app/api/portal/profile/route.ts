@@ -41,6 +41,7 @@ export async function GET() {
   const building = await getBuildingById(apartment.buildingId);
 
   return NextResponse.json({
+    ownerId: ownerRecord.id,
     owner: {
       firstName: owner.firstName,
       lastName: owner.lastName,
