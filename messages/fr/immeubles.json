@@ -1,0 +1,30 @@
+{
+  "pageTitle": "Immeubles",
+  "addButton": "Ajouter un immeuble",
+  "empty": "Aucun immeuble enregistré.",
+  "table": {
+    "name": "Nom",
+    "address": "Adresse",
+    "totalApartments": "Appartements",
+    "occupancyRate": "Taux d'occupation",
+    "totalTantiemes": "Total tantièmes",
+    "actions": "Actions"
+  },
+  "panel": {
+    "createTitle": "Ajouter un immeuble",
+    "editTitle": "Modifier l'immeuble",
+    "description": "Renseignez les informations de l'immeuble.",
+    "nameLabel": "Nom de l'immeuble",
+    "namePlaceholder": "Résidence Al Fath",
+    "addressLabel": "Adresse complète",
+    "addressPlaceholder": "123 Rue Mohammed V, Casablanca",
+    "totalTantièmesLabel": "Total des tantièmes",
+    "totalTantièmesPlaceholder": "1000",
+    "totalTantièmesHelper": "Total des parts de copropriété (ex: 1000)",
+    "createButton": "Créer l'immeuble",
+    "updateButton": "Enregistrer les modifications",
+    "submitting": "Enregistrement...",
+    "createSuccess": "Immeuble créé avec succès.",
+    "updateSuccess": "Immeuble mis à jour avec succès."
+  }
+}

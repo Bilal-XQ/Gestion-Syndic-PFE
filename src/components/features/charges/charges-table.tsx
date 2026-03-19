@@ -53,9 +53,33 @@ type Charge = {
   apartmentUnit: string | null;
 };
 
+type ApartmentOption = {
+  id: string;
+  unitNumber: string;
+  floor: number;
+  buildingId: string;
+};
+
+type BuildingOption = {
+  id: string;
+  name: string;
+};
+
 async function fetchCharges(): Promise<Charge[]> {
   const res = await fetch("/api/charges");
   if (!res.ok) throw new Error("Failed to fetch charges");
+  return res.json();
+}
+
+async function fetchApartments(): Promise<ApartmentOption[]> {
+  const res = await fetch("/api/apartments");
+  if (!res.ok) throw new Error("Failed to fetch apartments");
+  return res.json();
+}
+
+async function fetchBuildings(): Promise<BuildingOption[]> {
+  const res = await fetch("/api/immeubles");
+  if (!res.ok) throw new Error("Failed to fetch buildings");
   return res.json();
 }
 
@@ -99,6 +123,14 @@ export function ChargesTable() {
   const { data: charges = [], isLoading } = useQuery<Charge[]>({
     queryKey: ["charges"],
     queryFn: fetchCharges,
+  });
+  const { data: apartments = [] } = useQuery<ApartmentOption[]>({
+    queryKey: ["apartments"],
+    queryFn: fetchApartments,
+  });
+  const { data: buildings = [] } = useQuery<BuildingOption[]>({
+    queryKey: ["immeubles"],
+    queryFn: fetchBuildings,
   });
 
   const filtered = charges.filter(
@@ -282,7 +314,12 @@ export function ChargesTable() {
       </Card>
 
       {/* Add charge panel */}
-      <ChargePanel open={panelOpen} onOpenChange={setPanelOpen} />
+      <ChargePanel
+        open={panelOpen}
+        onOpenChange={setPanelOpen}
+        apartments={apartments}
+        buildings={buildings}
+      />
 
       {/* Delete dialog */}
       <DeleteChargeDialog

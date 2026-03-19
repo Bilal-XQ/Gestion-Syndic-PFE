@@ -33,12 +33,16 @@ type ApartmentType = ApartmentFormValues["type"];
 interface ApartmentPanelProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  buildings: { id: string; name: string; totalTantiemes: number }[];
   apartment?: {
     id: string;
+    buildingId: string;
     unitNumber: string;
     floor: number;
     surfaceArea: string;
     roomCount: number;
+    tantiemes: number;
+    buildingTotalTantiemes: number;
     type?: ApartmentType;
   } | null;
 }
@@ -46,6 +50,7 @@ interface ApartmentPanelProps {
 export function ApartmentPanel({
   open,
   onOpenChange,
+  buildings,
   apartment,
 }: ApartmentPanelProps) {
   const t = useTranslations("apartments");
@@ -60,10 +65,12 @@ export function ApartmentPanel({
 
   const form = useForm<ApartmentFormValues>({
     defaultValues: {
+      buildingId: apartment?.buildingId ?? buildings[0]?.id ?? "",
       unitNumber: apartment?.unitNumber ?? "",
       floor: apartment?.floor,
       surfaceArea: apartment ? Number(apartment.surfaceArea) : undefined,
       roomCount: apartment?.roomCount,
+      tantiemes: apartment?.tantiemes ?? 100,
       type: apartment?.type ?? "t2",
     },
   });
@@ -77,6 +84,9 @@ export function ApartmentPanel({
     },
     onSuccess: (result) => {
       if (result.success) {
+        if (result.data?.warning === "tantiemesExceed") {
+          toast.warning(t("warnings.tantiemesSumExceeds"));
+        }
         toast.success(
           isEdit
             ? t("panel.updateSuccess")
@@ -102,15 +112,21 @@ export function ApartmentPanel({
       setServerError("");
       setFieldErrors({});
       form.reset({
+        buildingId: apartment?.buildingId ?? buildings[0]?.id ?? "",
         unitNumber: apartment?.unitNumber ?? "",
         floor: apartment?.floor,
         surfaceArea: apartment ? Number(apartment.surfaceArea) : undefined,
         roomCount: apartment?.roomCount,
+        tantiemes: apartment?.tantiemes ?? 100,
         type: apartment?.type ?? "t2",
       });
     }
     onOpenChange(v);
   };
+
+  const selectedBuilding = buildings.find(
+    (b) => b.id === form.watch("buildingId")
+  );
 
   const handleManualSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -161,6 +177,28 @@ export function ApartmentPanel({
         <form onSubmit={handleManualSubmit}>
           {/* BODY */}
           <div className="px-7 py-6 space-y-[18px] overflow-visible">
+            <div className="space-y-1.5">
+              <label className={labelClass}>{t("panel.buildingLabel")}</label>
+              <Select
+                value={form.watch("buildingId")}
+                onValueChange={(v) => form.setValue("buildingId", v, { shouldDirty: true })}
+              >
+                <SelectTrigger className={selectTriggerClass}>
+                  <SelectValue placeholder={t("panel.buildingPlaceholder")} />
+                </SelectTrigger>
+                <SelectContent>
+                  {buildings.map((building) => (
+                    <SelectItem key={building.id} value={building.id}>
+                      {building.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {fieldErrors.buildingId && (
+                <p className="text-[12px] text-[--status-error]">{fieldErrors.buildingId}</p>
+              )}
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <label htmlFor="unitNumber" className={labelClass}>
@@ -259,6 +297,25 @@ export function ApartmentPanel({
               </Select>
               {fieldErrors.type && (
                 <p className="text-[12px] text-[--status-error]">{fieldErrors.type}</p>
+              )}
+            </div>
+
+            <div className="space-y-1.5">
+              <label className={labelClass}>{t("panel.tantiemesLabel")}</label>
+              <Input
+                type="number"
+                min={1}
+                placeholder="100"
+                className={inputClass}
+                {...form.register("tantiemes", { valueAsNumber: true })}
+              />
+              <p className="text-[11px] text-[--text-muted]">
+                {t("panel.tantiemesHelper", {
+                  total: selectedBuilding?.totalTantiemes ?? 1000,
+                })}
+              </p>
+              {fieldErrors.tantiemes && (
+                <p className="text-[12px] text-[--status-error]">{fieldErrors.tantiemes}</p>
               )}
             </div>
           </div>

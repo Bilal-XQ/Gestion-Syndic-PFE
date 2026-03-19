@@ -7,6 +7,7 @@
     "surfaceArea": "Superficie",
     "rooms": "Pièces",
     "type": "Type",
+    "tantiemes": "Tantièmes",
     "owner": "Propriétaire",
     "monthlyCharges": "Charges actives",
     "vacantLabel": "Vacant",
@@ -53,6 +54,7 @@
     "apartmentInfo": "Informations du logement",
     "ownerCardTitle": "Propriétaire actuel",
     "ownerNone": "Aucun propriétaire assigné",
+    "tantiemes": "Tantièmes",
     "chargesTitle": "Charges actives",
     "chargesEmpty": "Aucune charge active",
     "paymentSummaryTitle": "Résumé financier",
@@ -72,6 +74,10 @@
     "roomCountLabel": "Nombre de pièces",
     "typeLabel": "Type de logement",
     "typePlaceholder": "Sélectionner un type",
+    "buildingLabel": "Immeuble",
+    "buildingPlaceholder": "Sélectionner un immeuble",
+    "tantiemesLabel": "Tantièmes",
+    "tantiemesHelper": "Total de l'immeuble: {total}",
     "submitting": "Enregistrement…",
     "createButton": "Créer",
     "updateButton": "Mettre à jour",
@@ -84,6 +90,9 @@
     "t2": "T2",
     "t3": "T3",
     "t4Plus": "T4 et plus"
+  },
+  "warnings": {
+    "tantiemesSumExceeds": "Attention: la somme des tantièmes de l'immeuble dépasse le total configuré."
   },
   "delete": {
     "title": "Êtes-vous sûr ?",

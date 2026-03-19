@@ -7,6 +7,7 @@
     "surfaceArea": "المساحة",
     "rooms": "الغرف",
     "type": "النوع",
+    "tantiemes": "الحصص",
     "owner": "المالك",
     "monthlyCharges": "الرسوم النشطة",
     "vacantLabel": "شاغرة",
@@ -53,6 +54,7 @@
     "apartmentInfo": "معلومات الشقة",
     "ownerCardTitle": "المالك الحالي",
     "ownerNone": "لا يوجد مالك معين",
+    "tantiemes": "الحصص",
     "chargesTitle": "الرسوم النشطة",
     "chargesEmpty": "لا توجد رسوم نشطة",
     "paymentSummaryTitle": "الملخص المالي",
@@ -72,6 +74,10 @@
     "roomCountLabel": "عدد الغرف",
     "typeLabel": "نوع الشقة",
     "typePlaceholder": "اختر نوعاً",
+    "buildingLabel": "العمارة",
+    "buildingPlaceholder": "اختر عمارة",
+    "tantiemesLabel": "الحصص",
+    "tantiemesHelper": "إجمالي العمارة: {total}",
     "submitting": "جارٍ الحفظ…",
     "createButton": "إنشاء",
     "updateButton": "تحديث",
@@ -84,6 +90,9 @@
     "t2": "T2",
     "t3": "T3",
     "t4Plus": "T4+"
+  },
+  "warnings": {
+    "tantiemesSumExceeds": "تنبيه: مجموع حصص الشقق يتجاوز إجمالي حصص العمارة المحدد."
   },
   "delete": {
     "title": "هل أنت متأكد؟",

@@ -8,7 +8,8 @@ import { useTranslations } from "next-intl";
 import {
   LayoutDashboard,
   Users,
-  Building2,
+  Home,
+  Building,
   Receipt,
   CalendarDays,
   CreditCard,
@@ -48,7 +49,8 @@ export function AppSidebar({
   const navItems = [
     { label: t("syndicNav.overview"), href: "/dashboard", icon: LayoutDashboard },
     { label: t("syndicNav.owners"), href: "/dashboard/owners", icon: Users },
-    { label: t("syndicNav.apartments"), href: "/dashboard/apartments", icon: Building2 },
+    { label: t("syndicNav.apartments"), href: "/dashboard/apartments", icon: Home },
+    { label: t("syndicNav.immeubles"), href: "/dashboard/immeubles", icon: Building },
     { label: t("syndicNav.charges"), href: "/dashboard/charges", icon: Receipt },
     { label: t("syndicNav.meetings"), href: "/dashboard/meetings", icon: CalendarDays },
     { label: t("syndicNav.payments"), href: "/dashboard/payments", icon: CreditCard },

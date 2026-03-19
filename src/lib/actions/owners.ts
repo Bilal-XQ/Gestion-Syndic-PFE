@@ -7,7 +7,7 @@ import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { getTranslations } from "next-intl/server";
 import { createOwnerSchema } from "@/lib/validations/owner";
-import { getBuildingBySyndicId } from "@/lib/db/queries/buildings";
+import { getBuildingById } from "@/lib/db/queries/buildings";
 import { getOwnerById } from "@/lib/db/queries/owners";
 import { getApartmentById } from "@/lib/db/queries/apartments";
 import { Resend } from "resend";
@@ -21,6 +21,19 @@ type ActionResult<T = null> =
   | { success: false; error: string };
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+
+async function getScopedApartmentForSyndic(
+  syndicId: string,
+  apartmentId: string
+) {
+  const apartment = await getApartmentById(apartmentId);
+  if (!apartment) return null;
+
+  const building = await getBuildingById(apartment.buildingId);
+  if (!building || building.syndicId !== syndicId) return null;
+
+  return apartment;
+}
 
 // ---------------------------------------------------------------------------
 // Create owner (+ auth account + apartment status transition)
@@ -47,13 +60,16 @@ export async function createOwner(
   const role = user.app_metadata?.user_role as string | undefined;
   if (role !== "syndic") return { success: false, error: "Accès refusé" };
 
-  // 3. Verify apartment belongs to syndic's building
-  const building = await getBuildingBySyndicId(user.id);
-  if (!building) return { success: false, error: "Immeuble introuvable" };
-
-  const apartment = await getApartmentById(parsed.data.apartmentId);
-  if (!apartment || apartment.buildingId !== building.id) {
+  // 3. Verify apartment belongs to syndic and is vacant
+  const apartment = await getScopedApartmentForSyndic(
+    user.id,
+    parsed.data.apartmentId
+  );
+  if (!apartment) {
     return { success: false, error: "Appartement introuvable" };
+  }
+  if (apartment.status !== "vacant") {
+    return { success: false, error: "Appartement déjà occupé" };
   }
 
   // 4. Create auth account via admin client
@@ -185,6 +201,14 @@ export async function updateOwner(
     return { success: false, error: "Copropriétaire introuvable" };
   }
 
+  const existingApartment = await getScopedApartmentForSyndic(
+    user.id,
+    existingOwner.apartmentId
+  );
+  if (!existingApartment) {
+    return { success: false, error: "Copropriétaire introuvable" };
+  }
+
   // 4. Update user record (NOT email — email is immutable after creation)
   await db
     .update(users)
@@ -198,6 +222,17 @@ export async function updateOwner(
 
   // 5. Handle apartment reassignment
   if (parsed.data.apartmentId !== existingOwner.apartmentId) {
+    const nextApartment = await getScopedApartmentForSyndic(
+      user.id,
+      parsed.data.apartmentId
+    );
+    if (!nextApartment) {
+      return { success: false, error: "Appartement introuvable" };
+    }
+    if (nextApartment.status !== "vacant") {
+      return { success: false, error: "Appartement déjà occupé" };
+    }
+
     // Set old apartment to vacant
     await db
       .update(apartments)
@@ -261,6 +296,14 @@ export async function deleteOwner(
   // 2. Get existing owner
   const existingOwner = await getOwnerById(id);
   if (!existingOwner) {
+    return { success: false, error: "Copropriétaire introuvable" };
+  }
+
+  const existingApartment = await getScopedApartmentForSyndic(
+    user.id,
+    existingOwner.apartmentId
+  );
+  if (!existingApartment) {
     return { success: false, error: "Copropriétaire introuvable" };
   }
 

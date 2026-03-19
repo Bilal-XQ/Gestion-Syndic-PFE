@@ -19,7 +19,12 @@
   },
   "panel": {
     "title": "New charge",
-    "description": "Create a charge for an apartment.",
+    "description": "Create a charge for an apartment or a building.",
+    "targetLabel": "Target",
+    "targetApartment": "Apartment",
+    "targetBuilding": "Building (split by tantiemes)",
+    "buildingLabel": "Building",
+    "buildingPlaceholder": "Select a building",
     "titleLabel": "Title",
     "titlePlaceholder": "Electricity Q1 2026",
     "descriptionLabel": "Description (optional)",

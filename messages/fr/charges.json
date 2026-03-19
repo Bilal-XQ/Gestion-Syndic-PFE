@@ -19,7 +19,12 @@
   },
   "panel": {
     "title": "Nouvelle charge",
-    "description": "Créez une charge pour un appartement.",
+    "description": "Créez une charge pour un appartement ou un immeuble.",
+    "targetLabel": "Cible",
+    "targetApartment": "Appartement",
+    "targetBuilding": "Immeuble (répartition par tantièmes)",
+    "buildingLabel": "Immeuble",
+    "buildingPlaceholder": "Choisir un immeuble",
     "titleLabel": "Titre",
     "titlePlaceholder": "Électricité Q1 2026",
     "descriptionLabel": "Description (optionnel)",

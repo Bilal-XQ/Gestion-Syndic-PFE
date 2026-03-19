@@ -50,6 +50,7 @@ export const buildings = pgTable(
       .references(() => users.id),
     name: text("name").notNull(),
     address: text("address").notNull(),
+    totalTantiemes: integer("total_tantiemes").notNull().default(1000),
     deletedAt: timestamp("deleted_at"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
@@ -71,6 +72,7 @@ export const apartments = pgTable(
     floor: integer("floor").notNull(),
     surfaceArea: numeric("surface_area").notNull(),
     roomCount: integer("room_count").notNull(),
+    tantiemes: integer("tantiemes").notNull().default(100),
     type: text("type")
       .notNull()
       .default("t2")

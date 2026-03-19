@@ -33,6 +33,7 @@ type ApartmentOption = {
   id: string;
   unitNumber: string;
   status: string;
+  buildingName?: string;
 };
 
 type Owner = Awaited<ReturnType<typeof getActiveOwners>>[number];
@@ -240,7 +241,9 @@ export function OwnerPanel({ open, onOpenChange, owner }: OwnerPanelProps) {
                       value={apt.id}
                       className="text-[14px] focus:bg-[--bg-card-hover] focus:text-[--text-primary]"
                     >
-                      {apt.unitNumber}
+                      {apt.buildingName
+                        ? `${apt.unitNumber} - ${apt.buildingName}`
+                        : apt.unitNumber}
                     </SelectItem>
                   ))}
                 </SelectContent>

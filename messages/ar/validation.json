@@ -13,14 +13,26 @@
     "surfacePositive": "يجب أن تكون المساحة موجبة",
     "roomCountInteger": "يجب أن يكون عدد الغرف رقماً صحيحاً",
     "roomCountMin": "غرفة واحدة على الأقل",
-    "typeRequired": "نوع الشقة مطلوب"
+    "typeRequired": "نوع الشقة مطلوب",
+    "buildingRequired": "العمارة مطلوبة",
+    "tantiemesInteger": "يجب أن تكون الحصص رقماً صحيحاً",
+    "tantiemesMin": "يجب أن تكون الحصص أكبر من 0",
+    "tantiemesExceedsTotal": "لا يمكن أن تتجاوز الحصص إجمالي العمارة"
   },
   "charge": {
     "titleRequired": "العنوان مطلوب",
     "categoryInvalid": "فئة غير صالحة",
     "amountPositive": "يجب أن يكون المبلغ موجباً",
     "dueDateRequired": "تاريخ الاستحقاق مطلوب",
-    "apartmentInvalid": "شقة غير صالحة"
+    "apartmentInvalid": "شقة غير صالحة",
+    "apartmentRequired": "الشقة مطلوبة",
+    "buildingRequired": "العمارة مطلوبة"
+  },
+  "immeuble": {
+    "nameRequired": "اسم العمارة مطلوب",
+    "addressRequired": "عنوان العمارة مطلوب",
+    "totalTantiemesMin": "يجب أن يكون إجمالي الحصص أكبر من 0",
+    "totalTantièmesMin": "يجب أن يكون مجموع الحصص أكبر من 0."
   },
   "meeting": {
     "titleRequired": "العنوان مطلوب",

@@ -9,7 +9,7 @@ import { getTranslations } from "next-intl/server";
 import { createChargeSchema } from "@/lib/validations/charge";
 import { getBuildingBySyndicId, getBuildingById } from "@/lib/db/queries/buildings";
 import { getChargeById } from "@/lib/db/queries/charges";
-import { getApartmentById } from "@/lib/db/queries/apartments";
+import { getApartmentById, getApartmentsForBuilding } from "@/lib/db/queries/apartments";
 import { getOwnerByApartmentId, getOwnerById, getOwnerByUserId } from "@/lib/db/queries/owners";
 import { PaymentReminderEmail } from "@/lib/email/templates/payment-reminder";
 import { renderPaymentNotice } from "@/lib/pdf/payment-notice";
@@ -40,6 +40,81 @@ async function getAuthenticatedSyndic() {
   return user;
 }
 
+async function createBuildingWideCharges(
+  values: {
+    buildingId: string;
+    title: string;
+    description?: string;
+    category: "electricity" | "water" | "maintenance" | "repair" | "other";
+    totalAmount: number;
+    dueDate: string;
+  },
+  syndicId: string
+): Promise<ActionResult<{ ids: string[] }>> {
+  const building = await getBuildingById(values.buildingId);
+  if (!building || building.syndicId !== syndicId) {
+    return { success: false, error: "Immeuble introuvable" };
+  }
+
+  if (building.totalTantiemes <= 0) {
+    return { success: false, error: "Total tantièmes invalide pour cet immeuble" };
+  }
+
+  const apartmentsInBuilding = await getApartmentsForBuilding(values.buildingId);
+  if (apartmentsInBuilding.length === 0) {
+    return { success: false, error: "Aucun appartement actif dans cet immeuble" };
+  }
+
+  // Rounded proportional allocation that preserves exact total after cents distribution.
+  const totalCents = Math.round(values.totalAmount * 100);
+  const rawCents = apartmentsInBuilding.map((apt) =>
+    (totalCents * apt.tantiemes) / building.totalTantiemes
+  );
+  const floored = rawCents.map((v) => Math.floor(v));
+  let remainder = totalCents - floored.reduce((acc, v) => acc + v, 0);
+
+  const indices = rawCents
+    .map((value, index) => ({
+      index,
+      frac: value - Math.floor(value),
+      tantiemes: apartmentsInBuilding[index].tantiemes,
+    }))
+    .sort((a, b) => {
+      if (b.frac !== a.frac) return b.frac - a.frac;
+      return b.tantiemes - a.tantiemes;
+    });
+
+  for (let i = 0; i < indices.length && remainder > 0; i++) {
+    floored[indices[i].index] += 1;
+    remainder -= 1;
+  }
+
+  const inserted = await db.transaction(async (tx) => {
+    const rows = apartmentsInBuilding.map((apt, index) => ({
+      syndicId,
+      apartmentId: apt.id,
+      title: values.title,
+      description: values.description ?? null,
+      category: values.category,
+      totalAmount: String((floored[index] / 100).toFixed(2)),
+      dueDate: values.dueDate,
+    }));
+
+    return tx.insert(charges).values(rows).returning({ id: charges.id });
+  });
+
+  await db.insert(auditLogs).values(
+    inserted.map((row) => ({
+      userId: syndicId,
+      action: "CREATE_CHARGE",
+      entityType: "charges",
+      entityId: row.id,
+    }))
+  );
+
+  return { success: true, data: { ids: inserted.map((r) => r.id) } };
+}
+
 // ---------------------------------------------------------------------------
 // Create charge
 // ---------------------------------------------------------------------------
@@ -58,12 +133,35 @@ export async function createCharge(
   const user = await getAuthenticatedSyndic();
   if (!user) return { success: false, error: "Non authentifié" };
 
-  // 3. Verify apartment belongs to syndic's building
-  const building = await getBuildingBySyndicId(user.id);
-  if (!building) return { success: false, error: "Immeuble introuvable" };
+  // 3. Verify selected building belongs to syndic
+  const building = await getBuildingById(parsed.data.buildingId);
+  if (!building || building.syndicId !== user.id) {
+    return { success: false, error: "Immeuble introuvable" };
+  }
+
+  if (parsed.data.target === "building") {
+    const buildingWide = await createBuildingWideCharges(
+      {
+        buildingId: parsed.data.buildingId,
+        title: parsed.data.title,
+        description: parsed.data.description,
+        category: parsed.data.category,
+        totalAmount: parsed.data.totalAmount,
+        dueDate: parsed.data.dueDate,
+      },
+      user.id
+    );
+
+    if (!buildingWide.success) {
+      return { success: false, error: buildingWide.error };
+    }
+
+    const firstId = buildingWide.data.ids[0] ?? "";
+    return { success: true, data: { id: firstId } };
+  }
 
   const apartment = await getApartmentById(parsed.data.apartmentId);
-  if (!apartment || apartment.buildingId !== building.id) {
+  if (!apartment || apartment.buildingId !== parsed.data.buildingId) {
     return { success: false, error: "Appartement introuvable" };
   }
 
@@ -152,8 +250,15 @@ export async function sendPaymentReminder(
     return { success: false, error: "Propriétaire introuvable" };
   }
 
-  const building = await getBuildingBySyndicId(user.id);
-  if (!building) return { success: false, error: "Immeuble introuvable" };
+  const apartment = await getApartmentById(charge.apartmentId);
+  if (!apartment) {
+    return { success: false, error: "Appartement introuvable" };
+  }
+
+  const building = await getBuildingById(apartment.buildingId);
+  if (!building || building.syndicId !== user.id) {
+    return { success: false, error: "Immeuble introuvable" };
+  }
 
   // Send email
   await resend.emails.send({

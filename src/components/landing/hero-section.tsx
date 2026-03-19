@@ -3,15 +3,16 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
+import { useTranslations } from "next-intl";
 import { motion } from "motion/react";
 import { ChevronDown } from "lucide-react";
 import { Particles } from "@/components/ui/particles";
 import { LightRays } from "@/components/ui/light-rays";
 import { BlurFade } from "@/components/ui/blur-fade";
-import { AnimatedShinyText } from "@/components/ui/animated-shiny-text";
 import { BorderBeam } from "@/components/ui/border-beam";
 
 export default function HeroSection() {
+  const t = useTranslations("landing");
   const [mounted, setMounted] = useState(false);
   const { resolvedTheme } = useTheme();
 
@@ -90,18 +91,7 @@ export default function HeroSection() {
       />
 
       {/* Content */}
-      <div className="relative z-10 mx-auto max-w-3xl px-4 py-20 text-center">
-        {/* 1. Top badge */}
-        <BlurFade delay={0.1} inView>
-          <div className="mb-6 inline-flex items-center justify-center">
-            <div className="cursor-default rounded-full border border-[--accent-border] bg-[--accent-bg] px-4 py-1.5">
-              <AnimatedShinyText className="font-[family-name:var(--font-syne)] text-xs font-semibold uppercase tracking-widest text-[--accent]">
-                ✦ Gestion de copropriété
-              </AnimatedShinyText>
-            </div>
-          </div>
-        </BlurFade>
-
+      <div className="relative z-10 mx-auto max-w-3xl px-4 pt-24 pb-16 text-center">
         {/* 2. Headline */}
         <BlurFade delay={0.2} inView>
           <h1
@@ -112,19 +102,14 @@ export default function HeroSection() {
               letterSpacing: "-0.03em",
             }}
           >
-            La gestion de
-            <br />
-            <em>copropriété,</em>
-            <br />
-            <em>réinventée.</em>
+            {t("hero.headline")}
           </h1>
         </BlurFade>
 
         {/* 3. Subheadline */}
         <BlurFade delay={0.35} inView>
           <p className="mx-auto mt-5 max-w-[440px] text-lg leading-[1.65] text-[--text-secondary]">
-            Une plateforme moderne pour syndics et copropriétaires.
-            Paiements, réunions, charges — centralisés et sécurisés.
+            {t("hero.subheadline")}
           </p>
         </BlurFade>
 
@@ -137,7 +122,7 @@ export default function HeroSection() {
                 href="/login"
                 className="relative inline-flex items-center justify-center overflow-hidden rounded-[--radius-md] bg-[--btn-primary-bg] px-8 py-3 text-sm font-medium text-[--btn-primary-text] shadow-[0_4px_16px_rgba(0,0,0,0.4)] transition-all duration-[250ms] hover:bg-[--btn-primary-hover] active:scale-[0.98]"
               >
-                Commencer maintenant
+                {t("hero.cta")}
                 {mounted && (
                   <BorderBeam
                     colorFrom={resolvedTheme === "dark" ? "#D4A853" : "#8B6520"}
@@ -154,7 +139,7 @@ export default function HeroSection() {
               href="#features"
               className="inline-flex items-center justify-center rounded-[--radius-md] border border-[--border-default] bg-transparent px-8 py-3 text-sm font-medium text-[--text-secondary] transition-all duration-[250ms] hover:border-[--border-strong] hover:bg-[--bg-card] hover:text-[--text-primary]"
             >
-              Voir les fonctionnalités
+              {t("hero.ctaSecondary")}
               <ChevronDown className="ml-2 h-4 w-4 opacity-60" />
             </a>
           </div>

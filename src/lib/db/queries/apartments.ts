@@ -1,4 +1,4 @@
-import { eq, and, isNull, sql, getTableColumns, asc } from "drizzle-orm";
+import { eq, and, isNull, sql, getTableColumns, asc, ne } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { apartments, buildings, owners, users, charges } from "@/lib/db/schema";
 import type { ApartmentEnriched } from "@/types";
@@ -60,6 +60,8 @@ export async function getApartmentsEnriched(
         ownerEmail: users.email,
         ownerPhone: users.phone,
         ownerId: owners.id,
+        buildingName: buildings.name,
+        buildingTotalTantiemes: buildings.totalTantiemes,
         totalActiveCharges: sql<string>`
           COALESCE((
             SELECT SUM(c.total_amount)::text
@@ -90,9 +92,13 @@ export async function getApartmentsEnriched(
       floor: row.floor,
       surfaceArea: row.surfaceArea,
       roomCount: row.roomCount,
+      tantiemes: row.tantiemes,
       type: row.type as ApartmentEnriched["type"],
       status: row.status as "occupied" | "vacant",
       createdAt: row.createdAt,
+      buildingId: row.buildingId,
+      buildingName: row.buildingName,
+      buildingTotalTantiemes: row.buildingTotalTantiemes,
       ownerName:
         row.ownerFirstName && row.ownerLastName
           ? `${row.ownerFirstName} ${row.ownerLastName}`
@@ -115,6 +121,10 @@ export async function getApartmentsEnriched(
         floor: apartments.floor,
         surfaceArea: apartments.surfaceArea,
         roomCount: apartments.roomCount,
+        tantiemes: apartments.tantiemes,
+        buildingId: apartments.buildingId,
+        buildingName: buildings.name,
+        buildingTotalTantiemes: buildings.totalTantiemes,
         status: apartments.status,
         createdAt: apartments.createdAt,
       })
@@ -131,9 +141,13 @@ export async function getApartmentsEnriched(
       floor: row.floor,
       surfaceArea: row.surfaceArea,
       roomCount: row.roomCount,
+      tantiemes: row.tantiemes,
       type: "t2",
       status: row.status as "occupied" | "vacant",
       createdAt: row.createdAt,
+      buildingId: row.buildingId,
+      buildingName: row.buildingName,
+      buildingTotalTantiemes: row.buildingTotalTantiemes,
       ownerName: null,
       ownerEmail: null,
       ownerPhone: null,
@@ -158,6 +172,8 @@ export async function getApartmentEnrichedById(
       ownerEmail: users.email,
       ownerPhone: users.phone,
       ownerId: owners.id,
+      buildingName: buildings.name,
+      buildingTotalTantiemes: buildings.totalTantiemes,
       totalActiveCharges: sql<string>`
         COALESCE((
           SELECT SUM(c.total_amount)::text
@@ -193,9 +209,13 @@ export async function getApartmentEnrichedById(
     floor: row.floor,
     surfaceArea: row.surfaceArea,
     roomCount: row.roomCount,
+    tantiemes: row.tantiemes,
     type: row.type as ApartmentEnriched["type"],
     status: row.status as "occupied" | "vacant",
     createdAt: row.createdAt,
+    buildingId: row.buildingId,
+    buildingName: row.buildingName,
+    buildingTotalTantiemes: row.buildingTotalTantiemes,
     ownerName:
       row.ownerFirstName && row.ownerLastName
         ? `${row.ownerFirstName} ${row.ownerLastName}`
@@ -205,4 +225,38 @@ export async function getApartmentEnrichedById(
     ownerId: row.ownerId ?? null,
     totalActiveCharges: row.totalActiveCharges,
   };
+}
+
+export async function getTantiemesSumForBuilding(
+  buildingId: string,
+  excludeApartmentId?: string
+): Promise<number> {
+  const conditions = [
+    eq(apartments.buildingId, buildingId),
+    isNull(apartments.deletedAt),
+  ];
+
+  if (excludeApartmentId) {
+    conditions.push(ne(apartments.id, excludeApartmentId));
+  }
+
+  const [row] = await db
+    .select({ total: sql<number>`COALESCE(SUM(${apartments.tantiemes}), 0)` })
+    .from(apartments)
+    .where(and(...conditions));
+
+  return Number(row?.total ?? 0);
+}
+
+export async function getApartmentsForBuilding(buildingId: string) {
+  return db
+    .select({
+      id: apartments.id,
+      buildingId: apartments.buildingId,
+      unitNumber: apartments.unitNumber,
+      tantiemes: apartments.tantiemes,
+    })
+    .from(apartments)
+    .where(and(eq(apartments.buildingId, buildingId), isNull(apartments.deletedAt)))
+    .orderBy(asc(apartments.unitNumber));
 }

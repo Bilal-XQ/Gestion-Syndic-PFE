@@ -1,0 +1,30 @@
+{
+  "pageTitle": "Buildings",
+  "addButton": "Add building",
+  "empty": "No buildings registered.",
+  "table": {
+    "name": "Name",
+    "address": "Address",
+    "totalApartments": "Apartments",
+    "occupancyRate": "Occupancy rate",
+    "totalTantiemes": "Total shares",
+    "actions": "Actions"
+  },
+  "panel": {
+    "createTitle": "Add building",
+    "editTitle": "Edit building",
+    "description": "Fill in the building information.",
+    "nameLabel": "Building name",
+    "namePlaceholder": "Residence Al Fath",
+    "addressLabel": "Full address",
+    "addressPlaceholder": "123 Mohammed V Street, Casablanca",
+    "totalTantièmesLabel": "Total ownership shares",
+    "totalTantièmesPlaceholder": "1000",
+    "totalTantièmesHelper": "Total co-ownership shares (e.g. 1000)",
+    "createButton": "Create building",
+    "updateButton": "Save changes",
+    "submitting": "Saving...",
+    "createSuccess": "Building created successfully.",
+    "updateSuccess": "Building updated successfully."
+  }
+}

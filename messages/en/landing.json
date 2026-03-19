@@ -1,6 +1,9 @@
 {
   "nav": {
-    "login": "Sign in"
+    "login": "Sign in",
+    "features": "Features",
+    "howItWorks": "How it works",
+    "faq": "FAQ"
   },
   "hero": {
     "badge": "Condominium management",
@@ -47,6 +50,16 @@
     "heading": "Ready to modernize your management?",
     "description": "Join the syndics who have chosen a simple, secure and efficient solution.",
     "button": "Access the platform"
+  },
+  "howItWorks": {
+    "badge": "How it works",
+    "heading": "Three simple steps",
+    "step1Title": "Set up your building",
+    "step1Description": "Register your building, add apartments and configure your syndic settings in minutes.",
+    "step2Title": "Invite co-owners",
+    "step2Description": "Create accounts — they automatically receive an email with access credentials to their personal portal.",
+    "step3Title": "Manage in real-time",
+    "step3Description": "Issue charges, track payments, organize assemblies and receive instant notifications via Supabase Realtime."
   },
   "footer": {
     "brand": "Syndic — Condominium Management",

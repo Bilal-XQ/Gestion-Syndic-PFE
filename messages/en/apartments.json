@@ -7,6 +7,7 @@
     "surfaceArea": "Surface",
     "rooms": "Rooms",
     "type": "Type",
+    "tantiemes": "Tantiemes",
     "owner": "Owner",
     "monthlyCharges": "Active charges",
     "vacantLabel": "Vacant",
@@ -53,6 +54,7 @@
     "apartmentInfo": "Unit information",
     "ownerCardTitle": "Current owner",
     "ownerNone": "No owner assigned",
+    "tantiemes": "Tantiemes",
     "chargesTitle": "Active charges",
     "chargesEmpty": "No active charges",
     "paymentSummaryTitle": "Payment summary",
@@ -72,6 +74,10 @@
     "roomCountLabel": "Number of rooms",
     "typeLabel": "Unit type",
     "typePlaceholder": "Select a type",
+    "buildingLabel": "Building",
+    "buildingPlaceholder": "Select a building",
+    "tantiemesLabel": "Tantiemes",
+    "tantiemesHelper": "Building total: {total}",
     "submitting": "Saving…",
     "createButton": "Create",
     "updateButton": "Update",
@@ -84,6 +90,9 @@
     "t2": "2BR",
     "t3": "3BR",
     "t4Plus": "4BR+"
+  },
+  "warnings": {
+    "tantiemesSumExceeds": "Warning: the sum of apartment tantiemes exceeds the configured building total."
   },
   "delete": {
     "title": "Are you sure?",

@@ -13,14 +13,26 @@
     "surfacePositive": "Surface area must be positive",
     "roomCountInteger": "Number of rooms must be an integer",
     "roomCountMin": "At least 1 room",
-    "typeRequired": "Unit type is required"
+    "typeRequired": "Unit type is required",
+    "buildingRequired": "Building is required",
+    "tantiemesInteger": "Tantiemes must be an integer",
+    "tantiemesMin": "Tantiemes must be greater than 0",
+    "tantiemesExceedsTotal": "Tantiemes cannot exceed building total"
   },
   "charge": {
     "titleRequired": "Title is required",
     "categoryInvalid": "Invalid category",
     "amountPositive": "Amount must be positive",
     "dueDateRequired": "Due date is required",
-    "apartmentInvalid": "Invalid apartment"
+    "apartmentInvalid": "Invalid apartment",
+    "apartmentRequired": "Apartment is required",
+    "buildingRequired": "Building is required"
+  },
+  "immeuble": {
+    "nameRequired": "Building name is required",
+    "addressRequired": "Building address is required",
+    "totalTantiemesMin": "Total tantiemes must be greater than 0",
+    "totalTantièmesMin": "Total shares must be greater than 0."
   },
   "meeting": {
     "titleRequired": "Title is required",

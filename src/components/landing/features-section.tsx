@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
+import { useTranslations } from "next-intl";
 import {
   Building2,
   Users,
@@ -13,46 +14,8 @@ import {
 import { MagicCard } from "@/components/ui/magic-card";
 import { BlurFade } from "@/components/ui/blur-fade";
 
-const features = [
-  {
-    icon: Building2,
-    title: "Gestion des immeubles",
-    description:
-      "Vue centralisée de vos bâtiments, appartements et lots avec hiérarchie complète.",
-  },
-  {
-    icon: Users,
-    title: "Copropriétaires",
-    description:
-      "Profils, accès au portail propriétaire et gestion des quotas de tantièmes.",
-  },
-  {
-    icon: CreditCard,
-    title: "Paiements & Charges",
-    description:
-      "Appels de charges, suivi en temps réel et gestion des créances par agrégation SQL.",
-  },
-  {
-    icon: CalendarDays,
-    title: "Réunions & AG",
-    description:
-      "Planifiez les assemblées générales, invitez les propriétaires et archivez les PV.",
-  },
-  {
-    icon: BarChart3,
-    title: "Tableau de bord",
-    description:
-      "Indicateurs clés, taux de recouvrement et tendances de paiement en un coup d'œil.",
-  },
-  {
-    icon: Shield,
-    title: "Sécurité & Audit",
-    description:
-      "JWT, RLS Supabase, journal d'audit immutable et chiffrement bout en bout.",
-  },
-];
-
 export default function FeaturesSection() {
+  const t = useTranslations("landing");
   const [mounted, setMounted] = useState(false);
   const { resolvedTheme } = useTheme();
 
@@ -62,6 +25,15 @@ export default function FeaturesSection() {
 
   const isDark = !mounted || resolvedTheme === "dark";
   const gradientColor = isDark ? "#1f1f1f" : "#e8e8e6";
+
+  const featureKeys = [
+    { key: "buildings" as const, icon: Building2 },
+    { key: "owners" as const, icon: Users },
+    { key: "payments" as const, icon: CreditCard },
+    { key: "meetings" as const, icon: CalendarDays },
+    { key: "dashboard" as const, icon: BarChart3 },
+    { key: "security" as const, icon: Shield },
+  ];
 
   return (
     <section
@@ -80,7 +52,7 @@ export default function FeaturesSection() {
             <div className="mb-6 inline-flex items-center justify-center">
               <div className="cursor-default rounded-full border border-[--accent-border] bg-[--accent-bg] px-4 py-1.5">
                 <span className="font-[family-name:var(--font-syne)] text-xs font-semibold uppercase tracking-widest text-[--text-secondary]">
-                  Fonctionnalités
+                  {t("features.badge")}
                 </span>
               </div>
             </div>
@@ -92,19 +64,17 @@ export default function FeaturesSection() {
                 letterSpacing: "-0.03em",
               }}
             >
-              Tout ce dont vous
-              <br />
-              <em>avez besoin</em>
+              {t("features.heading")}
             </h2>
           </div>
         </BlurFade>
 
         {/* Feature cards grid */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {features.map((feature, index) => {
+          {featureKeys.map((feature, index) => {
             const Icon = feature.icon;
             return (
-              <BlurFade key={feature.title} delay={0.2 + index * 0.1} inView>
+              <BlurFade key={feature.key} delay={0.2 + index * 0.1} inView>
                 <MagicCard
                   className="rounded-[--radius-xl] border border-[--border-subtle] bg-[--bg-card] p-6 cursor-default group"
                   gradientColor={gradientColor}
@@ -115,10 +85,10 @@ export default function FeaturesSection() {
                       <Icon className="h-4 w-4 text-[--text-secondary] transition-colors duration-[250ms] group-hover:text-[--accent]" />
                     </div>
                     <h3 className="mb-2 text-[15px] font-medium leading-snug text-[--text-primary]">
-                      {feature.title}
+                      {t(`features.${feature.key}.title`)}
                     </h3>
                     <p className="flex-1 text-sm leading-relaxed text-[--text-muted]">
-                      {feature.description}
+                      {t(`features.${feature.key}.description`)}
                     </p>
                   </div>
                 </MagicCard>

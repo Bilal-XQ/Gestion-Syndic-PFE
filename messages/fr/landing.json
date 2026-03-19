@@ -1,6 +1,9 @@
 {
   "nav": {
-    "login": "Connexion"
+    "login": "Connexion",
+    "features": "Fonctionnalités",
+    "howItWorks": "Comment ça marche",
+    "faq": "FAQ"
   },
   "hero": {
     "badge": "Gestion de copropriété",
@@ -47,6 +50,16 @@
     "heading": "Prêt à moderniser votre gestion ?",
     "description": "Rejoignez les syndics qui ont choisi une solution simple, sécurisée et efficace.",
     "button": "Accéder à la plateforme"
+  },
+  "howItWorks": {
+    "badge": "Comment ça marche",
+    "heading": "Trois étapes simples",
+    "step1Title": "Configurez votre immeuble",
+    "step1Description": "Enregistrez votre bâtiment, ajoutez les appartements et définissez les paramètres de votre syndic en quelques minutes.",
+    "step2Title": "Invitez les copropriétaires",
+    "step2Description": "Créez les comptes — ils reçoivent automatiquement un email avec leurs identifiants d'accès au portail personnel.",
+    "step3Title": "Gérez en temps réel",
+    "step3Description": "Émettez des charges, suivez les paiements, organisez vos assemblées et recevez des notifications instantanées via Supabase Realtime."
   },
   "footer": {
     "brand": "Syndic — Gestion de Copropriété",

@@ -13,14 +13,26 @@
     "surfacePositive": "La superficie doit être positive",
     "roomCountInteger": "Le nombre de pièces doit être un entier",
     "roomCountMin": "Au moins 1 pièce",
-    "typeRequired": "Le type de logement est requis"
+    "typeRequired": "Le type de logement est requis",
+    "buildingRequired": "L'immeuble est requis",
+    "tantiemesInteger": "Les tantièmes doivent être un entier",
+    "tantiemesMin": "Les tantièmes doivent être supérieurs à 0",
+    "tantiemesExceedsTotal": "Les tantièmes ne peuvent pas dépasser le total de l'immeuble"
   },
   "charge": {
     "titleRequired": "Le titre est requis",
     "categoryInvalid": "Catégorie invalide",
     "amountPositive": "Le montant doit être positif",
     "dueDateRequired": "La date d'échéance est requise",
-    "apartmentInvalid": "Appartement invalide"
+    "apartmentInvalid": "Appartement invalide",
+    "apartmentRequired": "L'appartement est requis",
+    "buildingRequired": "L'immeuble est requis"
+  },
+  "immeuble": {
+    "nameRequired": "Le nom de l'immeuble est requis",
+    "addressRequired": "L'adresse de l'immeuble est requise",
+    "totalTantiemesMin": "Le total tantièmes doit être supérieur à 0",
+    "totalTantièmesMin": "Le total des tantièmes doit être supérieur à 0."
   },
   "meeting": {
     "titleRequired": "Le titre est requis",

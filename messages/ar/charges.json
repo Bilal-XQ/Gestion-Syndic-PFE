@@ -19,7 +19,12 @@
   },
   "panel": {
     "title": "رسم جديد",
-    "description": "أنشئ رسماً لشقة.",
+    "description": "أنشئ رسماً لشقة أو عمارة.",
+    "targetLabel": "الهدف",
+    "targetApartment": "شقة",
+    "targetBuilding": "عمارة (توزيع حسب الأجزاء)",
+    "buildingLabel": "العمارة",
+    "buildingPlaceholder": "اختر عمارة",
     "titleLabel": "العنوان",
     "titlePlaceholder": "كهرباء الربع الأول 2026",
     "descriptionLabel": "الوصف (اختياري)",

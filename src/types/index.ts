@@ -1,9 +1,13 @@
 export type ApartmentEnriched = {
   id: string;
+  buildingId: string;
+  buildingName: string;
+  buildingTotalTantiemes: number;
   unitNumber: string;
   floor: number;
   surfaceArea: string;
   roomCount: number;
+  tantiemes: number;
   type: "studio" | "t1" | "t2" | "t3" | "t4_plus";
   status: "occupied" | "vacant";
   createdAt: Date;

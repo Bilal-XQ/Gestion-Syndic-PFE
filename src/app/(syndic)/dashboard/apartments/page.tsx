@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { createClient } from "@/utils/supabase/server";
-import { getBuildingBySyndicId } from "@/lib/db/queries/buildings";
+import { getAllBuildingsBySyndicId } from "@/lib/db/queries/buildings";
 import { getApartmentsEnriched } from "@/lib/db/queries/apartments";
 import { ApartmentsTable } from "@/components/features/apartments/apartments-table";
 
@@ -12,14 +12,11 @@ export default async function ApartmentsPage() {
   } = await supabase.auth.getUser();
 
   let apartments: Awaited<ReturnType<typeof getApartmentsEnriched>> = [];
-  let buildingId = "";
+  let buildings: Awaited<ReturnType<typeof getAllBuildingsBySyndicId>> = [];
 
   if (user) {
-    const building = await getBuildingBySyndicId(user.id);
-    if (building) {
-      apartments = await getApartmentsEnriched(user.id);
-      buildingId = building.id;
-    }
+    apartments = await getApartmentsEnriched(user.id);
+    buildings = await getAllBuildingsBySyndicId(user.id);
   }
 
   return (
@@ -27,7 +24,7 @@ export default async function ApartmentsPage() {
       <h1 className="text-2xl font-semibold text-[--text-primary]">
         {t("pageTitle")}
       </h1>
-      <ApartmentsTable initialData={apartments} buildingId={buildingId} />
+      <ApartmentsTable initialData={apartments} buildings={buildings} />
     </div>
   );
 }

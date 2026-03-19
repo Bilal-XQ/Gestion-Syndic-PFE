@@ -1,6 +1,6 @@
-import { eq, and, isNull } from "drizzle-orm";
+import { eq, and, isNull, asc } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { owners, users, apartments } from "@/lib/db/schema";
+import { owners, users, apartments, buildings } from "@/lib/db/schema";
 
 /**
  * All active owners for a given building — joins users + apartments.
@@ -29,6 +29,39 @@ export async function getActiveOwners(buildingId: string) {
         isNull(users.deletedAt)
       )
     );
+}
+
+/**
+ * All active owners for all buildings managed by a syndic.
+ */
+export async function getActiveOwnersBySyndicId(syndicId: string) {
+  return db
+    .select({
+      id: owners.id,
+      userId: owners.userId,
+      apartmentId: owners.apartmentId,
+      ownershipDate: owners.ownershipDate,
+      createdAt: owners.createdAt,
+      firstName: users.firstName,
+      lastName: users.lastName,
+      email: users.email,
+      phone: users.phone,
+      unitNumber: apartments.unitNumber,
+    })
+    .from(owners)
+    .innerJoin(users, eq(owners.userId, users.id))
+    .innerJoin(apartments, eq(owners.apartmentId, apartments.id))
+    .innerJoin(buildings, eq(apartments.buildingId, buildings.id))
+    .where(
+      and(
+        eq(buildings.syndicId, syndicId),
+        isNull(buildings.deletedAt),
+        isNull(apartments.deletedAt),
+        isNull(owners.deletedAt),
+        isNull(users.deletedAt)
+      )
+    )
+    .orderBy(asc(users.lastName), asc(users.firstName));
 }
 
 /**

@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
-import { getBuildingBySyndicId } from "@/lib/db/queries/buildings";
-import { getActiveOwners } from "@/lib/db/queries/owners";
+import { getActiveOwnersBySyndicId } from "@/lib/db/queries/owners";
 
 export async function GET() {
   const supabase = await createClient();
@@ -14,11 +13,6 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthenticated" }, { status: 401 });
   }
 
-  const building = await getBuildingBySyndicId(user.id);
-  if (!building) {
-    return NextResponse.json([], { status: 200 });
-  }
-
-  const owners = await getActiveOwners(building.id);
+  const owners = await getActiveOwnersBySyndicId(user.id);
   return NextResponse.json(owners);
 }

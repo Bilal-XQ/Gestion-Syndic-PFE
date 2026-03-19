@@ -3,12 +3,14 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
+import { useTranslations } from "next-intl";
 import { ArrowRight } from "lucide-react";
 import { Particles } from "@/components/ui/particles";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { BorderBeam } from "@/components/ui/border-beam";
 
 export default function CtaSection() {
+  const t = useTranslations("landing");
   const [mounted, setMounted] = useState(false);
   const { resolvedTheme } = useTheme();
 
@@ -54,13 +56,10 @@ export default function CtaSection() {
               letterSpacing: "-0.03em",
             }}
           >
-            Prêt à moderniser
-            <br />
-            <em>votre gestion ?</em>
+            {t("cta.heading")}
           </h2>
           <p className="mx-auto mt-5 max-w-md text-base leading-relaxed text-[--text-secondary]">
-            Rejoignez les syndics qui ont choisi une solution moderne, sécurisée
-            et centralisée.
+            {t("cta.description")}
           </p>
         </BlurFade>
 
@@ -70,7 +69,7 @@ export default function CtaSection() {
               href="/login"
               className="relative inline-flex items-center overflow-hidden rounded-[--radius-md] bg-[--btn-primary-bg] px-10 py-3.5 text-sm font-medium text-[--btn-primary-text] shadow-[0_8px_32px_rgba(0,0,0,0.5)] transition-all duration-[250ms] hover:bg-[--btn-primary-hover] active:scale-[0.98]"
             >
-              Accéder à la plateforme
+              {t("cta.button")}
               <ArrowRight className="ml-2 h-4 w-4" />
               <BorderBeam
                 size={120}

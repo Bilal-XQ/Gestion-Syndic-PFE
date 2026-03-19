@@ -1,0 +1,30 @@
+{
+  "pageTitle": "العمارات",
+  "addButton": "إضافة عمارة",
+  "empty": "لا توجد عمارات مسجلة.",
+  "table": {
+    "name": "الاسم",
+    "address": "العنوان",
+    "totalApartments": "الشقق",
+    "occupancyRate": "نسبة الإشغال",
+    "totalTantiemes": "مجموع الحصص",
+    "actions": "الإجراءات"
+  },
+  "panel": {
+    "createTitle": "إضافة عمارة",
+    "editTitle": "تعديل العمارة",
+    "description": "أدخل معلومات العمارة.",
+    "nameLabel": "اسم العمارة",
+    "namePlaceholder": "إقامة الفتح",
+    "addressLabel": "العنوان الكامل",
+    "addressPlaceholder": "123 شارع محمد الخامس، الدار البيضاء",
+    "totalTantièmesLabel": "مجموع حصص الملكية",
+    "totalTantièmesPlaceholder": "1000",
+    "totalTantièmesHelper": "مجموع حصص الملكية المشتركة (مثال: 1000)",
+    "createButton": "إنشاء العمارة",
+    "updateButton": "حفظ التعديلات",
+    "submitting": "جارٍ الحفظ...",
+    "createSuccess": "تم إنشاء العمارة بنجاح.",
+    "updateSuccess": "تم تحديث العمارة بنجاح."
+  }
+}
