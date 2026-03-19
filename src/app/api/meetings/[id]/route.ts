@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
-import { getMeetingById } from "@/lib/db/queries/meetings";
+import {
+  getMeetingById,
+  isOwnerInvitedToMeeting,
+} from "@/lib/db/queries/meetings";
 
 export async function GET(
   _request: Request,
@@ -27,6 +30,13 @@ export async function GET(
   const role = user.app_metadata?.user_role as string | undefined;
   if (role === "syndic" && result.meeting.syndicId !== user.id) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  if (role === "proprietaire") {
+    const canAccess = await isOwnerInvitedToMeeting(user.id, id);
+    if (!canAccess) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
   }
 
   return NextResponse.json(result);

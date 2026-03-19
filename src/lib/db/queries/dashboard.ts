@@ -17,23 +17,6 @@ export type DashboardMetrics = {
 export async function getDashboardMetrics(
   syndicId: string
 ): Promise<DashboardMetrics> {
-  // Get building first
-  const [building] = await db
-    .select({ id: buildings.id })
-    .from(buildings)
-    .where(and(eq(buildings.syndicId, syndicId), isNull(buildings.deletedAt)));
-
-  if (!building) {
-    return {
-      totalOwners: 0,
-      totalApartments: 0,
-      occupiedApartments: 0,
-      vacantApartments: 0,
-      totalCharges: 0,
-      totalPayments: 0,
-    };
-  }
-
   // Run all counts in parallel
   const [
     ownersResult,
@@ -47,39 +30,48 @@ export async function getDashboardMetrics(
         .select({ count: count() })
         .from(owners)
         .innerJoin(apartments, eq(owners.apartmentId, apartments.id))
+        .innerJoin(buildings, eq(apartments.buildingId, buildings.id))
         .where(
           and(
-            eq(apartments.buildingId, building.id),
-            isNull(owners.deletedAt)
+            isNull(owners.deletedAt),
+            isNull(apartments.deletedAt),
+            isNull(buildings.deletedAt),
+            eq(buildings.syndicId, syndicId)
           )
         ),
       db
         .select({ count: count() })
         .from(apartments)
+        .innerJoin(buildings, eq(apartments.buildingId, buildings.id))
         .where(
           and(
-            eq(apartments.buildingId, building.id),
-            isNull(apartments.deletedAt)
+            isNull(apartments.deletedAt),
+            isNull(buildings.deletedAt),
+            eq(buildings.syndicId, syndicId)
           )
         ),
       db
         .select({ count: count() })
         .from(apartments)
+        .innerJoin(buildings, eq(apartments.buildingId, buildings.id))
         .where(
           and(
-            eq(apartments.buildingId, building.id),
             eq(apartments.status, "occupied"),
-            isNull(apartments.deletedAt)
+            isNull(apartments.deletedAt),
+            isNull(buildings.deletedAt),
+            eq(buildings.syndicId, syndicId)
           )
         ),
       db
         .select({ count: count() })
         .from(apartments)
+        .innerJoin(buildings, eq(apartments.buildingId, buildings.id))
         .where(
           and(
-            eq(apartments.buildingId, building.id),
             eq(apartments.status, "vacant"),
-            isNull(apartments.deletedAt)
+            isNull(apartments.deletedAt),
+            isNull(buildings.deletedAt),
+            eq(buildings.syndicId, syndicId)
           )
         ),
       db
@@ -95,7 +87,7 @@ export async function getDashboardMetrics(
         .select({ count: count() })
         .from(payments)
         .innerJoin(charges, eq(payments.chargeId, charges.id))
-        .where(eq(charges.syndicId, syndicId)),
+        .where(and(eq(charges.syndicId, syndicId), isNull(charges.deletedAt))),
     ]);
 
   return {

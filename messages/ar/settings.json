@@ -4,6 +4,7 @@
   "unauthenticated": "غير مصادق",
   "form": {
     "buildingLegend": "المبنى",
+    "buildingSelectorLabel": "العمارة المراد تهيئتها",
     "buildingNameLabel": "اسم المبنى",
     "buildingNamePlaceholder": "مجمع الزيتون",
     "addressLabel": "العنوان",

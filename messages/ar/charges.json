@@ -5,6 +5,7 @@
   "table": {
     "title": "العنوان",
     "apartment": "الشقة",
+    "building": "العمارة",
     "category": "الفئة",
     "total": "الإجمالي",
     "paid": "المدفوع",

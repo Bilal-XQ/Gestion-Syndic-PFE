@@ -68,6 +68,7 @@
     "passwordsMismatch": "كلمتا المرور غير متطابقتين"
   },
   "settings": {
+    "buildingRequired": "العمارة مطلوبة",
     "buildingNameRequired": "اسم المبنى مطلوب",
     "addressRequired": "العنوان مطلوب",
     "emailInvalid": "بريد إلكتروني غير صالح"

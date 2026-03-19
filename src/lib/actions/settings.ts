@@ -6,7 +6,7 @@ import { buildings, users, auditLogs } from "@/lib/db/schema";
 import { createClient } from "@/utils/supabase/server";
 import { getTranslations } from "next-intl/server";
 import { createSettingsSchema } from "@/lib/validations/settings";
-import { getBuildingBySyndicId } from "@/lib/db/queries/buildings";
+import { getBuildingById } from "@/lib/db/queries/buildings";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -40,9 +40,11 @@ export async function updateBuilding(
   const role = user.app_metadata?.user_role as string | undefined;
   if (role !== "syndic") return { success: false, error: "Accès refusé" };
 
-  // 3. Get existing building
-  const building = await getBuildingBySyndicId(user.id);
-  if (!building) return { success: false, error: "Immeuble introuvable" };
+  // 3. Resolve and authorize target building
+  const building = await getBuildingById(parsed.data.buildingId);
+  if (!building || building.syndicId !== user.id) {
+    return { success: false, error: "Accès refusé" };
+  }
 
   // 4. Update building
   await db

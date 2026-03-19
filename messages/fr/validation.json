@@ -68,6 +68,7 @@
     "passwordsMismatch": "Les mots de passe ne correspondent pas"
   },
   "settings": {
+    "buildingRequired": "L'immeuble est requis",
     "buildingNameRequired": "Le nom de l'immeuble est requis",
     "addressRequired": "L'adresse est requise",
     "emailInvalid": "Adresse e-mail invalide"

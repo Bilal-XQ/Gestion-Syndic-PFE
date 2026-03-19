@@ -7,7 +7,7 @@ import { charges, auditLogs } from "@/lib/db/schema";
 import { createClient } from "@/utils/supabase/server";
 import { getTranslations } from "next-intl/server";
 import { createChargeSchema } from "@/lib/validations/charge";
-import { getBuildingBySyndicId, getBuildingById } from "@/lib/db/queries/buildings";
+import { getBuildingById } from "@/lib/db/queries/buildings";
 import { getChargeById } from "@/lib/db/queries/charges";
 import { getApartmentById, getApartmentsForBuilding } from "@/lib/db/queries/apartments";
 import { getOwnerByApartmentId, getOwnerById, getOwnerByUserId } from "@/lib/db/queries/owners";
@@ -337,14 +337,13 @@ export async function downloadPaymentNotice(
   const ownerRecord = await getOwnerByApartmentId(charge.apartmentId);
   const owner = ownerRecord ? await getOwnerById(ownerRecord.id) : null;
 
-  // 5. Resolve building based on role
-  let building;
-  if (role === "syndic") {
-    building = await getBuildingBySyndicId(user.id);
-  } else {
-    building = await getBuildingById(apartment.buildingId);
-  }
+  // 5. Resolve building from the charge apartment to avoid first-building mismatches
+  const building = await getBuildingById(apartment.buildingId);
   if (!building) return { success: false, error: "Immeuble introuvable" };
+
+  if (role === "syndic" && building.syndicId !== user.id) {
+    return { success: false, error: "Accès refusé" };
+  }
 
   const buffer = await renderPaymentNotice({
     owner: owner

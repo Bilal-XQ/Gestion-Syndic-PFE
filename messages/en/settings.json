@@ -4,6 +4,7 @@
   "unauthenticated": "Not authenticated",
   "form": {
     "buildingLegend": "Building",
+    "buildingSelectorLabel": "Building to configure",
     "buildingNameLabel": "Building name",
     "buildingNamePlaceholder": "Les Oliviers Residence",
     "addressLabel": "Address",

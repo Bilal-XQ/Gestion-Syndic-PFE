@@ -8,6 +8,8 @@ import {
   meetingInvitations,
   notifications,
   owners,
+  apartments,
+  buildings,
   users,
   auditLogs,
 } from "@/lib/db/schema";
@@ -52,6 +54,7 @@ export async function createMeeting(
 ): Promise<ActionResult<{ id: string }>> {
   // 1. Validate
   const t = await getTranslations("validation");
+  const tm = await getTranslations("meetings");
   const schema = createMeetingSchema(t);
   const parsed = schema.safeParse(values);
   if (!parsed.success) {
@@ -74,24 +77,22 @@ export async function createMeeting(
       apartmentId: owners.apartmentId,
     })
     .from(owners)
-    .innerJoin(
-      // Need to use a subquery-type approach — join apartments to check building
-      // We'll filter owners by their apartment's building
-      // simpler: use inArray + separate check
-      users,
-      eq(owners.userId, users.id)
-    )
+    .innerJoin(apartments, eq(owners.apartmentId, apartments.id))
+    .innerJoin(buildings, eq(apartments.buildingId, buildings.id))
     .where(
       and(
         inArray(owners.id, parsed.data.ownerIds),
-        isNull(owners.deletedAt)
+        isNull(owners.deletedAt),
+        isNull(apartments.deletedAt),
+        isNull(buildings.deletedAt),
+        eq(buildings.syndicId, user.id)
       )
     );
 
   if (ownerRecords.length !== parsed.data.ownerIds.length) {
     return {
       success: false,
-      error: "Un ou plusieurs propriétaires sont invalides",
+      error: tm("errors.invalidOwnerScope"),
     };
   }
 

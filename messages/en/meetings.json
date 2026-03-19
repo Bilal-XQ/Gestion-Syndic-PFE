@@ -69,5 +69,8 @@
     "submitting": "Deleting…",
     "submit": "Delete",
     "success": "Meeting deleted"
+  },
+  "errors": {
+    "invalidOwnerScope": "One or more owners do not belong to your buildings."
   }
 }

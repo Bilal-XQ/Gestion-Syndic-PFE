@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export function createSettingsSchema(t: (key: string) => string) {
   return z.object({
+    buildingId: z.string().uuid(t("settings.buildingRequired")),
     name: z.string().min(1, t("settings.buildingNameRequired")),
     address: z.string().min(1, t("settings.addressRequired")),
     contactPhone: z.string().optional(),

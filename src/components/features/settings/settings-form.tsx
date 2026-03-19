@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
@@ -12,6 +13,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 import {
   createSettingsSchema,
@@ -21,9 +29,16 @@ import { updateBuilding } from "@/lib/actions/settings";
 
 interface SettingsFormProps {
   defaultValues: SettingsFormValues;
+  selectedBuildingId: string;
+  allBuildings: Array<{ id: string; name: string }>;
 }
 
-export function SettingsForm({ defaultValues }: SettingsFormProps) {
+export function SettingsForm({
+  defaultValues,
+  selectedBuildingId,
+  allBuildings,
+}: SettingsFormProps) {
+  const router = useRouter();
   const t = useTranslations("settings");
   const tc = useTranslations("common");
   const tv = useTranslations("validation");
@@ -54,6 +69,33 @@ export function SettingsForm({ defaultValues }: SettingsFormProps) {
         onSubmit={form.handleSubmit((data) => mutation.mutate(data))}
         className="flex flex-col gap-5"
       >
+        <input type="hidden" {...form.register("buildingId")} />
+
+        {allBuildings.length > 1 && (
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="settings-building-selector">
+              {t("form.buildingSelectorLabel")}
+            </Label>
+            <Select
+              value={selectedBuildingId}
+              onValueChange={(id) => {
+                router.push(`/dashboard/settings?buildingId=${id}`);
+              }}
+            >
+              <SelectTrigger id="settings-building-selector">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {allBuildings.map((building) => (
+                  <SelectItem key={building.id} value={building.id}>
+                    {building.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+
         {/* Building info */}
         <fieldset className="flex flex-col gap-4">
           <legend className="mb-1 text-sm font-medium text-[--text-primary]">

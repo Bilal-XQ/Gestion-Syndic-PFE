@@ -5,7 +5,15 @@ import { useForm } from "react-hook-form";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { Loader2, AlertCircle } from "lucide-react";
+import {
+  Loader2,
+  AlertCircle,
+  Zap,
+  Droplets,
+  Wrench,
+  Hammer,
+  MoreHorizontal,
+} from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -54,11 +62,11 @@ export function ChargePanel({
   const tv = useTranslations("validation");
 
   const categoryOptions = [
-    { value: "electricity", label: tc("categories.electricity") },
-    { value: "water", label: tc("categories.water") },
-    { value: "maintenance", label: tc("categories.maintenance") },
-    { value: "repair", label: tc("categories.repair") },
-    { value: "other", label: tc("categories.other") },
+    { value: "electricity", label: tc("categories.electricity"), Icon: Zap },
+    { value: "water", label: tc("categories.water"), Icon: Droplets },
+    { value: "maintenance", label: tc("categories.maintenance"), Icon: Wrench },
+    { value: "repair", label: tc("categories.repair"), Icon: Hammer },
+    { value: "other", label: tc("categories.other"), Icon: MoreHorizontal },
   ] as const;
 
   const queryClient = useQueryClient();
@@ -152,6 +160,9 @@ export function ChargePanel({
 
   const selectedTarget = form.watch("target");
   const selectedBuildingId = form.watch("buildingId");
+  const selectedCategory = categoryOptions.find(
+    (opt) => opt.value === form.watch("category")
+  );
   const apartmentsForBuilding = apartments.filter(
     (apt) => apt.buildingId === selectedBuildingId
   );
@@ -284,12 +295,22 @@ export function ChargePanel({
                 }
               >
                 <SelectTrigger className={selectTriggerClass}>
-                  <SelectValue placeholder={t("panel.categoryPlaceholder")} />
+                  {selectedCategory ? (
+                    <span className="flex items-center gap-2">
+                      <selectedCategory.Icon className="size-4 text-[--text-muted]" />
+                      <span>{selectedCategory.label}</span>
+                    </span>
+                  ) : (
+                    <SelectValue placeholder={t("panel.categoryPlaceholder")} />
+                  )}
                 </SelectTrigger>
                 <SelectContent>
                   {categoryOptions.map((opt) => (
                     <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label}
+                      <span className="flex items-center gap-2">
+                        <opt.Icon className="size-4 text-[--text-muted]" />
+                        <span>{opt.label}</span>
+                      </span>
                     </SelectItem>
                   ))}
                 </SelectContent>

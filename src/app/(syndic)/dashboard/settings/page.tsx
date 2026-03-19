@@ -1,12 +1,21 @@
 import { eq } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
+import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { createClient } from "@/utils/supabase/server";
-import { getBuildingBySyndicId } from "@/lib/db/queries/buildings";
+import { getAllBuildingsBySyndicId } from "@/lib/db/queries/buildings";
 import { SettingsForm } from "@/components/features/settings/settings-form";
 
-export default async function SettingsPage() {
+type SettingsSearchParams = {
+  buildingId?: string;
+};
+
+export default async function SettingsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<SettingsSearchParams> | SettingsSearchParams;
+}) {
   const t = await getTranslations("settings");
   const supabase = await createClient();
   const {
@@ -24,7 +33,16 @@ export default async function SettingsPage() {
     );
   }
 
-  const building = await getBuildingBySyndicId(user.id);
+  const resolvedSearchParams = (await searchParams) ?? {};
+  const allBuildings = await getAllBuildingsBySyndicId(user.id);
+
+  const selectedBuilding =
+    allBuildings.find((b) => b.id === resolvedSearchParams.buildingId) ??
+    allBuildings[0];
+
+  if (!selectedBuilding) {
+    redirect("/dashboard");
+  }
 
   // Fetch syndic user for contact info
   const [syndicUser] = await db
@@ -38,9 +56,12 @@ export default async function SettingsPage() {
         {t("pageTitleAuthenticated")}
       </h1>
       <SettingsForm
+        allBuildings={allBuildings.map((b) => ({ id: b.id, name: b.name }))}
+        selectedBuildingId={selectedBuilding.id}
         defaultValues={{
-          name: building?.name ?? "",
-          address: building?.address ?? "",
+          buildingId: selectedBuilding.id,
+          name: selectedBuilding.name,
+          address: selectedBuilding.address,
           contactPhone: syndicUser?.phone ?? "",
           contactEmail: syndicUser?.email ?? "",
         }}

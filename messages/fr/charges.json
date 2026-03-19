@@ -5,6 +5,7 @@
   "table": {
     "title": "Titre",
     "apartment": "Appartement",
+    "building": "Immeuble",
     "category": "Catégorie",
     "total": "Total",
     "paid": "Payé",

@@ -3,7 +3,15 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { Search, Download } from "lucide-react";
+import {
+  Search,
+  Download,
+  Zap,
+  Droplets,
+  Wrench,
+  Hammer,
+  MoreHorizontal,
+} from "lucide-react";
 
 import {
   Table,
@@ -78,15 +86,6 @@ const methodLabels: Record<string, string> = {
   cash: "Espèces",
 };
 
-const categoryOptions = [
-  { value: "all", label: "Toutes catégories" },
-  { value: "electricity", label: "Électricité" },
-  { value: "water", label: "Eau" },
-  { value: "maintenance", label: "Entretien" },
-  { value: "repair", label: "Réparation" },
-  { value: "other", label: "Autre" },
-] as const;
-
 async function fetchPayments(filters: {
   dateFrom: string;
   dateTo: string;
@@ -134,12 +133,12 @@ export function PaymentsTable() {
     cash: tc("paymentMethods.cash"),
   };
   const categoryOptions = [
-    { value: "all", label: t("filters.allCategories") },
-    { value: "electricity", label: tc("categories.electricity") },
-    { value: "water", label: tc("categories.water") },
-    { value: "maintenance", label: tc("categories.maintenance") },
-    { value: "repair", label: tc("categories.repair") },
-    { value: "other", label: tc("categories.other") },
+    { value: "all", label: t("filters.allCategories"), Icon: Search },
+    { value: "electricity", label: tc("categories.electricity"), Icon: Zap },
+    { value: "water", label: tc("categories.water"), Icon: Droplets },
+    { value: "maintenance", label: tc("categories.maintenance"), Icon: Wrench },
+    { value: "repair", label: tc("categories.repair"), Icon: Hammer },
+    { value: "other", label: tc("categories.other"), Icon: MoreHorizontal },
   ];
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
@@ -157,6 +156,7 @@ export function PaymentsTable() {
   });
 
   const payments = data?.payments ?? [];
+  const selectedCategory = categoryOptions.find((opt) => opt.value === category);
   const summary = data?.summary ?? {
     totalChargesIssued: "0",
     totalCollected: "0",
@@ -235,12 +235,22 @@ export function PaymentsTable() {
           <Label className="text-xs text-[--text-muted]">{t("filters.category")}</Label>
           <Select value={category} onValueChange={setCategory}>
             <SelectTrigger className="w-full sm:w-44">
-              <SelectValue placeholder="Toutes" />
+              {selectedCategory ? (
+                <span className="flex items-center gap-2">
+                  <selectedCategory.Icon className="size-4 text-[--text-muted]" />
+                  <span>{selectedCategory.label}</span>
+                </span>
+              ) : (
+                <SelectValue placeholder="Toutes" />
+              )}
             </SelectTrigger>
             <SelectContent>
               {categoryOptions.map((opt) => (
                 <SelectItem key={opt.value} value={opt.value}>
-                  {opt.label}
+                  <span className="flex items-center gap-2">
+                    <opt.Icon className="size-4 text-[--text-muted]" />
+                    <span>{opt.label}</span>
+                  </span>
                 </SelectItem>
               ))}
             </SelectContent>

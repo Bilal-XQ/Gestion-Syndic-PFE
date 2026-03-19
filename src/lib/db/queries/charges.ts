@@ -1,6 +1,13 @@
 import { eq, and, isNull, sql, lt } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { charges, payments, apartments, owners, users } from "@/lib/db/schema";
+import {
+  charges,
+  payments,
+  apartments,
+  owners,
+  users,
+  buildings,
+} from "@/lib/db/schema";
 
 // ─── Computed columns (never stored) ──────────────────────────────────
 const amountPaid = sql<string>`COALESCE(SUM(${payments.amount}), 0)`;
@@ -29,14 +36,25 @@ export async function getChargesWithPaymentStatus(syndicId: string) {
       dueDate: charges.dueDate,
       lastReminderSentAt: charges.lastReminderSentAt,
       createdAt: charges.createdAt,
+      apartmentUnit: apartments.unitNumber,
+      buildingName: buildings.name,
       amountPaid,
       remainingAmount,
       status: chargeStatus,
     })
     .from(charges)
+    .innerJoin(apartments, eq(charges.apartmentId, apartments.id))
+    .innerJoin(buildings, eq(apartments.buildingId, buildings.id))
     .leftJoin(payments, eq(payments.chargeId, charges.id))
-    .where(and(eq(charges.syndicId, syndicId), isNull(charges.deletedAt)))
-    .groupBy(charges.id)
+    .where(
+      and(
+        eq(charges.syndicId, syndicId),
+        isNull(charges.deletedAt),
+        isNull(apartments.deletedAt),
+        isNull(buildings.deletedAt)
+      )
+    )
+    .groupBy(charges.id, apartments.unitNumber, buildings.name)
     .orderBy(charges.createdAt);
 }
 

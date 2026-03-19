@@ -51,6 +51,7 @@ type Charge = {
   remainingAmount: string;
   status: string;
   apartmentUnit: string | null;
+  buildingName: string | null;
 };
 
 type ApartmentOption = {
@@ -136,7 +137,8 @@ export function ChargesTable() {
   const filtered = charges.filter(
     (c) =>
       c.title.toLowerCase().includes(search.toLowerCase()) ||
-      (c.apartmentUnit ?? "").toLowerCase().includes(search.toLowerCase())
+      (c.apartmentUnit ?? "").toLowerCase().includes(search.toLowerCase()) ||
+      (c.buildingName ?? "").toLowerCase().includes(search.toLowerCase())
   );
 
   // --- Actions ---
@@ -210,6 +212,9 @@ export function ChargesTable() {
                 {t("table.apartment")}
               </TableHead>
               <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
+                {t("table.building")}
+              </TableHead>
+              <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
                 {t("table.category")}
               </TableHead>
               <TableHead className="text-xs font-normal uppercase tracking-[0.08em] text-[--text-muted]">
@@ -235,13 +240,13 @@ export function ChargesTable() {
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={9} className="h-24 text-center text-[--text-muted]">
+                <TableCell colSpan={10} className="h-24 text-center text-[--text-muted]">
                   {tc("loading")}
                 </TableCell>
               </TableRow>
             ) : filtered.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={9} className="h-24 text-center text-[--text-muted]">
+                <TableCell colSpan={10} className="h-24 text-center text-[--text-muted]">
                   {t("table.empty")}
                 </TableCell>
               </TableRow>
@@ -256,6 +261,9 @@ export function ChargesTable() {
                   </TableCell>
                   <TableCell className="text-[--text-secondary]">
                     {charge.apartmentUnit ?? "–"}
+                  </TableCell>
+                  <TableCell className="text-[--text-secondary]">
+                    {charge.buildingName ?? "–"}
                   </TableCell>
                   <TableCell className="text-[--text-secondary]">
                     {categoryLabels[charge.category] ?? charge.category}

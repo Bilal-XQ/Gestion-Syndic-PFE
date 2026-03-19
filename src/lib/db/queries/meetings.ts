@@ -100,6 +100,27 @@ export async function getMeetingById(id: string) {
 }
 
 /**
+ * True when the authenticated owner (resolved via users.id) has an invitation
+ * row for the given meeting.
+ */
+export async function isOwnerInvitedToMeeting(userId: string, meetingId: string) {
+  const rows = await db
+    .select({ id: meetingInvitations.id })
+    .from(meetingInvitations)
+    .innerJoin(owners, eq(meetingInvitations.ownerId, owners.id))
+    .where(
+      and(
+        eq(meetingInvitations.meetingId, meetingId),
+        eq(owners.userId, userId),
+        isNull(owners.deletedAt)
+      )
+    )
+    .limit(1);
+
+  return rows.length > 0;
+}
+
+/**
  * Meetings the owner is invited to, with their invitation status.
  */
 export async function getMeetingsForOwner(ownerId: string) {

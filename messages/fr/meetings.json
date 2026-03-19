@@ -69,5 +69,8 @@
     "submitting": "Suppression…",
     "submit": "Supprimer",
     "success": "Réunion supprimée"
+  },
+  "errors": {
+    "invalidOwnerScope": "Un ou plusieurs propriétaires ne font pas partie de vos immeubles."
   }
 }

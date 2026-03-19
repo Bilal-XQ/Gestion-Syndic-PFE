@@ -4,6 +4,7 @@
   "unauthenticated": "Non authentifié",
   "form": {
     "buildingLegend": "Immeuble",
+    "buildingSelectorLabel": "Immeuble à configurer",
     "buildingNameLabel": "Nom de l'immeuble",
     "buildingNamePlaceholder": "Résidence les Oliviers",
     "addressLabel": "Adresse",
