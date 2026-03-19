@@ -160,9 +160,6 @@ export function ChargePanel({
 
   const selectedTarget = form.watch("target");
   const selectedBuildingId = form.watch("buildingId");
-  const selectedCategory = categoryOptions.find(
-    (opt) => opt.value === form.watch("category")
-  );
   const apartmentsForBuilding = apartments.filter(
     (apt) => apt.buildingId === selectedBuildingId
   );
@@ -295,14 +292,9 @@ export function ChargePanel({
                 }
               >
                 <SelectTrigger className={selectTriggerClass}>
-                  {selectedCategory ? (
-                    <span className="flex items-center gap-2">
-                      <selectedCategory.Icon className="size-4 text-[--text-muted]" />
-                      <span>{selectedCategory.label}</span>
-                    </span>
-                  ) : (
-                    <SelectValue placeholder={t("panel.categoryPlaceholder")} />
-                  )}
+                  <SelectValue 
+                    placeholder={t("panel.categoryPlaceholder")}
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   {categoryOptions.map((opt) => (

@@ -156,7 +156,6 @@ export function PaymentsTable() {
   });
 
   const payments = data?.payments ?? [];
-  const selectedCategory = categoryOptions.find((opt) => opt.value === category);
   const summary = data?.summary ?? {
     totalChargesIssued: "0",
     totalCollected: "0",
@@ -235,14 +234,7 @@ export function PaymentsTable() {
           <Label className="text-xs text-[--text-muted]">{t("filters.category")}</Label>
           <Select value={category} onValueChange={setCategory}>
             <SelectTrigger className="w-full sm:w-44">
-              {selectedCategory ? (
-                <span className="flex items-center gap-2">
-                  <selectedCategory.Icon className="size-4 text-[--text-muted]" />
-                  <span>{selectedCategory.label}</span>
-                </span>
-              ) : (
-                <SelectValue placeholder="Toutes" />
-              )}
+              <SelectValue placeholder={t("filters.allCategories")} />
             </SelectTrigger>
             <SelectContent>
               {categoryOptions.map((opt) => (
