@@ -1,5 +1,8 @@
 {
   "pageTitle": "My profile",
+  "nav": {
+    "meetings": "Meetings"
+  },
   "profile": {
     "personalInfo": "Personal information",
     "nameLabel": "Name",
@@ -10,6 +13,7 @@
     "floorLabel": "Floor",
     "surfaceLabel": "Surface",
     "roomsLabel": "Rooms",
+    "tantièmesLabel": "Ownership share (tantièmes)",
     "buildingSection": "Building",
     "buildingNameLabel": "Name",
     "buildingAddressLabel": "Address",
@@ -28,10 +32,46 @@
     "changePasswordSuccess": "Password changed successfully",
     "errorLoading": "Unable to load profile."
   },
+  "ownerMeetings": {
+    "pageTitle": "My meetings",
+    "tabs": {
+      "upcoming": "Upcoming",
+      "past": "Past"
+    },
+    "emptyUpcoming": "No upcoming meetings.",
+    "emptyPast": "No past meetings.",
+    "labels": {
+      "date": "Date",
+      "time": "Time",
+      "location": "Location",
+      "description": "Agenda"
+    },
+    "actions": {
+      "accept": "Accept",
+      "decline": "Decline"
+    },
+    "status": {
+      "invited": "Invited",
+      "accepted": "Accepted",
+      "declined": "Declined",
+      "cancelled": "Cancelled",
+      "completed": "Completed"
+    },
+    "responseSuccess": "Response saved.",
+    "responseError": "Failed to respond."
+  },
+  "overview": {
+    "outstandingBalance": "Outstanding balance",
+    "nextMeeting": "Next meeting",
+    "unreadNotifications": "Unread notifications",
+    "noUpcomingMeeting": "No upcoming meeting"
+  },
   "ownerPayments": {
     "pageTitle": "My payments",
     "tabCharges": "My charges",
     "tabHistory": "History",
+    "summaryTotalCharged": "Total charges",
+    "summaryRemaining": "Outstanding balance",
     "chargesEmpty": "No charges at the moment.",
     "historyEmpty": "No payments recorded.",
     "chargesTable": {

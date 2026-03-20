@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { OverviewCards } from "@/components/features/portal/overview-cards";
 import { ProfileView } from "@/components/features/portal/profile-view";
 
 export default async function PortalPage() {
@@ -8,6 +9,7 @@ export default async function PortalPage() {
       <h1 className="text-2xl font-semibold text-[--text-primary]">
         {t("pageTitle")}
       </h1>
+      <OverviewCards />
       <ProfileView />
     </div>
   );

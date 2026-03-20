@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
@@ -75,18 +75,24 @@ export function OwnerPaymentsView() {
     title: "", totalAmount: "", amountPaid: "",
     remaining: "", dueDate: "", status: "", ownerName: "",
   };
-  const categoryLabels: Record<string, string> = {
-    electricity: tc("categories.electricity"),
-    water: tc("categories.water"),
-    maintenance: tc("categories.maintenance"),
-    repair: tc("categories.repair"),
-    other: tc("categories.other"),
-  };
-  const methodLabels: Record<string, string> = {
-    bank_transfer: tc("paymentMethods.transfer"),
-    check: tc("paymentMethods.check"),
-    cash: tc("paymentMethods.cash"),
-  };
+  const categoryLabels = useMemo<Record<string, string>>(
+    () => ({
+      electricity: tc("categories.electricity"),
+      water: tc("categories.water"),
+      maintenance: tc("categories.maintenance"),
+      repair: tc("categories.repair"),
+      other: tc("categories.other"),
+    }),
+    [tc]
+  );
+  const methodLabels = useMemo<Record<string, string>>(
+    () => ({
+      bank_transfer: tc("paymentMethods.transfer"),
+      check: tc("paymentMethods.check"),
+      cash: tc("paymentMethods.cash"),
+    }),
+    [tc]
+  );
   const [paymentOpen, setPaymentOpen] = useState(false);
   const [selectedCharge, setSelectedCharge] = useState<Charge | null>(null);
 
@@ -141,6 +147,27 @@ export function OwnerPaymentsView() {
 
   return (
     <>
+      {!chargesLoading && charges.length > 0 && (
+        <div className="mb-4 grid grid-cols-2 gap-3">
+          <div className="rounded-[--radius-xl] border border-[--border-subtle] bg-[--bg-card] px-5 py-4">
+            <p className="mb-1 font-[family-name:var(--font-syne)] text-[11px] font-medium uppercase tracking-widest text-[--text-muted]">
+              {t("ownerPayments.summaryTotalCharged")}
+            </p>
+            <p className="font-[family-name:var(--font-geist-mono)] text-[20px] font-semibold text-[--text-primary]">
+              {formatMAD(charges.reduce((sum, c) => sum + Number(c.totalAmount), 0))}
+            </p>
+          </div>
+          <div className="rounded-[--radius-xl] border border-[--border-subtle] bg-[--bg-card] px-5 py-4">
+            <p className="mb-1 font-[family-name:var(--font-syne)] text-[11px] font-medium uppercase tracking-widest text-[--text-muted]">
+              {t("ownerPayments.summaryRemaining")}
+            </p>
+            <p className="font-[family-name:var(--font-geist-mono)] text-[20px] font-semibold text-[--status-warning]">
+              {formatMAD(charges.reduce((sum, c) => sum + Number(c.remainingAmount), 0))}
+            </p>
+          </div>
+        </div>
+      )}
+
       <Tabs defaultValue="charges">
         <TabsList>
           <TabsTrigger value="charges">{t("ownerPayments.tabCharges")}</TabsTrigger>

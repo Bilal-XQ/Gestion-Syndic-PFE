@@ -37,6 +37,8 @@ type ProfileData = {
     floor: number;
     surfaceArea: string;
     roomCount: number;
+    tantiemes?: number;
+    buildingTotalTantiemes?: number;
   };
   building: { name: string; address: string } | null;
 };
@@ -179,6 +181,14 @@ export function ProfileView() {
                   {apartment.roomCount}
                 </dd>
               </div>
+              {apartment.tantiemes != null && apartment.buildingTotalTantiemes != null && (
+                <div className="space-y-1.5">
+                  <dt className="text-[--text-secondary]">{t("profile.tantièmesLabel")}</dt>
+                  <dd className="font-[family-name:var(--font-geist-mono)] text-[--text-primary]">
+                    {apartment.tantiemes} / {apartment.buildingTotalTantiemes}
+                  </dd>
+                </div>
+              )}
             </dl>
           </div>
 

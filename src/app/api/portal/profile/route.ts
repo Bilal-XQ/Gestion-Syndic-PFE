@@ -54,6 +54,8 @@ export async function GET() {
       floor: apartment.floor,
       surfaceArea: apartment.surfaceArea,
       roomCount: apartment.roomCount,
+      tantiemes: apartment.tantiemes,
+      buildingTotalTantiemes: building?.totalTantiemes,
     },
     building: building
       ? { name: building.name, address: building.address }

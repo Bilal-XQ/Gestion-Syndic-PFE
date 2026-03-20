@@ -1,5 +1,8 @@
 {
   "pageTitle": "ملفي الشخصي",
+  "nav": {
+    "meetings": "الاجتماعات"
+  },
   "profile": {
     "personalInfo": "المعلومات الشخصية",
     "nameLabel": "الاسم",
@@ -10,6 +13,7 @@
     "floorLabel": "الطابق",
     "surfaceLabel": "المساحة",
     "roomsLabel": "الغرف",
+    "tantièmesLabel": "حصة الملكية (الحصص)",
     "buildingSection": "المبنى",
     "buildingNameLabel": "الاسم",
     "buildingAddressLabel": "العنوان",
@@ -28,10 +32,46 @@
     "changePasswordSuccess": "تم تغيير كلمة المرور بنجاح",
     "errorLoading": "تعذّر تحميل الملف الشخصي."
   },
+  "ownerMeetings": {
+    "pageTitle": "اجتماعاتي",
+    "tabs": {
+      "upcoming": "القادمة",
+      "past": "الماضية"
+    },
+    "emptyUpcoming": "لا توجد اجتماعات قادمة.",
+    "emptyPast": "لا توجد اجتماعات سابقة.",
+    "labels": {
+      "date": "التاريخ",
+      "time": "الوقت",
+      "location": "المكان",
+      "description": "جدول الأعمال"
+    },
+    "actions": {
+      "accept": "قبول",
+      "decline": "رفض"
+    },
+    "status": {
+      "invited": "مدعو",
+      "accepted": "مقبول",
+      "declined": "مرفوض",
+      "cancelled": "ملغي",
+      "completed": "منتهي"
+    },
+    "responseSuccess": "تم تسجيل الرد.",
+    "responseError": "فشل الرد."
+  },
+  "overview": {
+    "outstandingBalance": "الرصيد المتبقي",
+    "nextMeeting": "الاجتماع القادم",
+    "unreadNotifications": "الإشعارات غير المقروءة",
+    "noUpcomingMeeting": "لا يوجد اجتماع قادم"
+  },
   "ownerPayments": {
     "pageTitle": "مدفوعاتي",
     "tabCharges": "رسومي",
     "tabHistory": "السجل",
+    "summaryTotalCharged": "إجمالي الرسوم",
+    "summaryRemaining": "الرصيد المتبقي",
     "chargesEmpty": "لا توجد رسوم حتى الآن.",
     "historyEmpty": "لا توجد مدفوعات مسجّلة.",
     "chargesTable": {

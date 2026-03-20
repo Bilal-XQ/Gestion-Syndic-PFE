@@ -2,10 +2,11 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { Home, CreditCard, Bell } from "lucide-react";
+import { Home, CreditCard, CalendarDays, Bell } from "lucide-react";
 import { useSidebarStore } from "@/lib/stores/sidebar";
 import { SidebarUserMenu } from "@/components/layout/sidebar-user-menu";
 import {
@@ -40,6 +41,7 @@ export function OwnerSidebar({
   ...props
 }: OwnerSidebarProps) {
   const t = useTranslations("common");
+  const tp = useTranslations("portal");
   const pathname = usePathname();
   const { open } = useSidebar();
   const setCollapsed = useSidebarStore((s) => s.setCollapsed);
@@ -47,6 +49,7 @@ export function OwnerSidebar({
   const portalNavItems = [
     { label: t("ownerNav.mySpace"), href: "/portal", icon: Home },
     { label: t("ownerNav.payments"), href: "/payments", icon: CreditCard },
+    { label: tp("nav.meetings"), href: "/portal/meetings", icon: CalendarDays },
     { label: t("ownerNav.notifications"), href: "/notifications", icon: Bell },
   ];
 
@@ -70,10 +73,14 @@ export function OwnerSidebar({
             <SidebarMenuItem>
               <SidebarMenuButton size="lg" asChild tooltip={t("ownerNav.mySpace")}>
                 <Link href="/portal">
-                  <div className="flex aspect-square size-8 items-center justify-center rounded-[8px] border border-[--border-default] bg-[--bg-card]">
-                    <span className="text-sm font-semibold text-[--text-primary]">
-                      S
-                    </span>
+                  <div className="flex h-8 w-8 items-center justify-center rounded-[8px] border border-[--accent-border] bg-[--bg-card]">
+                    <Image
+                      src="/logo.svg"
+                      alt="Syndic"
+                      width={22}
+                      height={22}
+                      style={{ color: "var(--text-primary)" }}
+                    />
                   </div>
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-semibold text-[--text-primary]">

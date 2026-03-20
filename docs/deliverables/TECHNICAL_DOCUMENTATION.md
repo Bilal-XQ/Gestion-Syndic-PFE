@@ -1,8 +1,9 @@
 # Documentation Technique — Syndic
 
-**Version :** 1.0  
+**Version :** 2.0  
 **Date :** Mars 2026  
-**Stack :** Next.js 16 · Supabase · Drizzle ORM · Tailwind CSS v4
+**Stack :** Next.js 16 · Supabase · Drizzle ORM · Tailwind CSS v4  
+**Production :** https://syndico.vercel.app
 
 ---
 
@@ -11,14 +12,15 @@
 Syndic est une application web de gestion de copropriété. Elle remplace un outil desktop Microsoft Access par une plateforme centralisée, accessible depuis n'importe quel navigateur.
 
 L'application gère deux types d'utilisateurs :
-- **Syndic** (gestionnaire) : accès complet à l'administration
-- **Copropriétaire** : accès limité à ses propres données
+- **Syndic** (gestionnaire) : accès complet à l'administration de un ou plusieurs immeubles
+- **Copropriétaire** : accès limité à ses propres données (profil, charges, réunions, notifications)
 
 Les deux rôles utilisent la même page de connexion. Le serveur détecte le rôle automatiquement depuis le JWT et redirige vers le bon tableau de bord.
 
 ---
 
 ## 2. Architecture générale
+
 ```
 Navigateur
     │
@@ -32,7 +34,7 @@ Next.js 16 (Vercel)
 Supabase
     ├── PostgreSQL (base de données principale)
     ├── Auth (authentification + JWT)
-    ├── Row Level Security (isolation des données)
+    ├── Row Level Security (isolation des données par tenant)
     └── Realtime (notifications en temps réel)
 ```
 
@@ -44,19 +46,22 @@ Supabase
 
 | Catégorie | Technologie | Version | Rôle |
 |---|---|---|---|
-| Framework | Next.js | 16.1.6 | Frontend + backend |
-| Langage | TypeScript | 5.9.0 | Typage statique |
+| Framework | Next.js | 16.2.0 | Frontend + backend |
+| Langage | TypeScript | 5.9.3 | Typage statique |
 | Base de données | Supabase PostgreSQL | — | Stockage principal |
 | ORM | Drizzle ORM | 0.45.1 | Requêtes type-safe |
 | Auth | Supabase Auth | 2.98.0 | JWT + sessions |
 | UI | shadcn/ui + Tailwind v4 | — | Composants + styles |
+| Animation | Magic UI + motion/react | — | Landing page premium |
 | État serveur | TanStack Query v5 | — | Cache + revalidation |
-| État client | Zustand | 5.9.0 | Sidebar collapse |
-| Formulaires | React Hook Form + Zod | — | Validation client/serveur |
+| État client | Zustand | 5.0.11 | Sidebar collapse |
+| Formulaires | React Hook Form + Zod v4 | — | Validation client/serveur |
 | Email | Resend + React Email | — | Emails transactionnels |
 | PDF | @react-pdf/renderer | 4.3.2 | Avis de paiement |
 | Rate limiting | Upstash Redis | — | 5 tentatives/min/IP |
 | Monitoring | Sentry | — | Erreurs en production |
+| i18n | next-intl v4 | — | FR / EN / AR + RTL |
+| Export | SheetJS (xlsx) | — | Export Excel |
 | Déploiement | Vercel | — | Hosting + serverless |
 
 ---
@@ -93,8 +98,8 @@ Le fichier `middleware.ts` s'exécute avant chaque rendu de page :
 | Table | Description |
 |---|---|
 | `users` | Profils utilisateurs, étend `auth.users` de Supabase |
-| `buildings` | Immeuble géré par un syndic (1 par syndic au MVP) |
-| `apartments` | Appartements de l'immeuble |
+| `buildings` | Immeubles gérés par un syndic (multi-immeuble supporté) |
+| `apartments` | Appartements d'un immeuble, avec tantièmes |
 | `owners` | Lien entre un utilisateur copropriétaire et un appartement |
 | `charges` | Charges créées par le syndic, assignées à un appartement |
 | `payments` | Paiements effectués contre une charge |
@@ -103,63 +108,96 @@ Le fichier `middleware.ts` s'exécute avant chaque rendu de page :
 | `notifications` | Notifications in-app pour les copropriétaires |
 | `audit_logs` | Journal d'audit immutable de toutes les actions sensibles |
 
+### Colonnes ajoutées (Phases 10–11)
+
+- `apartments.tantiemes` — quote-part de l'appartement (défaut : 100)
+- `apartments.type` — type de logement : studio, t1, t2, t3, t4_plus
+- `buildings.total_tantiemes` — total des parts de l'immeuble (défaut : 1000)
+
 ### Règles importantes
 
-**Valeurs dérivées** — `amount_paid`, `remaining_amount` et `status` sur les charges ne sont **jamais stockées**. Elles sont calculées à la volée par agrégation SQL sur la table `payments`. Cela évite toute désynchronisation.
+**Valeurs dérivées** — `amount_paid`, `remaining_amount` et `status` sur les charges ne sont **jamais stockées**. Elles sont calculées à la volée par agrégation SQL sur la table `payments`.
+
+**Tantièmes et distribution des charges** — Quand une charge cible un immeuble entier, le montant par appartement est calculé : `total × (tantiemes / total_tantiemes)`. Ce calcul s'exécute dans une transaction Drizzle.
 
 **Soft delete** — Les propriétaires, charges et réunions ne sont jamais supprimés physiquement. On pose un `deleted_at` timestamp. Toutes les requêtes filtrent sur `WHERE deleted_at IS NULL`.
 
-**Transactions** — Tout paiement s'exécute dans une transaction Drizzle. Si une étape échoue, tout est annulé. Aucun état partiel n'est jamais sauvegardé.
+**Transactions** — Tout paiement et toute distribution de charge s'exécutent dans une transaction Drizzle. Aucun état partiel n'est jamais sauvegardé.
 
 **Row Level Security** — Les politiques RLS Supabase utilisent `auth.jwt() ->> 'user_role'` et `auth.uid()` directement. Un copropriétaire ne peut voir que ses propres données, même si on contourne l'application.
 
 ---
 
 ## 6. Structure des fichiers
+
 ```
 src/
 ├── app/
-│   ├── (auth)/login/          — Page de connexion
-│   ├── (syndic)/dashboard/    — Routes syndic protégées
-│   ├── (owner)/portal/        — Routes copropriétaire protégées
-│   └── page.tsx               — Landing page publique
+│   ├── (auth)/login/              — Page de connexion
+│   ├── (syndic)/dashboard/        — Routes syndic protégées
+│   │   ├── owners/                — Gestion des copropriétaires
+│   │   ├── apartments/            — Gestion des appartements
+│   │   ├── immeubles/             — Gestion des immeubles (multi-building)
+│   │   ├── charges/               — Charges et avis de paiement
+│   │   ├── meetings/              — Assemblées générales
+│   │   ├── payments/              — Historique des paiements
+│   │   └── settings/              — Paramètres du bâtiment
+│   ├── (owner)/                   — Routes copropriétaire protégées
+│   │   ├── portal/                — Mon espace (profil + overview)
+│   │   ├── payments/              — Mes charges et paiements
+│   │   ├── portal/meetings/       — Mes réunions
+│   │   └── notifications/         — Mes notifications
+│   ├── api/                       — Routes API (portal, meetings, etc.)
+│   └── page.tsx                   — Landing page publique
 │
 ├── components/
-│   ├── ui/                    — Composants shadcn/ui
-│   ├── layout/                — Sidebar, navbar, top-bar
-│   └── features/              — Composants métier par domaine
+│   ├── ui/                        — Composants shadcn/ui + Magic UI
+│   ├── landing/                   — Sections de la landing page
+│   ├── layout/                    — Sidebar, navbar, top-bar
+│   └── features/                  — Composants métier par domaine
 │
 ├── lib/
-│   ├── actions/               — Server Actions (mutations)
+│   ├── actions/                   — Server Actions (mutations)
 │   ├── db/
-│   │   ├── schema.ts          — Schéma Drizzle complet
-│   │   └── queries/           — Requêtes par domaine
-│   ├── email/templates/       — Templates React Email
-│   └── validations/           — Schémas Zod partagés client/serveur
+│   │   ├── schema.ts              — Schéma Drizzle complet
+│   │   └── queries/               — Requêtes par domaine
+│   ├── email/templates/           — Templates React Email
+│   ├── export/                    — Helpers export Excel (SheetJS)
+│   └── validations/               — Schémas Zod partagés client/serveur
 │
-├── hooks/                     — Hooks React custom
-├── utils/supabase/            — Clients Supabase (server, client, middleware)
-└── middleware.ts              — Protection des routes + rate limiting
+├── hooks/                         — Hooks React custom
+├── messages/                      — Traductions FR / EN / AR
+│   ├── fr/                        — 13 namespaces
+│   ├── en/
+│   └── ar/
+├── utils/supabase/                — Clients Supabase (server, client, middleware)
+└── middleware.ts                  — Protection des routes + rate limiting
 ```
 
 ---
 
 ## 7. Choix techniques et justifications
 
-**Pourquoi Next.js Server Components par défaut ?**  
+**Pourquoi Next.js Server Components par défaut ?**
 Réduit le bundle JavaScript envoyé au navigateur. Les données sont fetchées côté serveur, pas besoin d'exposer des API internes.
 
-**Pourquoi Server Actions pour les mutations ?**  
+**Pourquoi Server Actions pour les mutations ?**
 Élimine les routes API internes redondantes. La logique reste côté serveur, validée deux fois (client avec RHF + Zod, serveur dans l'action).
 
-**Pourquoi Drizzle ORM ?**  
+**Pourquoi Drizzle ORM ?**
 Type-safety complète avec TypeScript. Les requêtes sont du SQL typé, pas une abstraction opaque. Migrations versionnées avec drizzle-kit.
 
-**Pourquoi pas de colonnes dérivées ?**  
+**Pourquoi pas de colonnes dérivées ?**
 Les agrégats stockés se désynchronisent quand plusieurs paiements sont faits. Le calcul à la volée est la seule source de vérité.
 
-**Pourquoi Supabase Realtime pour les notifications ?**  
+**Pourquoi Supabase Realtime pour les notifications ?**
 Zéro polling. Quand un syndic crée une invitation, le copropriétaire la reçoit instantanément via un channel Realtime filtré par `user_id`.
+
+**Pourquoi les tantièmes ne sont pas calculés automatiquement ?**
+La répartition des tantièmes est juridique (Loi 18-00 marocaine) et varie par immeuble. Le syndic saisit les valeurs manuellement, l'application vérifie la cohérence mais ne les génère pas.
+
+**Pourquoi Zod v4 avec et sans `zodResolver` ?**
+Le projet utilise les deux approches selon le contexte : `zodResolver` est utilisé dans plusieurs formulaires React Hook Form, tandis que certaines validations utilisent `schema.safeParse(...)` côté handler ou côté serveur pour un contrôle explicite.
 
 ---
 
@@ -171,11 +209,22 @@ L'application supporte **3 langues** : Français (défaut), Anglais, Arabe (RTL)
 - Routing : cookie `NEXT_LOCALE` (pas de préfixe URL)
 - 13 namespaces de traduction dans `messages/{fr,en,ar}/`
 - Direction RTL activée automatiquement pour l'arabe via `dir="rtl"` sur `<html>`
+- Police arabe : **Noto Naskh Arabic** — appariée à Instrument Serif pour le même registre éditorial
 - Les schémas Zod sont des factory functions `createXxxSchema(t)` pour supporter les messages d'erreur traduits
 
 ---
 
-## 9. Monitoring et erreurs
+## 9. Sécurité
+
+- **JWT + RLS** — double protection : middleware Next.js + politiques PostgreSQL
+- **Owner scope validation** — lors de la création d'une réunion, tous les owner IDs invités sont vérifiés pour appartenir aux immeubles du syndic (protection cross-tenant)
+- **Meeting detail authorization** — un copropriétaire ne peut accéder au détail d'une réunion que s'il y est invité (vérification serveur-side)
+- **Résolution propriétaire server-side** — les routes API portal résolvent toujours l'`owner_id` depuis le JWT, jamais depuis un paramètre client
+- **Audit logs immuables** — chaque mutation sensible est enregistrée dans `audit_logs`, les lignes ne sont jamais modifiées ni supprimées
+
+---
+
+## 10. Monitoring et erreurs
 
 - **Sentry** capture toutes les erreurs non gérées en production
 - Chaque route a un `error.tsx` (React error boundary) et un `loading.tsx` (skeleton)
@@ -183,7 +232,7 @@ L'application supporte **3 langues** : Français (défaut), Anglais, Arabe (RTL)
 
 ---
 
-## 10. Variables d'environnement requises
+## 11. Variables d'environnement requises
 
 | Variable | Description |
 |---|---|
@@ -195,6 +244,6 @@ L'application supporte **3 langues** : Français (défaut), Anglais, Arabe (RTL)
 | `UPSTASH_REDIS_REST_TOKEN` | Token Redis Upstash |
 | `RESEND_API_KEY` | Clé API Resend |
 | `RESEND_FROM_EMAIL` | Email expéditeur vérifié |
-| `NEXT_PUBLIC_APP_URL` | URL de production |
+| `NEXT_PUBLIC_APP_URL` | URL de production (https://syndico.vercel.app) |
 | `SENTRY_DSN` | DSN du projet Sentry |
 | `SENTRY_AUTH_TOKEN` | Token pour l'upload des source maps |

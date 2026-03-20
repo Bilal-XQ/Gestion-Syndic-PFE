@@ -7,6 +7,20 @@ import {
   users,
 } from "@/lib/db/schema";
 
+export type OwnerMeetingRow = {
+  invitationId: string;
+  invitationStatus: "invited" | "accepted" | "declined";
+  respondedAt: Date | null;
+  meetingId: string;
+  title: string;
+  description: string | null;
+  meetingDate: string;
+  startTime: string;
+  endTime: string;
+  location: string;
+  meetingStatus: "scheduled" | "completed" | "cancelled";
+};
+
 // ─── Aggregate helpers ────────────────────────────────────────────────
 const totalInvitations = sql<number>`COUNT(${meetingInvitations.id})`.as(
   "total_invitations"
@@ -151,6 +165,33 @@ export async function getMeetingsForOwner(ownerId: string) {
       )
     )
     .orderBy(desc(meetings.meetingDate));
+}
+
+export async function getMeetingInvitationsForOwner(
+  ownerId: string
+): Promise<OwnerMeetingRow[]> {
+  const rows = await db
+    .select({
+      invitationId: meetingInvitations.id,
+      invitationStatus: meetingInvitations.status,
+      respondedAt: meetingInvitations.respondedAt,
+      meetingId: meetings.id,
+      title: meetings.title,
+      description: meetings.description,
+      meetingDate: meetings.meetingDate,
+      startTime: meetings.startTime,
+      endTime: meetings.endTime,
+      location: meetings.location,
+      meetingStatus: meetings.status,
+    })
+    .from(meetingInvitations)
+    .innerJoin(meetings, eq(meetingInvitations.meetingId, meetings.id))
+    .where(
+      and(eq(meetingInvitations.ownerId, ownerId), isNull(meetings.deletedAt))
+    )
+    .orderBy(desc(meetings.meetingDate));
+
+  return rows as OwnerMeetingRow[];
 }
 
 /**
