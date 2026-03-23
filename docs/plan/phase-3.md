@@ -29,7 +29,7 @@
 | Library | Key API Patterns for Phase 3 |
 |---|---|
 | **@react-pdf/renderer 4.3.2** | `import { renderToBuffer } from '@react-pdf/renderer'` — returns `Promise<Buffer>`. Document structure: `<Document>` → `<Page size="A4">` → `<View>` / `<Text>`. Styles via `StyleSheet.create({})`. Runs **server-side** in Node.js — no `"use client"` directive needed. |
-| **Resend** | `new Resend(process.env.RESEND_API_KEY)` → `resend.emails.send({ from, to, subject, react: <Template /> })` — `react` prop accepts JSX directly. Same pattern as `WelcomeEmail` in Phase 2. |
+| **Nodemailer (Gmail SMTP)** | `sendEmail({ to, subject, react: <Template /> })` via `src/lib/email/send-email.ts` shared helper. |
 | **Drizzle ORM 0.45** | Aggregation: `sql<number>\`...\`` inside `.select({})`. Left join: `.leftJoin(payments, eq(payments.chargeId, charges.id))`. Group by: `.groupBy(charges.id)`. COALESCE/SUM via raw `sql` template. `sum()` helper returns `string \| null` (use `mapWith(String)` or raw sql). |
 | **TanStack Query v5** | `useQuery({ queryKey: ['charges', { filters }], queryFn, enabled: !!dep })` — `queryKey` array drives automatic refetches on filter changes. `placeholderData: (prev) => prev` keeps old data during refetch. `invalidateQueries({ queryKey: ['charges'] })` after mutations. No `onSuccess`/`onError` on `useQuery`. |
 
@@ -205,7 +205,7 @@ The `charges` and `payments` tables are already defined in `src/lib/db/schema.ts
    - Load the owner via `charges.apartment_id → owners.apartment_id` (active owner)
    - Load the owner's user record for email
    - Load building for contact info
-   - Send email via Resend: `resend.emails.send({ from, to, subject, react: <PaymentReminderEmail ... /> })`
+  - Send email via shared helper: `sendEmail({ to, subject, react: <PaymentReminderEmail ... /> })`
    - Update `charges.last_reminder_sent_at = NOW()`
    - Audit log: `{ action: 'SEND_REMINDER', entityType: 'charges', entityId: chargeId }`
 
@@ -291,7 +291,7 @@ The `charges` and `payments` tables are already defined in `src/lib/db/schema.ts
   ```
 - Content in French (consistent with existing welcome email)
 - Includes: greeting, charge details, payment amounts (total, paid, remaining), due date warning, building contact info, call to action
-- Resend call in the Server Action: `resend.emails.send({ from: '...', to: ownerEmail, subject: 'Rappel de paiement — [chargeTitle]', react: <PaymentReminderEmail {...props} /> })`
+- Email call in the Server Action: `sendEmail({ to: ownerEmail, subject: 'Rappel de paiement — [chargeTitle]', react: <PaymentReminderEmail {...props} /> })`
 
 **Supabase MCP action:** None
 
@@ -412,7 +412,7 @@ pnpm dlx shadcn@canary add dropdown-menu
 - `pnpm build` passes
 - Can create a charge, see it in the table with "unpaid" status badge
 - Can soft-delete a charge
-- "Send Reminder" button triggers email (verify in Resend dashboard or logs)
+- "Send Reminder" button triggers email (verify Gmail SMTP delivery/logs)
 - "Download PDF" triggers file download in browser
 
 ---
@@ -493,14 +493,14 @@ pnpm dlx shadcn@canary add dropdown-menu
 - Follow the exact mocking pattern from existing Phase 2 tests in `src/lib/actions/__tests__/`
 - Mock `@/lib/db` with `vi.mock()` — mock `db.select()`, `db.insert()`, `db.update()`, `db.transaction()`
 - Mock `@/utils/supabase/server` — return a fake session with `user_role: 'syndic'`
-- Mock `resend` for email tests
+- Mock `@/lib/email/send-email` for email tests
 
 ### `charges.test.ts` — test cases:
 1. **createCharge — valid input** → returns `{ success: true, data: { id } }`, inserts audit log with `CREATE_CHARGE`
 2. **createCharge — invalid input** → returns `{ success: false, error: '...' }` (Zod validation)
 3. **createCharge — unauthenticated** → returns `{ success: false, error: 'Non authentifié' }`
 4. **deleteCharge — soft-delete** → sets `deleted_at`, inserts audit log with `DELETE_CHARGE`
-5. **sendPaymentReminder** → calls `resend.emails.send()`, updates `last_reminder_sent_at`, inserts audit log with `SEND_REMINDER`
+5. **sendPaymentReminder** → calls `sendEmail()`, updates `last_reminder_sent_at`, inserts audit log with `SEND_REMINDER`
 
 ### `payments.test.ts` — test cases:
 1. **createPayment — valid input** → wraps insert in `db.transaction()`, returns `{ success: true, data: { id } }`, inserts audit log with `CREATE_PAYMENT` using `db` (not `tx`)
@@ -533,7 +533,7 @@ pnpm dlx shadcn@canary add dropdown-menu
   4. Create a charge via `/dashboard/charges` → verify "unpaid" status badge
   5. Create a partial payment → verify "partial" status badge and correct amount calculations
   6. Create a payment for the remaining balance → verify "paid" status badge
-  7. Send a payment reminder email → verify Resend logs
+  7. Send a payment reminder email → verify Gmail SMTP delivery/logs
   8. Download a PDF payment notice → verify the file opens and contains correct data
   9. Check the payments history page → verify filters work and summary totals are correct
   10. Check the dashboard overview → verify overdue charges table
@@ -581,5 +581,5 @@ SELECT count(*) FROM audit_logs WHERE action IN ('CREATE_CHARGE', 'CREATE_PAYMEN
 1. **Seed data required** — The Supabase DB currently has 0 rows in `users`, `buildings`, `apartments`, and `owners`. Run `pnpm db:seed` first, then create test data via the Phase 2 UI before manual testing.
 2. **`numeric` type returns strings** — Drizzle maps PostgreSQL `numeric` to `string` in TypeScript. All financial calculations in query helpers use SQL-level arithmetic. Client-side display uses `parseFloat()` or `Number()` for formatting only.
 3. **PDF font availability** — `@react-pdf/renderer` includes Helvetica by default. No custom font registration needed for MVP. If French accented characters render poorly, register a Unicode font later.
-4. **Resend sender domain** — Payment reminder emails need a verified sender domain. For development, use `onboarding@resend.dev` (Resend's sandbox). Production domain setup is Phase 6.
+4. **Gmail SMTP sender** — Payment reminder emails require valid `GMAIL_USER` and `GMAIL_APP_PASSWORD` values in environment configuration.
 5. **Payment creation auth scope** — Phase 3 restricts `createPayment` to `role = 'syndic'`. Phase 5 expands this to also allow `role = 'proprietaire'` (with RLS ensuring they can only pay their own charges). Design the action to accept both roles from day one or plan to extend it in Phase 5.

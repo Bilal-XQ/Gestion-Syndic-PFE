@@ -1,7 +1,7 @@
 # Documentation Technique — Syndic
 
-**Version :** 2.0  
-**Date :** Mars 2026  
+**Version :** 2.1  
+**Date :** 23 Mars 2026  
 **Stack :** Next.js 16 · Supabase · Drizzle ORM · Tailwind CSS v4  
 **Production :** https://syndico.vercel.app
 
@@ -56,7 +56,7 @@ Supabase
 | État serveur | TanStack Query v5 | — | Cache + revalidation |
 | État client | Zustand | 5.0.11 | Sidebar collapse |
 | Formulaires | React Hook Form + Zod v4 | — | Validation client/serveur |
-| Email | Resend + React Email | — | Emails transactionnels |
+| Email | Nodemailer (SMTP Gmail) + React Email | — | Emails transactionnels |
 | PDF | @react-pdf/renderer | 4.3.2 | Avis de paiement |
 | Rate limiting | Upstash Redis | — | 5 tentatives/min/IP |
 | Monitoring | Sentry | — | Erreurs en production |
@@ -242,8 +242,42 @@ L'application supporte **3 langues** : Français (défaut), Anglais, Arabe (RTL)
 | `DATABASE_URL` | Connexion PostgreSQL (port 6543, transaction mode) |
 | `UPSTASH_REDIS_REST_URL` | URL Redis Upstash |
 | `UPSTASH_REDIS_REST_TOKEN` | Token Redis Upstash |
-| `RESEND_API_KEY` | Clé API Resend |
-| `RESEND_FROM_EMAIL` | Email expéditeur vérifié |
-| `NEXT_PUBLIC_APP_URL` | URL de production (https://syndico.vercel.app) |
+| `GMAIL_USER` | Compte Gmail utilisé comme expéditeur SMTP |
+| `GMAIL_APP_PASSWORD` | Mot de passe d'application Gmail |
+| `APP_URL` | URL canonique utilisée pour les liens serveur (https://syndico.vercel.app) |
 | `SENTRY_DSN` | DSN du projet Sentry |
 | `SENTRY_AUTH_TOKEN` | Token pour l'upload des source maps |
+
+---
+
+## 12. Journal des mises à jour (23 Mars 2026)
+
+Commits de référence :
+
+- `56dc708` — feat: enhance notification system with new messages and types for payments and meetings
+- `f94d1fa` — feat: add request mocking documentation for playwright-cli
+- `e789cbb` — feat: add @next/env dependency and project description documentation
+
+Changements techniques appliqués :
+
+1. **Notifications multilingues**
+- Rendu des notifications basé sur des clés i18n et métadonnées plutôt que sur du texte français persisté.
+- Ajout des messages `items.*` dans `messages/fr|en|ar/notifications.json`.
+
+2. **Transport email unifié SMTP**
+- Migration des envois d'emails vers `nodemailer` avec templates React Email.
+- Variable d'environnement canonique pour liens email : `APP_URL`.
+
+3. **Robustesse SSR / Hydration**
+- Suppression d'une source non déterministe (`Math.random()` de rendu dans le skeleton sidebar).
+- Atténuation des warnings d'hydratation liés aux attributs injectés par extensions navigateur.
+
+4. **Opérations de données QA**
+- Seed réaliste pour les comptes propriétaires Ahmed/Marouane : charges, paiements, réunions, invitations, notifications.
+
+5. **Robustesse des flux email**
+- Les actions de création copropriétaire exposent l'état d'envoi email (`emailSent`, `emailError`) pour distinguer succès complet vs succès partiel.
+
+6. **Nettoyage de cohérence transport email**
+- Suppression des références résiduelles à Resend dans les tests, plans de phase, templates d'environnement et instructions internes.
+- Standardisation des mocks/tests sur le helper partagé `sendEmail`.

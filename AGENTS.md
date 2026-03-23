@@ -26,7 +26,7 @@ Next.js 16.1.6 · React 19.2.3 · TypeScript 5.9.0 · Tailwind CSS 4.2.1 · shad
 Drizzle ORM 0.45.1 · @supabase/supabase-js 2.98.0 · @supabase/ssr (latest)
 Zod 4.3.6 · React Hook Form 7.x · @hookform/resolvers 5.2.2
 TanStack Query v5 · Zustand 5.9.0 · @react-pdf/renderer 4.3.2
-Resend + @react-email/components · @upstash/ratelimit · Sentry Next.js SDK
+Nodemailer (Gmail SMTP) + @react-email/components · @upstash/ratelimit · Sentry Next.js SDK
 date-fns 4.1.0 · sonner 2.0.7 · lucide-react 0.575.0
 
 Package manager: **pnpm**. Versions are locked by `docs/PRD.md`. Do not suggest upgrades.

@@ -1,8 +1,8 @@
 # Product Requirements Document
 # HOA Condominium Management Web Application
 
-Version: 2.1
-Last updated: March 2, 2026
+Version: 2.2
+Last updated: March 23, 2026
 Status: Approved for development
 
 ---
@@ -83,7 +83,7 @@ The login page includes a "Forgot password" link. Clicking it shows a form where
 ### Owner Management (Syndic only)
 
 - Register a new co-owner with the following fields: first name, last name, email address, phone number, assigned apartment unit (dropdown), and ownership start date.
-- Upon successful registration: create a Supabase Auth account for the co-owner with a system-generated temporary password, save the owner record in the database, send a welcome email via Resend containing the co-owner's login email and temporary password, and write a `CREATE_OWNER` entry to `audit_logs`.
+- Upon successful registration: create a Supabase Auth account for the co-owner with a system-generated temporary password, save the owner record in the database, send a welcome email via Nodemailer (Gmail SMTP) containing the co-owner's login email and temporary password, and write a `CREATE_OWNER` entry to `audit_logs`.
 - Display a searchable and filterable list of all active (non-deleted) co-owners showing full name, email, phone, and assigned apartment unit.
 - Edit existing co-owner personal information. Log the change to `audit_logs` as `UPDATE_OWNER`.
 - Soft-delete a co-owner by setting their `deleted_at` timestamp. This revokes portal access without removing historical financial records. Write a `DELETE_OWNER` entry to `audit_logs`. Hard deletion is not permitted.
@@ -97,7 +97,7 @@ The login page includes a "Forgot password" link. Clicking it shows a form where
   - `remaining_amount = total_amount - amount_paid`
   - `status = 'paid' if remaining = 0 | 'partial' if amount_paid > 0 | 'unpaid' otherwise`
 - Display all active charges with their derived payment status (paid, partial, unpaid), total amount, amount paid, remaining balance, and due date.
-- Send a payment reminder email to a specific owner for a specific charge via Resend. Log to `audit_logs` as `SEND_REMINDER`.
+- Send a payment reminder email to a specific owner for a specific charge via Nodemailer (Gmail SMTP). Log to `audit_logs` as `SEND_REMINDER`.
 - Generate and download a formal payment notice PDF for an overdue charge using `@react-pdf/renderer`. The notice includes: owner name, apartment details, charge title, description, total amount, amount paid, remaining balance, due date, and payment instructions.
 - Soft-delete a charge. Log to `audit_logs` as `DELETE_CHARGE`.
 
@@ -110,7 +110,7 @@ The login page includes a "Forgot password" link. Clicking it shows a form where
 ### Meeting Management (Syndic only)
 
 - Create a new general assembly meeting with: title, description, date, start time, end time, and location. Log to `audit_logs` as `CREATE_MEETING`.
-- After creation, select which active co-owners to invite from a multi-select list. Each invited owner receives a meeting invitation email via Resend and an in-app notification of type `meeting_invitation`.
+- After creation, select which active co-owners to invite from a multi-select list. Each invited owner receives a meeting invitation email via Nodemailer (Gmail SMTP) and an in-app notification of type `meeting_invitation`.
 - View the meeting detail page showing: title, description, date, time, location, status, and the complete list of invited owners with their response status (invited, accepted, declined).
 - View all meetings in a sortable list.
 
@@ -195,7 +195,8 @@ The login page includes a "Forgot password" link. Clicking it shows a form where
 
 ### Email Deliverability
 
-- The Resend sending domain is authenticated with SPF, DKIM, and DMARC records before any production email is sent. This is configured in the Resend dashboard and DNS provider during Phase 6 deployment preparation.
+- Gmail SMTP credentials (`GMAIL_USER`, `GMAIL_APP_PASSWORD`) must be configured in environment variables before any production email is sent.
+- The Gmail account must use an application-specific password (Google account security setting).
 
 ### Scalability
 
@@ -443,7 +444,7 @@ A single-page settings form for the building configuration. Fields: building nam
 
 ### Syndic Dashboard — Add or Edit Owner (Slide-Over Panel)
 
-A shadcn Sheet component containing a form with fields: first name, last name, email, phone, apartment dropdown, and ownership date. On submit the Server Action creates the Supabase Auth account, saves the owner row, sends the welcome email via Resend, and logs to `audit_logs`. Validation uses React Hook Form with the Zod schema from `src/lib/validations/owner.ts`. On success the panel closes and the owner list refreshes via TanStack Query invalidation.
+A shadcn Sheet component containing a form with fields: first name, last name, email, phone, apartment dropdown, and ownership date. On submit the Server Action creates the Supabase Auth account, saves the owner row, sends the welcome email via Nodemailer (Gmail SMTP), and logs to `audit_logs`. Validation uses React Hook Form with the Zod schema from `src/lib/validations/owner.ts`. On success the panel closes and the owner list refreshes via TanStack Query invalidation.
 
 ### Syndic Dashboard — Charges (`/dashboard/charges`)
 
@@ -700,7 +701,7 @@ All packages must be installed at the versions listed below, pinned as of March 
 | Forms | react-hook-form | 7.x latest |
 | Forms | zod | 4.3.6 |
 | Forms | @hookform/resolvers | 5.2.2 |
-| Email | resend | latest stable |
+| Email | nodemailer | 8.x |
 | Email | @react-email/components | latest stable |
 | Email | @react-email/render | latest stable |
 | PDF | @react-pdf/renderer | 4.3.2 |
@@ -729,7 +730,7 @@ All packages must be installed at the versions listed below, pinned as of March 
 | Vercel | Frontend hosting and serverless function runtime |
 | Supabase Cloud | PostgreSQL database, authentication, real-time subscriptions via Supabase Realtime channels |
 | Upstash Redis | Edge-compatible rate limiting state store |
-| Resend | Transactional email delivery |
+| Gmail SMTP | Transactional email delivery via Nodemailer |
 | Sentry | Production error monitoring and alerting |
 
 ---
@@ -777,7 +778,7 @@ Playwright end-to-end tests are deferred to post-MVP. Component-level Testing Li
 - Build owner management: list page with search and filter, add panel, edit panel, soft-delete with confirmation dialog.
 - Build apartment management: list page, add panel, edit panel, soft-delete with active-owner guard. Implement automatic status transitions on owner assign and soft-delete.
 - Build the building settings page: pre-populated form, update Server Action, audit log entry.
-- Implement the welcome email flow using Resend and the React Email welcome template.
+- Implement the welcome email flow using Nodemailer (Gmail SMTP) and the React Email welcome template.
 - Write Vitest unit tests for owner and apartment Server Actions including status transition logic.
 
 ### Phase 3 — Charges and Payments
@@ -793,7 +794,7 @@ Playwright end-to-end tests are deferred to post-MVP. Component-level Testing Li
 ### Phase 4 — Meetings
 
 - Build the meetings list page and meeting creation form.
-- Build the owner invitation flow with in-app notification creation and Resend email dispatch.
+- Build the owner invitation flow with in-app notification creation and Nodemailer email dispatch.
 - Build the meeting detail page with attendee list and response status badges.
 - Build the accept and decline Server Actions for meeting invitations.
 - Implement the `useNotificationsRealtime` hook in `src/hooks/use-notifications-realtime.ts`. Integrate it into the Owner Portal layout. Verify that creating a meeting invitation notification from the syndic dashboard triggers a live badge update in the proprietaire portal without a page refresh.
@@ -813,8 +814,29 @@ Playwright end-to-end tests are deferred to post-MVP. Component-level Testing Li
 - Conduct a full responsiveness audit across all pages at mobile, tablet, and desktop breakpoints.
 - Add skeleton loading screens to all data-fetching pages.
 - Verify all Sentry integrations are capturing errors correctly in the staging environment.
-- Configure SPF, DKIM, and DMARC records on the Resend sending domain in DNS before sending any production email.
+- Configure and validate Gmail SMTP credentials (account + app password) before sending any production email.
 - Conduct a full RLS policy audit by running test queries using proprietaire-role JWTs to verify that no cross-owner data is accessible.
 - Run the full Vitest test suite and resolve all failures before deploying.
 - Deploy to Vercel production connected to Supabase Cloud.
+
+---
+
+## Addendum — March 23, 2026 Implementation Notes
+
+This addendum documents implementation-level updates completed after the original March 2 baseline. It does not change core business rules, role boundaries, or financial invariants.
+
+Reference commits:
+
+- `56dc708` — feat: enhance notification system with new messages and types for payments and meetings
+- `f94d1fa` — feat: add request mocking documentation for playwright-cli
+- `e789cbb` — feat: add @next/env dependency and project description documentation
+
+Implemented updates:
+
+1. Added `@next/env` dependency for reliable local script environment loading.
+2. Notifications moved to locale-driven rendering (FR/EN/AR) for payment and meeting items.
+3. Meeting notification payload now includes metadata (`meetingTitle`, `meetingDate`, `invitationId`) to support dynamic localized display.
+4. Email transport layer currently runs through SMTP (`nodemailer`) with React Email templates.
+5. Canonical server-generated URLs now use `APP_URL` to avoid localhost links in production emails.
+6. Hydration stability improvements were applied (deterministic sidebar skeleton rendering and targeted mismatch mitigation for extension-injected attributes).
 

@@ -33,12 +33,9 @@ vi.mock("@/utils/supabase/admin", () => ({
   })),
 }));
 
-vi.mock("resend", () => ({
-  Resend: class {
-    emails = {
-      send: vi.fn().mockResolvedValue({ id: "email-id" }),
-    };
-  },
+const mockSendEmail = vi.fn().mockResolvedValue({ success: true });
+vi.mock("@/lib/email/send-email", () => ({
+  sendEmail: (...args: unknown[]) => mockSendEmail(...args),
 }));
 
 vi.mock("@/lib/email/templates/welcome", () => ({

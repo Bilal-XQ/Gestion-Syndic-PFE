@@ -246,8 +246,8 @@ The `meetings`, `meeting_invitations`, and `notifications` tables are already de
      - `title` = `'Invitation à une réunion'`
      - `message` = `'Vous êtes invité(e) à la réunion "{meetingTitle}" le {meetingDate}'`
      - `metadata` = `{ meetingId, invitationId }`
-   - **For each invited owner:** send email via Resend:
-     - `resend.emails.send({ from, to: ownerEmail, subject: 'Invitation — {meetingTitle}', react: <MeetingInvitationEmail ... /> })`
+   - **For each invited owner:** send email via shared helper:
+     - `sendEmail({ to: ownerEmail, subject: 'Invitation — {meetingTitle}', react: <MeetingInvitationEmail ... /> })`
    - **Audit log** (outside any transaction): `{ action: 'CREATE_MEETING', entityType: 'meetings', entityId: newMeeting.id }`
    - Return `{ success: true, data: { id: newMeeting.id } }`
    - **Important:** The meeting insert + invitation inserts + notification inserts should all be inside a single `db.transaction()`. Email sending and audit log remain outside the transaction.
@@ -600,7 +600,7 @@ pnpm dlx shadcn@canary add command popover checkbox badge
 - Follow the exact mocking pattern from existing Phase 2–3 tests in `src/lib/actions/__tests__/`
 - Mock `@/lib/db` with `vi.mock()` — mock `db.select()`, `db.insert()`, `db.update()`, `db.transaction()`
 - Mock `@/utils/supabase/server` — return a fake session
-- Mock `resend` for email tests
+- Mock `@/lib/email/send-email` for email tests
 
 ### `meetings.test.ts` — test cases:
 1. **createMeeting — valid input** → inserts meeting + invitations + notifications inside transaction, sends emails outside, inserts audit log with `CREATE_MEETING`

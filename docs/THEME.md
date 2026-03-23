@@ -1,7 +1,7 @@
 # Syndic — Theme & Color Palette
 
 **Version:** 1.0  
-**Last updated:** March 3, 2026  
+**Last updated:** March 23, 2026  
 **Applies to:** Dashboard, Owner Portal, Landing Page  
 
 > This document is the single source of truth for all visual design decisions in the Syndic web app. Every developer, AI agent, or designer working on the UI must follow these tokens exactly. No ad-hoc color values are permitted outside of this system.
@@ -444,3 +444,13 @@ These are explicitly disallowed in the Syndic design system:
 - ❌ Animating `background-color`, `color`, or `border-color` with values other than `150–250ms ease`
 - ❌ Zebra row striping in tables
 - ❌ Border radius values not in the defined scale
+
+---
+
+## Update Log — March 23, 2026
+
+1. No palette or typography token changes were introduced.
+2. Hydration stability updates were applied at implementation level (deterministic skeleton rendering in sidebar) with no visual token impact.
+3. Token usage note reinforced:
+- Avoid introducing custom semantics on the bare `--accent` name because shadcn also defines `--accent` / `--accent-foreground`.
+- Prefer scoped custom names such as `--accent-muted`, `--accent-bg`, `--accent-border`.

@@ -39,7 +39,7 @@ Backend and data:
 - Drizzle Kit for migrations
 
 Integrations:
-- Resend + React Email (transactional email)
+- Nodemailer (SMTP Gmail) + React Email (transactional email)
 - @react-pdf/renderer `4.3.2` (formal notices)
 - Upstash Redis + @upstash/ratelimit (login throttling)
 - Sentry Next.js SDK (error tracking)
@@ -268,8 +268,11 @@ Expected variables include:
 - Upstash:
   - `UPSTASH_REDIS_REST_URL`
   - `UPSTASH_REDIS_REST_TOKEN`
-- Resend:
-  - `RESEND_API_KEY`
+- Email SMTP:
+  - `GMAIL_USER`
+  - `GMAIL_APP_PASSWORD`
+- App URL:
+  - `APP_URL`
 - Sentry:
   - `SENTRY_DSN`
   - `SENTRY_AUTH_TOKEN`
@@ -327,7 +330,7 @@ Top-level high-signal folders:
 
 - Built for Next.js server/runtime deployment (commonly Vercel).
 - Supabase is the managed backend (Auth + Postgres + Realtime).
-- Upstash and Resend are optional locally but expected for full production behavior.
+- Upstash and SMTP credentials are optional locally but expected for full production behavior.
 - Sentry source map and runtime integration should be configured for production observability.
 
 ## 18) Practical Guidance for New Developers
@@ -355,6 +358,23 @@ Top-level high-signal folders:
 ## 19) Current Maturity Snapshot
 
 This project is beyond a starter foundation: it contains a complete role-based architecture, multi-domain business logic, multilingual support, operational tooling, and production-grade concerns (security, observability, rate limiting, transactions, and audit trails). It is structured for maintainability with clear domain separation and strong backend invariants.
+
+## Appendix) Recent Updates — March 23, 2026
+
+Reference commits:
+- `56dc708` — feat: enhance notification system with new messages and types for payments and meetings
+- `f94d1fa` — feat: add request mocking documentation for playwright-cli
+- `e789cbb` — feat: add @next/env dependency and project description documentation
+
+Implementation updates:
+
+1. Notification rendering is now locale-driven and key-based for payment/meeting items (`fr/en/ar`).
+2. Meeting invitation notifications now persist metadata (`meetingTitle`, `meetingDate`, `invitationId`) for proper multilingual rendering.
+3. Email transport is centralized through SMTP (`nodemailer`) while keeping React Email templates.
+4. Canonical URL generation for emails uses `APP_URL` to avoid localhost links in production.
+5. Hydration robustness improved by removing non-deterministic render output in sidebar skeleton and adding targeted suppression against extension-injected attributes.
+6. Owner creation flow now surfaces partial-success feedback (`owner created` + `welcome email failed`) in the UI.
+7. Final consistency pass removed residual Resend references from docs/tests/env templates and standardized on shared SMTP (`sendEmail`) terminology.
 
 ---
 

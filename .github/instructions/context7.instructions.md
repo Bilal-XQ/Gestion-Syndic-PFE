@@ -17,7 +17,7 @@ Use Context7 automatically — without being asked — before writing any code t
 - Any TanStack Query v5 hook or mutation
 - Any React Hook Form + `@hookform/resolvers` usage
 - Any `@react-pdf/renderer` document or component
-- Any Resend or `@react-email` template
+- Any Nodemailer or `@react-email` template
 - Any `@upstash/ratelimit` or `@upstash/redis` configuration
 
 ## Required workflow
@@ -42,7 +42,7 @@ For every library-specific code task:
 | TanStack Query      | `/tanstack/query`                  |
 | React Hook Form     | `/react-hook-form/react-hook-form` |
 | @react-pdf/renderer | `/diegomura/react-pdf`             |
-| Resend              | `/resend/resend-node`              |
+| Nodemailer          | `/nodemailer/nodemailer`           |
 
 Always resolve the ID first — do not hard-code library IDs from this table without verification.
 

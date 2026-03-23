@@ -109,14 +109,11 @@ vi.mock("@/lib/db/queries/meetings", () => ({
   getMeetingById: (...args: unknown[]) => mockGetMeetingById(...args),
 }));
 
-// Mock Resend
-const mockSend = vi.fn().mockResolvedValue({ id: "email-id" });
-vi.mock("resend", () => {
-  const ResendMock = function () {
-    return { emails: { send: mockSend } };
-  };
-  return { Resend: ResendMock };
-});
+// Mock email sender
+const mockSendEmail = vi.fn().mockResolvedValue({ success: true });
+vi.mock("@/lib/email/send-email", () => ({
+  sendEmail: (...args: unknown[]) => mockSendEmail(...args),
+}));
 
 // Mock email template
 vi.mock("@/lib/email/templates/meeting-invitation", () => ({

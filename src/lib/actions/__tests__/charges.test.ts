@@ -82,14 +82,11 @@ vi.mock("@/lib/db/queries/owners", () => ({
   getOwnerByUserId: (...args: unknown[]) => mockGetOwnerByUserId(...args),
 }));
 
-// Mock Resend
-const mockSend = vi.fn().mockResolvedValue({ id: "email-id" });
-vi.mock("resend", () => {
-  const ResendMock = function () {
-    return { emails: { send: mockSend } };
-  };
-  return { Resend: ResendMock };
-});
+// Mock email sender
+const mockSendEmail = vi.fn().mockResolvedValue({ success: true });
+vi.mock("@/lib/email/send-email", () => ({
+  sendEmail: (...args: unknown[]) => mockSendEmail(...args),
+}));
 
 // Mock PDF render
 vi.mock("@/lib/pdf/payment-notice", () => ({
@@ -280,11 +277,11 @@ describe("sendPaymentReminder", () => {
     mockGetBuildingBySyndicId.mockResolvedValue(building);
   });
 
-  it("sends email via Resend", async () => {
+  it("sends payment reminder email", async () => {
     const result = await sendPaymentReminder("00000000-0000-4000-8000-000000000020");
     expect(result).toEqual({ success: true, data: null });
-    expect(mockSend).toHaveBeenCalledTimes(1);
-    expect(mockSend).toHaveBeenCalledWith(
+    expect(mockSendEmail).toHaveBeenCalledTimes(1);
+    expect(mockSendEmail).toHaveBeenCalledWith(
       expect.objectContaining({
         to: "jean@example.com",
         subject: expect.stringContaining("Rappel de paiement"),

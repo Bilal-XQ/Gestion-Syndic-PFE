@@ -69,7 +69,7 @@ Both transitions execute inside the same operation as the owner mutation.
 
 Supabase Realtime delivers `INSERT` events on `notifications` to the client. Server Actions insert the notification row; the client reacts via the `useNotificationsRealtime` hook. Never push to the client directly from a Server Action.
 
-Resend emails are called from Server Actions only. Never send email from a Client Component or a route handler used as a proxy.
+Emails are sent from Server Actions only (via the shared `sendEmail` helper). Never send email from a Client Component or a route handler used as a proxy.
 
 ## Cache invalidation
 

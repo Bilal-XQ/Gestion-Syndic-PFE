@@ -2,8 +2,6 @@ import { render } from "@react-email/render";
 import nodemailer from "nodemailer";
 import type { ReactElement } from "react";
 
-// Resend replaced by Nodemailer — see swap-resend-to-nodemailer.md
-
 type SendEmailParams = {
   to: string;
   subject: string;

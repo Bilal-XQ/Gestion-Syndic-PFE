@@ -27,7 +27,7 @@
 | **TanStack Query v5** | `QueryClientProvider` wraps app; `useQuery({ queryKey, queryFn })` — no `onSuccess`/`onError` on `useQuery` (removed in v5); `useMutation` has `onSuccess`/`onError`/`onSettled`; `queryClient.invalidateQueries({ queryKey: ['owners'] })` |
 | **React Hook Form v7** | `useForm<T>({ resolver: zodResolver(schema), defaultValues })` — `form.register('field')`, `form.handleSubmit(onSubmit)`, `form.formState.errors`, `form.reset()` |
 | **@hookform/resolvers 5.2.2** | `import { zodResolver } from '@hookform/resolvers/zod'` — wraps Zod v4 schema for RHF integration |
-| **Resend** | `new Resend(process.env.RESEND_API_KEY)` → `resend.emails.send({ from, to, subject, react: <Template /> })` — `react` prop accepts JSX directly |
+| **Nodemailer (Gmail SMTP)** | `sendEmail({ to, subject, react: <Template /> })` using `src/lib/email/send-email.ts` shared utility |
 | **shadcn/ui canary** | Sheet: `<Sheet>` + `<SheetContent>` + `<SheetHeader>` / `<SheetTitle>`; AlertDialog: `<AlertDialog>` + `<AlertDialogContent>` + `<AlertDialogAction/Cancel>`; Select: `<Select>` + `<SelectTrigger>` + `<SelectContent>` + `<SelectItem>` |
 
 ---
@@ -41,7 +41,7 @@
 
 **Implementation notes:**
 - Run `pnpm dlx shadcn@canary add select` to install the Select component (Sheet, AlertDialog, Table, Input, Label, Card already installed in Phase 1).
-- Verify `@tanstack/react-query`, `react-hook-form`, `@hookform/resolvers`, `resend`, `@react-email/components` are already in `package.json` — they are (confirmed from Phase 1 install). No new `pnpm add` needed for those.
+- Verify `@tanstack/react-query`, `react-hook-form`, `@hookform/resolvers`, `@react-email/components`, and `nodemailer` are already in `package.json`.
 - Add `SUPABASE_SERVICE_ROLE_KEY` to `.env.local`. This key is found in Supabase Dashboard → Settings → API → `service_role` key. It is required for `supabase.auth.admin.createUser()` when registering new owners.
 - Add the placeholder to `.env.example` too.
 
@@ -276,7 +276,7 @@ Per `server-actions.instructions.md` — this is the most complex action file in
 5. Insert into `users` table: `{ id: authUser.id, email, firstName, lastName, phone, role: 'proprietaire' }`
 6. Insert into `owners` table: `{ userId: authUser.id, apartmentId: values.apartmentId, ownershipDate: values.ownershipDate }`
 7. **Apartment status transition:** Update `apartments.status = 'occupied'` WHERE `id = values.apartmentId`. Per `server-actions.instructions.md`: this happens inside `owners.ts`, never standalone.
-8. Send welcome email via Resend (Step 9's template): `resend.emails.send({ from, to: values.email, subject, react: <WelcomeEmail ... /> })`
+8. Send welcome email via shared SMTP helper (Step 9's template): `sendEmail({ to: values.email, subject, react: <WelcomeEmail ... /> })`
 9. Audit log (outside any transaction):
    ```
    { action: 'CREATE_OWNER', entityType: 'owners', entityId: newOwner.id }
@@ -307,7 +307,7 @@ Per `server-actions.instructions.md` — this is the most complex action file in
 
 **Critical rules:**
 - Apartment status transitions happen ONLY in `owners.ts` actions — never standalone
-- Email uses Resend — never direct SMTP
+- Email uses the shared `sendEmail` helper in `src/lib/email/send-email.ts` (Nodemailer + Gmail SMTP)
 - Admin client for auth user creation — anon client cannot create users
 - Audit log inserts use `db` (not `tx`) — outside any transaction
 
@@ -324,7 +324,7 @@ Per `server-actions.instructions.md` — this is the most complex action file in
 - `src/lib/email/templates/welcome.tsx`
 
 **Implementation notes:**
-- Per Context7 Resend docs: define a React component that accepts props (`firstName`, `lastName`, `email`, `tempPassword`, `loginUrl`).
+- Define a React component that accepts props (`firstName`, `lastName`, `email`, `tempPassword`, `loginUrl`) and pass it to `sendEmail` as the `react` payload.
 - Use `@react-email/components` primitives: `Html`, `Body`, `Container`, `Heading`, `Text`, `Button`, `Hr`, `Section`.
 - The template must include:
   - Welcome greeting with the owner's name
@@ -333,7 +333,7 @@ Per `server-actions.instructions.md` — this is the most complex action file in
   - A button/link to the login page
   - Instruction to change password on first login
 - Keep styling minimal — inline CSS only (email client compatibility).
-- Per `server-actions.instructions.md`: Resend emails are called from Server Actions only.
+- Per `server-actions.instructions.md`: emails are sent from Server Actions only.
 
 **Verification:**
 - `pnpm tsc --noEmit` passes
@@ -600,7 +600,7 @@ SELECT * FROM buildings;
    - Log in as syndic → redirected to `/dashboard`
    - `/dashboard` shows 4 metric cards with real counts
    - `/dashboard/apartments` — create, edit, delete apartments
-   - `/dashboard/owners` — create owner (check welcome email in Resend dashboard), edit, soft-delete
+  - `/dashboard/owners` — create owner (check Gmail SMTP delivery/logs), edit, soft-delete
    - `/dashboard/settings` — update building name/address, verify toast
    - Apartment status badge changes when owner is created/deleted
    - Audit log entries written (verify via Supabase dashboard: `SELECT * FROM audit_logs`)

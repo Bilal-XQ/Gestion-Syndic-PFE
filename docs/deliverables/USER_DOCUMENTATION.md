@@ -1,7 +1,7 @@
 # Documentation d'Utilisation — Syndic
 
-**Version :** 2.0  
-**Date :** Mars 2026  
+**Version :** 2.1  
+**Date :** 23 Mars 2026  
 **URL de production :** https://syndico.vercel.app
 
 ---
@@ -15,7 +15,7 @@ Avant de commencer, vous avez besoin de :
 - Un compte **Supabase** (gratuit sur supabase.com)
 - Un compte **Vercel** (gratuit sur vercel.com)
 - Un compte **Upstash** pour Redis (gratuit sur upstash.com)
-- Un compte **Resend** pour les emails (gratuit sur resend.com)
+- Un compte **Gmail** avec mot de passe d'application (SMTP)
 
 ---
 
@@ -40,9 +40,9 @@ SUPABASE_SERVICE_ROLE_KEY=votre_service_role_key
 DATABASE_URL=postgresql://postgres:[password]@db.votre-projet.supabase.co:6543/postgres?pgbouncer=true
 UPSTASH_REDIS_REST_URL=https://votre-redis.upstash.io
 UPSTASH_REDIS_REST_TOKEN=votre_token
-RESEND_API_KEY=re_votre_api_key
-RESEND_FROM_EMAIL=noreply@votredomaine.com
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+GMAIL_USER=votre-compte@gmail.com
+GMAIL_APP_PASSWORD=votre-mot-de-passe-application
+APP_URL=http://localhost:3000
 SENTRY_DSN=https://votre_dsn@sentry.io/projet
 SENTRY_AUTH_TOKEN=votre_auth_token
 ```
@@ -271,7 +271,7 @@ Vercel détecte le push et redéploie automatiquement.
 
 Dans **Vercel Dashboard → Project → Settings → Environment Variables**, ajoutez toutes les variables de `.env.local`.
 
-> Pour `NEXT_PUBLIC_APP_URL`, utilisez `https://syndico.vercel.app`
+> Pour `APP_URL`, utilisez `https://syndico.vercel.app`
 
 ### Étape 3 — Vérifier après déploiement
 
@@ -327,7 +327,8 @@ pnpm drizzle-kit studio
 → Vérifiez que Supabase Realtime est activé sur la table `notifications` dans le dashboard Supabase.
 
 **L'email de bienvenue n'arrive pas**
-→ Vérifiez que votre domaine expéditeur est vérifié dans Resend (SPF, DKIM, DMARC configurés).
+→ Vérifiez `GMAIL_USER` et `GMAIL_APP_PASSWORD` dans `.env.local`.
+→ Vérifiez que le mot de passe Gmail utilisé est un mot de passe d'application valide.
 
 **Erreur 429 à la connexion**
 → Vous avez dépassé 5 tentatives en 1 minute. Attendez 60 secondes.
@@ -340,3 +341,20 @@ pnpm drizzle-kit studio
 
 **"drizzle-kit push" échoue en local**
 → Vérifiez que `DATABASE_URL` dans `.env.local` utilise le port 6543 (transaction mode) et non 5432.
+
+---
+
+## 10. Mises à jour du 23 Mars 2026
+
+Commits de référence :
+
+- `56dc708` — feat: enhance notification system with new messages and types for payments and meetings
+- `f94d1fa` — feat: add request mocking documentation for playwright-cli
+- `e789cbb` — feat: add @next/env dependency and project description documentation
+
+Ce qui a changé pour l'utilisation produit :
+
+1. Les notifications de paiement/réunion affichent maintenant le texte selon la langue active (FR/EN/AR).
+2. La création d'un copropriétaire peut afficher un avertissement explicite si l'email de bienvenue échoue alors que le compte est bien créé.
+3. Les comptes Ahmed/Marouane ont été enrichis avec des données réalistes (charges, paiements, réunions, notifications) pour les tests fonctionnels.
+4. La configuration email de référence est désormais unifiée sur Gmail SMTP (`GMAIL_USER`, `GMAIL_APP_PASSWORD`) avec liens serveur basés sur `APP_URL`.
