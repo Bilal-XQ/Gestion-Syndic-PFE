@@ -11,6 +11,9 @@ importers:
       '@hookform/resolvers':
         specifier: 5.2.2
         version: 5.2.2(react-hook-form@7.71.2(react@19.2.3))
+      '@next/env':
+        specifier: 16.2.0
+        version: 16.2.0
       '@react-email/components':
         specifier: latest
         version: 1.0.8(react-dom@19.2.3(react@19.2.3))(react@19.2.3)

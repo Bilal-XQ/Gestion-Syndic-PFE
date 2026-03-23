@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "5.2.2",
+    "@next/env": "16.2.0",
     "@react-email/components": "latest",
     "@react-email/render": "latest",
     "@react-pdf/renderer": "4.3.2",
