@@ -162,9 +162,14 @@ export async function createMeeting(
       await tx.insert(notifications).values({
         userId: row.userId,
         type: "meeting_invitation",
-        title: "Invitation à une réunion",
-        message: `Vous êtes invité(e) à la réunion "${parsed.data.title}" le ${parsed.data.meetingDate}`,
-        metadata: { meetingId: meetingId, invitationId: row.invitationId },
+        title: "items.meetingInvitation.title",
+        message: "items.meetingInvitation.message",
+        metadata: {
+          meetingId: meetingId,
+          invitationId: row.invitationId,
+          meetingTitle: parsed.data.title,
+          meetingDate: parsed.data.meetingDate,
+        },
         isRead: false,
       });
     }

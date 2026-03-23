@@ -3,6 +3,7 @@
 .vscode/
 .idea/
 .playwright-cli
+test-results
 
 # dependencies
 /node_modules

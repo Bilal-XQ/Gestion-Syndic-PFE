@@ -29,6 +29,11 @@ import {
   respondToInvitation,
 } from "@/lib/actions/notifications";
 
+type NotificationText = {
+  title: string;
+  message: string;
+};
+
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -64,6 +69,65 @@ function formatNotificationMessage(message: string): string {
     /\b(\d{4}-\d{2}-\d{2})\b/g,
     (_, isoDate) => formatDate(isoDate)
   );
+}
+
+function resolveNotificationText(
+  notif: Notification,
+  t: ReturnType<typeof useTranslations>
+): NotificationText {
+  const metadata = (notif.metadata as Record<string, unknown> | null) ?? null;
+
+  if (notif.type === "payment_notice") {
+    return {
+      title: t("items.paymentNotice.title"),
+      message: t("items.paymentNotice.message"),
+    };
+  }
+
+  if (notif.type === "payment_confirmation") {
+    return {
+      title: t("items.paymentConfirmation.title"),
+      message: t("items.paymentConfirmation.message"),
+    };
+  }
+
+  if (notif.type === "payment_reminder") {
+    return {
+      title: t("items.paymentReminder.title"),
+      message: t("items.paymentReminder.message"),
+    };
+  }
+
+  if (notif.type === "meeting_invitation") {
+    const meetingTitle =
+      typeof metadata?.meetingTitle === "string"
+        ? metadata.meetingTitle
+        : undefined;
+    const meetingDate =
+      typeof metadata?.meetingDate === "string"
+        ? metadata.meetingDate
+        : undefined;
+
+    if (meetingTitle && meetingDate) {
+      return {
+        title: t("items.meetingInvitation.title"),
+        message: t("items.meetingInvitation.message", {
+          meetingTitle,
+          meetingDate: formatDate(meetingDate),
+        }),
+      };
+    }
+
+    return {
+      title: t("items.meetingInvitation.title"),
+      message: t("items.meetingInvitation.messageGeneric"),
+    };
+  }
+
+  return {
+    title: notif.title,
+    message: formatNotificationMessage(notif.message),
+  };
 }
 
 async function fetchNotifications(): Promise<NotificationsResponse> {
@@ -175,6 +239,7 @@ export function NotificationsList() {
             const hasResponded =
               notif.invitationStatus === "accepted" ||
               notif.invitationStatus === "declined";
+            const text = resolveNotificationText(notif, t);
 
             const Icon = notificationIcons[notif.type] ?? Bell;
 
@@ -218,11 +283,11 @@ export function NotificationsList() {
                                 : "text-[--text-primary]"
                             )}
                           >
-                            {notif.title}
+                            {text.title}
                           </p>
                         </div>
                         <p className="text-sm text-[--text-muted] mt-0.5">
-                          {formatNotificationMessage(notif.message)}
+                          {text.message}
                         </p>
 
                         {/* Meeting invitation actions */}

@@ -13,5 +13,24 @@
   "responseSuccess": "Response recorded",
   "responseError": "Failed to record response",
   "statusAccepted": "Accepted",
-  "statusDeclined": "Declined"
+  "statusDeclined": "Declined",
+  "items": {
+    "paymentNotice": {
+      "title": "New charges available",
+      "message": "Your quarterly charges are now available in your co-owner portal."
+    },
+    "meetingInvitation": {
+      "title": "General meeting invitation",
+      "message": "You are invited to the general meeting \"{meetingTitle}\" on {meetingDate}.",
+      "messageGeneric": "You have received a general meeting invitation."
+    },
+    "paymentConfirmation": {
+      "title": "Payment recorded",
+      "message": "Your latest payment has been recorded successfully. Thank you."
+    },
+    "paymentReminder": {
+      "title": "Payment reminder",
+      "message": "You have a pending payment."
+    }
+  }
 }

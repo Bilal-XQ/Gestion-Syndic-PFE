@@ -13,5 +13,24 @@
   "responseSuccess": "Réponse enregistrée",
   "responseError": "Échec de l'enregistrement de la réponse",
   "statusAccepted": "Acceptée",
-  "statusDeclined": "Déclinée"
+  "statusDeclined": "Déclinée",
+  "items": {
+    "paymentNotice": {
+      "title": "Nouvelles charges disponibles",
+      "message": "Vos appels de charges du trimestre sont disponibles dans votre espace copropriétaire."
+    },
+    "meetingInvitation": {
+      "title": "Invitation à l'assemblée générale",
+      "message": "Vous êtes invité à l'assemblée générale \"{meetingTitle}\" le {meetingDate}.",
+      "messageGeneric": "Vous avez reçu une invitation à l'assemblée générale."
+    },
+    "paymentConfirmation": {
+      "title": "Paiement enregistré",
+      "message": "Votre dernier paiement a bien été enregistré. Merci."
+    },
+    "paymentReminder": {
+      "title": "Rappel de paiement",
+      "message": "Vous avez un paiement en attente."
+    }
+  }
 }

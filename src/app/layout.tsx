@@ -86,6 +86,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} dir={dir} suppressHydrationWarning>
       <body
+        suppressHydrationWarning
         className={`${fontClasses} antialiased${locale === "ar" ? " font-[family-name:var(--font-ibm-plex-arabic)]" : ""}`}
       >
         <ThemeProvider>

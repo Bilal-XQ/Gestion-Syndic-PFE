@@ -13,5 +13,24 @@
   "responseSuccess": "تم تسجيل الرد",
   "responseError": "فشل في تسجيل الرد",
   "statusAccepted": "مقبولة",
-  "statusDeclined": "مرفوضة"
+  "statusDeclined": "مرفوضة",
+  "items": {
+    "paymentNotice": {
+      "title": "توجد رسوم جديدة",
+      "message": "الرسوم الفصلية الخاصة بك متاحة الآن في بوابة المالك."
+    },
+    "meetingInvitation": {
+      "title": "دعوة إلى الجمع العام",
+      "message": "تمت دعوتك إلى الجمع العام \"{meetingTitle}\" بتاريخ {meetingDate}.",
+      "messageGeneric": "لقد تلقيت دعوة إلى الجمع العام."
+    },
+    "paymentConfirmation": {
+      "title": "تم تسجيل الدفع",
+      "message": "تم تسجيل آخر عملية دفع بنجاح. شكرا لك."
+    },
+    "paymentReminder": {
+      "title": "تذكير بالدفع",
+      "message": "لديك دفعة معلقة."
+    }
+  }
 }
