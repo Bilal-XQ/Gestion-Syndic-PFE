@@ -1,7 +1,6 @@
 "use server";
 
 import { eq } from "drizzle-orm";
-import { Resend } from "resend";
 import { db } from "@/lib/db";
 import { charges, auditLogs } from "@/lib/db/schema";
 import { createClient } from "@/utils/supabase/server";
@@ -13,8 +12,7 @@ import { getApartmentById, getApartmentsForBuilding } from "@/lib/db/queries/apa
 import { getOwnerByApartmentId, getOwnerById, getOwnerByUserId } from "@/lib/db/queries/owners";
 import { PaymentReminderEmail } from "@/lib/email/templates/payment-reminder";
 import { renderPaymentNotice } from "@/lib/pdf/payment-notice";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { sendEmail } from "@/lib/email/send-email";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -261,8 +259,7 @@ export async function sendPaymentReminder(
   }
 
   // Send email
-  await resend.emails.send({
-    from: "Syndic <onboarding@resend.dev>",
+  const emailResult = await sendEmail({
     to: owner.email,
     subject: `Rappel de paiement — ${charge.title}`,
     react: PaymentReminderEmail({
@@ -276,6 +273,10 @@ export async function sendPaymentReminder(
       buildingAddress: building.address,
     }),
   });
+
+  if (!emailResult.success) {
+    throw new Error(emailResult.error);
+  }
 
   // Update last_reminder_sent_at
   await db

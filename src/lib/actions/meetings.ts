@@ -1,7 +1,6 @@
 "use server";
 
 import { eq, and, isNull, inArray } from "drizzle-orm";
-import { Resend } from "resend";
 import { db } from "@/lib/db";
 import {
   meetings,
@@ -19,8 +18,8 @@ import { createMeetingSchema } from "@/lib/validations/meeting";
 import { getBuildingBySyndicId } from "@/lib/db/queries/buildings";
 import { getMeetingById } from "@/lib/db/queries/meetings";
 import { MeetingInvitationEmail } from "@/lib/email/templates/meeting-invitation";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { buildAppUrl } from "@/lib/app-url";
+import { sendEmail } from "@/lib/email/send-email";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -172,11 +171,10 @@ export async function createMeeting(
   });
 
   // 6. Send emails OUTSIDE transaction
-  const portalUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/notifications`;
+  const portalUrl = buildAppUrl("/notifications");
   for (const ownerDetail of ownerDetails) {
     try {
-      await resend.emails.send({
-        from: "Syndic <onboarding@resend.dev>",
+      const emailResult = await sendEmail({
         to: ownerDetail.email,
         subject: `Invitation — ${parsed.data.title}`,
         react: MeetingInvitationEmail({
@@ -191,6 +189,10 @@ export async function createMeeting(
           portalUrl,
         }),
       });
+
+      if (!emailResult.success) {
+        throw new Error(emailResult.error);
+      }
     } catch {
       // Email failure should not fail the action
       console.error(

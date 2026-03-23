@@ -10,8 +10,9 @@ import { createOwnerSchema } from "@/lib/validations/owner";
 import { getBuildingById } from "@/lib/db/queries/buildings";
 import { getOwnerById } from "@/lib/db/queries/owners";
 import { getApartmentById } from "@/lib/db/queries/apartments";
-import { Resend } from "resend";
 import { WelcomeEmail } from "@/lib/email/templates/welcome";
+import { sendEmail } from "@/lib/email/send-email";
+import { buildAppUrl } from "@/lib/app-url";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -19,8 +20,6 @@ import { WelcomeEmail } from "@/lib/email/templates/welcome";
 type ActionResult<T = null> =
   | { success: true; data: T }
   | { success: false; error: string };
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 async function getScopedApartmentForSyndic(
   syndicId: string,
@@ -40,7 +39,7 @@ async function getScopedApartmentForSyndic(
 // ---------------------------------------------------------------------------
 export async function createOwner(
   values: unknown
-): Promise<ActionResult<{ id: string }>> {
+): Promise<ActionResult<{ id: string; emailSent: boolean; emailError?: string }>> {
   // 1. Validate
   const t = await getTranslations("validation");
   const schema = createOwnerSchema(t);
@@ -131,9 +130,11 @@ export async function createOwner(
       .where(eq(apartments.id, parsed.data.apartmentId));
 
     // 8. Send welcome email
+    let emailSent = true;
+    let emailError: string | undefined;
+
     try {
-      await resend.emails.send({
-        from: "Syndic <onboarding@resend.dev>",
+      const emailResult = await sendEmail({
         to: parsed.data.email,
         subject: "Bienvenue sur votre espace copropriétaire",
         react: WelcomeEmail({
@@ -141,11 +142,19 @@ export async function createOwner(
           lastName: parsed.data.lastName,
           email: parsed.data.email,
           tempPassword,
-          loginUrl: `${process.env.NEXT_PUBLIC_SUPABASE_URL ? "" : ""}${typeof window === "undefined" ? process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000" : ""}/login`,
+          loginUrl: buildAppUrl("/login"),
         }),
       });
-    } catch {
+
+      if (!emailResult.success) {
+        emailSent = false;
+        emailError = emailResult.error;
+      }
+    } catch (error) {
       // Email failure should not block owner creation
+      emailSent = false;
+      emailError =
+        error instanceof Error ? error.message : "Failed to send welcome email";
       console.error("Failed to send welcome email");
     }
 
@@ -157,7 +166,14 @@ export async function createOwner(
       entityId: newOwner.id,
     });
 
-    return { success: true, data: { id: newOwner.id } };
+    return {
+      success: true,
+      data: {
+        id: newOwner.id,
+        emailSent,
+        ...(emailError ? { emailError } : {}),
+      },
+    };
   } catch (error) {
     // Cleanup: delete auth user and any partial public.users row
     await supabaseAdmin.auth.admin.deleteUser(authData.user.id);

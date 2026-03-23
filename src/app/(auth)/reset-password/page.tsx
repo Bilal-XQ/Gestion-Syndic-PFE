@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { ResetPasswordForm } from "@/components/features/auth/reset-password-form";
 import { UpdatePasswordForm } from "@/components/features/auth/update-password-form";
@@ -31,9 +32,13 @@ export default async function ResetPasswordPage({
         {/* Logo / App name */}
         <div className="mb-8 flex flex-col items-center gap-2">
           <div className="flex h-10 w-10 items-center justify-center rounded-[12px] border border-[--border-default] bg-[--bg-card]">
-            <span className="text-lg font-semibold text-[--text-primary]">
-              S
-            </span>
+            <Image
+              src="/logo.svg"
+              alt="Syndic"
+              width={24}
+              height={24}
+              style={{ color: "var(--text-primary)" }}
+            />
           </div>
           <h1 className="text-xl font-semibold text-[--text-primary]">
             {hasCode ? t("resetPassword.headingWithCode") : t("resetPassword.headingWithoutCode")}

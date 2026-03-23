@@ -30,6 +30,8 @@
     "createButton": "Créer",
     "updateButton": "Mettre à jour",
     "createSuccess": "Copropriétaire créé avec succès",
+    "createSuccessEmailFailed": "Le copropriétaire a été créé, mais l'e-mail de bienvenue n'a pas pu être envoyé.",
+    "createSuccessEmailFailedWithReason": "Le copropriétaire a été créé, mais l'e-mail de bienvenue n'a pas pu être envoyé: {reason}",
     "updateSuccess": "Copropriétaire mis à jour"
   },
   "delete": {

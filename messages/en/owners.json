@@ -30,6 +30,8 @@
     "createButton": "Create",
     "updateButton": "Update",
     "createSuccess": "Co-owner created successfully",
+    "createSuccessEmailFailed": "Co-owner was created, but the welcome email could not be sent.",
+    "createSuccessEmailFailedWithReason": "Co-owner was created, but the welcome email could not be sent: {reason}",
     "updateSuccess": "Co-owner updated"
   },
   "delete": {

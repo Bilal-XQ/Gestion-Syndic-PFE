@@ -112,6 +112,25 @@ export function OwnerPanel({ open, onOpenChange, owner }: OwnerPanelProps) {
             ? t("panel.updateSuccess")
             : t("panel.createSuccess")
         );
+
+        const createdOwnerResult =
+          !isEdit &&
+          result.data &&
+          typeof result.data === "object" &&
+          "emailSent" in result.data
+            ? result.data
+            : null;
+
+        if (createdOwnerResult && !createdOwnerResult.emailSent) {
+          toast.warning(
+            createdOwnerResult.emailError
+              ? t("panel.createSuccessEmailFailedWithReason", {
+                  reason: createdOwnerResult.emailError,
+                })
+              : t("panel.createSuccessEmailFailed")
+          );
+        }
+
         queryClient.invalidateQueries({ queryKey: ["owners"] });
         queryClient.invalidateQueries({ queryKey: ["apartments"] });
         onOpenChange(false);

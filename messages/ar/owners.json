@@ -30,6 +30,8 @@
     "createButton": "إنشاء",
     "updateButton": "تحديث",
     "createSuccess": "تم إنشاء المالك المشترك بنجاح",
+    "createSuccessEmailFailed": "تم إنشاء المالك المشترك، لكن تعذر إرسال رسالة الترحيب.",
+    "createSuccessEmailFailedWithReason": "تم إنشاء المالك المشترك، لكن تعذر إرسال رسالة الترحيب: {reason}",
     "updateSuccess": "تم تحديث المالك المشترك"
   },
   "delete": {
