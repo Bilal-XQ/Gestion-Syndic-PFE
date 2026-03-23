@@ -86,7 +86,33 @@
   },
   "errorPage": {
     "title": "حدث خطأ",
-    "retry": "حاول مرة أخرى"
+    "retry": "حاول مرة أخرى",
+    "loadFailed": "تعذر تحميل هذه الصفحة."
+  },
+  "errors": {
+    "invalidCredentials": "بيانات الدخول غير صحيحة. يرجى المحاولة مرة أخرى.",
+    "logoutFailed": "حدث خطأ أثناء تسجيل الخروج.",
+    "passwordUpdateFailed": "تعذر تحديث كلمة المرور.",
+    "unauthenticated": "غير مصادق",
+    "forbidden": "تم رفض الوصول",
+    "buildingNotFound": "المبنى غير موجود",
+    "apartmentNotFound": "الشقة غير موجودة",
+    "ownerNotFound": "المالك غير موجود",
+    "coOwnerNotFound": "المالك المشترك غير موجود",
+    "chargeNotFound": "الرسوم غير موجودة",
+    "meetingNotFound": "الاجتماع غير موجود",
+    "invitationNotFound": "الدعوة غير موجودة",
+    "apartmentAlreadyOccupied": "الشقة مشغولة بالفعل",
+    "alreadyPaid": "هذه الرسوم مدفوعة بالفعل",
+    "alreadyCancelled": "هذا الاجتماع ملغى بالفعل",
+    "alreadyResponded": "لقد قمت بالرد على هذه الدعوة بالفعل",
+    "ownerCreationFailed": "حدث خطأ أثناء إنشاء المالك المشترك",
+    "accountCreationFailed": "حدث خطأ أثناء إنشاء الحساب",
+    "invalidBuildingTantiemes": "إجمالي الحصص غير صالح لهذا المبنى",
+    "noActiveApartmentInBuilding": "لا توجد شقق نشطة في هذا المبنى",
+    "noActiveOwnerForApartment": "لا يوجد مالك نشط لهذه الشقة",
+    "paymentExceedsRemaining": "المبلغ يتجاوز الرصيد المتبقي",
+    "activeOwnerAssigned": "تعذر الحذف: يوجد مالك مشترك نشط معين لهذه الشقة."
   },
   "export": {
     "button": "تصدير",

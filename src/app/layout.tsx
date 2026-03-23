@@ -53,9 +53,9 @@ const ibmPlexArabic = IBM_Plex_Sans_Arabic({
 });
 
 export const metadata: Metadata = {
-  title: "Syndic — Gestion de Copropriété",
+  title: "Syndic - Condominium Management",
   description:
-    "Application de gestion de copropriété pour syndics et copropriétaires.",
+    "Condominium management app for syndics and co-owners.",
   icons: {
     icon: "/logo.svg",
     shortcut: "/logo.svg",

@@ -80,12 +80,6 @@ type Owner = {
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-const methodLabels: Record<string, string> = {
-  bank_transfer: "Virement",
-  check: "Chèque",
-  cash: "Espèces",
-};
-
 async function fetchPayments(filters: {
   dateFrom: string;
   dateTo: string;

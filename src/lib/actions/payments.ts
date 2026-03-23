@@ -23,6 +23,7 @@ export async function createPayment(
 ): Promise<ActionResult<{ id: string }>> {
   // 1. Validate
   const t = await getTranslations("validation");
+  const tc = await getTranslations("common");
   const schema = createPaymentSchema(t);
   const parsed = schema.safeParse(values);
   if (!parsed.success) {
@@ -35,26 +36,26 @@ export async function createPayment(
     data: { user },
     error: authError,
   } = await supabase.auth.getUser();
-  if (authError || !user) return { success: false, error: "Non authentifié" };
+  if (authError || !user) return { success: false, error: tc("errors.unauthenticated") };
 
   const role = user.app_metadata?.user_role as string | undefined;
   if (role !== "syndic" && role !== "proprietaire") {
-    return { success: false, error: "Accès refusé" };
+    return { success: false, error: tc("errors.forbidden") };
   }
 
   // 3. Load charge and validate ceiling
   const charge = await getChargeById(parsed.data.chargeId);
-  if (!charge) return { success: false, error: "Charge introuvable" };
+  if (!charge) return { success: false, error: tc("errors.chargeNotFound") };
 
   const remaining = Number(charge.remainingAmount);
   if (remaining <= 0) {
-    return { success: false, error: "Cette charge est déjà payée" };
+    return { success: false, error: tc("errors.alreadyPaid") };
   }
 
   if (parsed.data.amount > remaining) {
     return {
       success: false,
-      error: "Le montant dépasse le solde restant",
+      error: tc("errors.paymentExceedsRemaining"),
     };
   }
 
@@ -63,13 +64,13 @@ export async function createPayment(
   if (role === "proprietaire") {
     const ownerRecord = await getOwnerByUserId(user.id);
     if (!ownerRecord) {
-      return { success: false, error: "Propriétaire introuvable" };
+      return { success: false, error: tc("errors.ownerNotFound") };
     }
     ownerId = ownerRecord.id;
 
     // Verify the charge belongs to the owner's apartment
     if (charge.apartmentId !== ownerRecord.apartmentId) {
-      return { success: false, error: "Accès refusé" };
+      return { success: false, error: tc("errors.forbidden") };
     }
   }
 

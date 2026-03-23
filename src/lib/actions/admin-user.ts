@@ -139,7 +139,7 @@ export async function createUserWithRole(
       await db.insert(buildings).values({
         syndicId: authData.user.id,
         name: "Mon Immeuble",
-        address: "À configurer",
+        address: "To configure",
       });
     } catch (dbError) {
       console.warn("Warning: Could not create default building", dbError);

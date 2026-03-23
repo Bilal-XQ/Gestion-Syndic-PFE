@@ -115,6 +115,32 @@
   },
   "errorPage": {
     "title": "An error occurred",
-    "retry": "Try again"
+    "retry": "Try again",
+    "loadFailed": "Unable to load this page."
+  },
+  "errors": {
+    "invalidCredentials": "Invalid credentials. Please try again.",
+    "logoutFailed": "Error while signing out.",
+    "passwordUpdateFailed": "Unable to update password.",
+    "unauthenticated": "Unauthenticated",
+    "forbidden": "Access denied",
+    "buildingNotFound": "Building not found",
+    "apartmentNotFound": "Apartment not found",
+    "ownerNotFound": "Owner not found",
+    "coOwnerNotFound": "Co-owner not found",
+    "chargeNotFound": "Charge not found",
+    "meetingNotFound": "Meeting not found",
+    "invitationNotFound": "Invitation not found",
+    "apartmentAlreadyOccupied": "Apartment is already occupied",
+    "alreadyPaid": "This charge is already paid",
+    "alreadyCancelled": "This meeting is already cancelled",
+    "alreadyResponded": "You have already responded to this invitation",
+    "ownerCreationFailed": "Error while creating co-owner",
+    "accountCreationFailed": "Error while creating account",
+    "invalidBuildingTantiemes": "Invalid total tantiemes for this building",
+    "noActiveApartmentInBuilding": "No active apartment in this building",
+    "noActiveOwnerForApartment": "No active owner for this apartment",
+    "paymentExceedsRemaining": "Amount exceeds remaining balance",
+    "activeOwnerAssigned": "Cannot delete: an active co-owner is assigned to this apartment."
   }
 }

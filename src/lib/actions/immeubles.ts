@@ -30,6 +30,7 @@ export async function createBuilding(
   values: ImmeubleFormValues
 ): Promise<ActionResult<{ id: string }>> {
   const tv = await getTranslations("validation");
+  const tc = await getTranslations("common");
   const schema = createImmeubleSchema(tv);
   const parsed = schema.safeParse(values);
 
@@ -38,7 +39,7 @@ export async function createBuilding(
   }
 
   const user = await getAuthenticatedSyndic();
-  if (!user) return { success: false, error: "Non authentifié" };
+  if (!user) return { success: false, error: tc("errors.unauthenticated") };
 
   const [created] = await db
     .insert(buildings)
@@ -65,6 +66,7 @@ export async function updateBuilding(
   values: ImmeubleFormValues
 ): Promise<ActionResult<{ id: string }>> {
   const tv = await getTranslations("validation");
+  const tc = await getTranslations("common");
   const schema = createImmeubleSchema(tv);
   const parsed = schema.safeParse(values);
 
@@ -73,7 +75,7 @@ export async function updateBuilding(
   }
 
   const user = await getAuthenticatedSyndic();
-  if (!user) return { success: false, error: "Non authentifié" };
+  if (!user) return { success: false, error: tc("errors.unauthenticated") };
 
   const [building] = await db
     .select({ id: buildings.id, syndicId: buildings.syndicId })
@@ -81,7 +83,7 @@ export async function updateBuilding(
     .where(and(eq(buildings.id, id), isNull(buildings.deletedAt)));
 
   if (!building || building.syndicId !== user.id) {
-    return { success: false, error: "Accès refusé" };
+    return { success: false, error: tc("errors.forbidden") };
   }
 
   await db

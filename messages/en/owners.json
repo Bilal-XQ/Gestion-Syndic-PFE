@@ -40,5 +40,8 @@
     "submitting": "Archiving…",
     "submit": "Archive",
     "success": "Co-owner archived"
+  },
+  "email": {
+    "welcomeSubject": "Welcome to your co-owner portal"
   }
 }

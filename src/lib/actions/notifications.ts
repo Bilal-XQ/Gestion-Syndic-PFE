@@ -26,6 +26,7 @@ export async function respondToInvitation(
 ): Promise<ActionResult<{ id: string }>> {
   // 1. Validate
   const t = await getTranslations("validation");
+  const tc = await getTranslations("common");
   const schema = createRespondInvitationSchema(t);
   const parsed = schema.safeParse(values);
   if (!parsed.success) {
@@ -38,11 +39,11 @@ export async function respondToInvitation(
     data: { user },
     error: authError,
   } = await supabase.auth.getUser();
-  if (authError || !user) return { success: false, error: "Non authentifié" };
+  if (authError || !user) return { success: false, error: tc("errors.unauthenticated") };
 
   const role = user.app_metadata?.user_role as string | undefined;
   if (role !== "proprietaire") {
-    return { success: false, error: "Accès refusé" };
+    return { success: false, error: tc("errors.forbidden") };
   }
 
   // 3. Find the owner record for this user
@@ -52,7 +53,7 @@ export async function respondToInvitation(
     .where(and(eq(owners.userId, user.id), isNull(owners.deletedAt)));
 
   if (!ownerRecord) {
-    return { success: false, error: "Propriétaire introuvable" };
+    return { success: false, error: tc("errors.ownerNotFound") };
   }
 
   // 4. Load invitation and verify ownership + status
@@ -62,15 +63,15 @@ export async function respondToInvitation(
     .where(eq(meetingInvitations.id, parsed.data.invitationId));
 
   if (!invitation) {
-    return { success: false, error: "Invitation introuvable" };
+    return { success: false, error: tc("errors.invitationNotFound") };
   }
 
   if (invitation.ownerId !== ownerRecord.id) {
-    return { success: false, error: "Accès refusé" };
+    return { success: false, error: tc("errors.forbidden") };
   }
 
   if (invitation.status !== "invited") {
-    return { success: false, error: "Vous avez déjà répondu à cette invitation" };
+    return { success: false, error: tc("errors.alreadyResponded") };
   }
 
   // 5. Update invitation status
@@ -101,12 +102,13 @@ export async function respondToInvitation(
 export async function markNotificationRead(
   id: string
 ): Promise<ActionResult> {
+  const tc = await getTranslations("common");
   const supabase = await createClient();
   const {
     data: { user },
     error,
   } = await supabase.auth.getUser();
-  if (error || !user) return { success: false, error: "Non authentifié" };
+  if (error || !user) return { success: false, error: tc("errors.unauthenticated") };
 
   await markAsRead(id, user.id);
 
@@ -117,12 +119,13 @@ export async function markNotificationRead(
 // Mark all notifications as read
 // ---------------------------------------------------------------------------
 export async function markAllNotificationsRead(): Promise<ActionResult> {
+  const tc = await getTranslations("common");
   const supabase = await createClient();
   const {
     data: { user },
     error,
   } = await supabase.auth.getUser();
-  if (error || !user) return { success: false, error: "Non authentifié" };
+  if (error || !user) return { success: false, error: tc("errors.unauthenticated") };
 
   await markAllAsRead(user.id);
 

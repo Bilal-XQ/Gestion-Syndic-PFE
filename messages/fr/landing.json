@@ -3,7 +3,15 @@
     "login": "Connexion",
     "features": "Fonctionnalités",
     "howItWorks": "Comment ça marche",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "themeToggleLabel": "Changer le thème",
+    "mySpace": "Mon espace",
+    "myPortal": "Mon portail",
+    "dashboard": "Tableau de bord",
+    "signOut": "Se déconnecter",
+    "roleOwner": "Copropriétaire",
+    "roleSyndic": "Syndic",
+    "brandAlt": "Syndic"
   },
   "hero": {
     "badge": "Gestion de copropriété",
@@ -60,6 +68,24 @@
     "step2Description": "Créez les comptes — ils reçoivent automatiquement un email avec leurs identifiants d'accès au portail personnel.",
     "step3Title": "Gérez en temps réel",
     "step3Description": "Émettez des charges, suivez les paiements, organisez vos assemblées et recevez des notifications instantanées via Supabase Realtime."
+  },
+  "faqSection": {
+    "badge": "FAQ",
+    "title": "Questions fréquentes",
+    "q1": "À qui s'adresse Syndic ?",
+    "a1": "À tous les syndics de copropriété qui veulent moderniser leur gestion et offrir un portail numérique à leurs copropriétaires.",
+    "q2": "Faut-il installer quelque chose ?",
+    "a2": "Non. Application web accessible depuis tout navigateur — desktop, tablette ou mobile. Aucune installation requise.",
+    "q3": "Mes données sont-elles sécurisées ?",
+    "a3": "Oui. Supabase PostgreSQL avec Row Level Security. JWT signés, journal d'audit immutable, aucune valeur dérivée stockée.",
+    "q4": "Combien de copropriétaires puis-je gérer ?",
+    "a4": "Pas de limite technique. Architecture stateless et scalable sur Vercel + Supabase.",
+    "q5": "Les copropriétaires peuvent-ils effectuer des paiements partiels ?",
+    "a5": "Oui. Paiements partiels entièrement supportés — le solde est calculé en temps réel par agrégation SQL.",
+    "q6": "Les notifications sont-elles en temps réel ?",
+    "a6": "Oui. Via Supabase Realtime — sans rechargement de page, mise à jour instantanée.",
+    "q7": "Puis-je générer des documents PDF ?",
+    "a7": "Oui. Avis de paiement au format PDF via @react-pdf/renderer — pour le syndic comme pour le copropriétaire."
   },
   "footer": {
     "brand": "Syndic — Gestion de Copropriété",

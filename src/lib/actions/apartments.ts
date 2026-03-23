@@ -28,6 +28,7 @@ export async function createApartment(
 ): Promise<ActionResult<{ id: string; warning?: "tantiemesExceed" }>> {
   // 1. Validate
   const t = await getTranslations("validation");
+  const tc = await getTranslations("common");
   const schema = createApartmentSchema(t);
   const parsed = schema.safeParse(values);
   if (!parsed.success) {
@@ -40,16 +41,16 @@ export async function createApartment(
     data: { user },
     error: authError,
   } = await supabase.auth.getUser();
-  if (authError || !user) return { success: false, error: "Non authentifié" };
+  if (authError || !user) return { success: false, error: tc("errors.unauthenticated") };
 
   const role = user.app_metadata?.user_role as string | undefined;
-  if (role !== "syndic") return { success: false, error: "Accès refusé" };
+  if (role !== "syndic") return { success: false, error: tc("errors.forbidden") };
 
   // 3. Verify selected building belongs to syndic
   const building = await getBuildingById(parsed.data.buildingId);
-  if (!building) return { success: false, error: "Immeuble introuvable" };
+  if (!building) return { success: false, error: tc("errors.buildingNotFound") };
   if (building.syndicId !== user.id) {
-    return { success: false, error: "Unauthorized" };
+    return { success: false, error: tc("errors.forbidden") };
   }
 
   if (parsed.data.tantiemes > building.totalTantiemes) {
@@ -97,6 +98,7 @@ export async function updateApartment(
 ): Promise<ActionResult<{ id: string; warning?: "tantiemesExceed" }>> {
   // 1. Validate
   const t = await getTranslations("validation");
+  const tc = await getTranslations("common");
   const schema = createApartmentSchema(t);
   const parsed = schema.safeParse(values);
   if (!parsed.success) {
@@ -109,26 +111,26 @@ export async function updateApartment(
     data: { user },
     error: authError,
   } = await supabase.auth.getUser();
-  if (authError || !user) return { success: false, error: "Non authentifié" };
+  if (authError || !user) return { success: false, error: tc("errors.unauthenticated") };
 
   const role = user.app_metadata?.user_role as string | undefined;
-  if (role !== "syndic") return { success: false, error: "Accès refusé" };
+  if (role !== "syndic") return { success: false, error: tc("errors.forbidden") };
 
   // 3. Verify selected building belongs to syndic
   const building = await getBuildingById(parsed.data.buildingId);
-  if (!building) return { success: false, error: "Immeuble introuvable" };
+  if (!building) return { success: false, error: tc("errors.buildingNotFound") };
   if (building.syndicId !== user.id) {
-    return { success: false, error: "Unauthorized" };
+    return { success: false, error: tc("errors.forbidden") };
   }
 
   const apartment = await getApartmentById(id);
   if (!apartment) {
-    return { success: false, error: "Appartement introuvable" };
+    return { success: false, error: tc("errors.apartmentNotFound") };
   }
 
   const apartmentBuilding = await getBuildingById(apartment.buildingId);
   if (!apartmentBuilding || apartmentBuilding.syndicId !== user.id) {
-    return { success: false, error: "Accès refusé" };
+    return { success: false, error: tc("errors.forbidden") };
   }
 
   if (parsed.data.tantiemes > building.totalTantiemes) {
@@ -173,26 +175,27 @@ export async function updateApartment(
 export async function deleteApartment(
   id: string
 ): Promise<ActionResult> {
+  const tc = await getTranslations("common");
   // 1. Authenticate
   const supabase = await createClient();
   const {
     data: { user },
     error: authError,
   } = await supabase.auth.getUser();
-  if (authError || !user) return { success: false, error: "Non authentifié" };
+  if (authError || !user) return { success: false, error: tc("errors.unauthenticated") };
 
   const role = user.app_metadata?.user_role as string | undefined;
-  if (role !== "syndic") return { success: false, error: "Accès refusé" };
+  if (role !== "syndic") return { success: false, error: tc("errors.forbidden") };
 
   // 2. Verify apartment belongs to syndic
   const apartment = await getApartmentById(id);
   if (!apartment) {
-    return { success: false, error: "Appartement introuvable" };
+    return { success: false, error: tc("errors.apartmentNotFound") };
   }
 
   const building = await getBuildingById(apartment.buildingId);
   if (!building || building.syndicId !== user.id) {
-    return { success: false, error: "Accès refusé" };
+    return { success: false, error: tc("errors.forbidden") };
   }
 
   // 3. Guard: active owner check
@@ -200,8 +203,7 @@ export async function deleteApartment(
   if (activeOwner) {
     return {
       success: false,
-      error:
-        "Impossible de supprimer : un copropriétaire actif est assigné à cet appartement.",
+      error: tc("errors.activeOwnerAssigned"),
     };
   }
 

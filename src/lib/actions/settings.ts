@@ -23,6 +23,7 @@ export async function updateBuilding(
 ): Promise<ActionResult> {
   // 1. Validate
   const t = await getTranslations("validation");
+  const tc = await getTranslations("common");
   const schema = createSettingsSchema(t);
   const parsed = schema.safeParse(values);
   if (!parsed.success) {
@@ -35,15 +36,15 @@ export async function updateBuilding(
     data: { user },
     error: authError,
   } = await supabase.auth.getUser();
-  if (authError || !user) return { success: false, error: "Non authentifié" };
+  if (authError || !user) return { success: false, error: tc("errors.unauthenticated") };
 
   const role = user.app_metadata?.user_role as string | undefined;
-  if (role !== "syndic") return { success: false, error: "Accès refusé" };
+  if (role !== "syndic") return { success: false, error: tc("errors.forbidden") };
 
   // 3. Resolve and authorize target building
   const building = await getBuildingById(parsed.data.buildingId);
   if (!building || building.syndicId !== user.id) {
-    return { success: false, error: "Accès refusé" };
+    return { success: false, error: tc("errors.forbidden") };
   }
 
   // 4. Update building

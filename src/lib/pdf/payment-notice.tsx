@@ -36,6 +36,29 @@ export interface PaymentNoticeProps {
     address: string;
   };
   generatedAt: string;
+  labels: {
+    title: string;
+    ownerSectionTitle: string;
+    fullName: string;
+    apartment: string;
+    floorPrefix: string;
+    email: string;
+    phone: string;
+    chargeDetailsTitle: string;
+    chargeTitle: string;
+    category: string;
+    description: string;
+    dueDate: string;
+    financialSummaryTitle: string;
+    itemHeader: string;
+    amountHeader: string;
+    totalAmount: string;
+    amountPaid: string;
+    remainingBalance: string;
+    generatedOn: string;
+    informationalNotice: string;
+    categories: Record<string, string>;
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -150,14 +173,6 @@ function formatAmount(value: string): string {
   return `${Number(value).toFixed(2)} MAD`;
 }
 
-const categoryLabels: Record<string, string> = {
-  electricity: "Électricité",
-  water: "Eau",
-  maintenance: "Entretien",
-  repair: "Réparation",
-  other: "Autre",
-};
-
 // ---------------------------------------------------------------------------
 // Document component
 // ---------------------------------------------------------------------------
@@ -167,92 +182,93 @@ export function PaymentNoticeDocument({
   charge,
   building,
   generatedAt,
+  labels,
 }: PaymentNoticeProps) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>AVIS DE PAIEMENT</Text>
+          <Text style={styles.headerTitle}>{labels.title}</Text>
           <Text style={styles.headerSubtitle}>
             {building.name} — {building.address}
           </Text>
         </View>
 
         {/* Owner section */}
-        <Text style={styles.sectionTitle}>Copropriétaire</Text>
+        <Text style={styles.sectionTitle}>{labels.ownerSectionTitle}</Text>
         <View style={styles.row}>
-          <Text style={styles.label}>Nom complet</Text>
+          <Text style={styles.label}>{labels.fullName}</Text>
           <Text style={styles.value}>
             {owner.firstName} {owner.lastName}
           </Text>
         </View>
         <View style={styles.row}>
-          <Text style={styles.label}>Appartement</Text>
+          <Text style={styles.label}>{labels.apartment}</Text>
           <Text style={styles.value}>
-            {apartment.unitNumber} — Étage {apartment.floor}
+            {apartment.unitNumber} — {labels.floorPrefix} {apartment.floor}
           </Text>
         </View>
         <View style={styles.row}>
-          <Text style={styles.label}>E-mail</Text>
+          <Text style={styles.label}>{labels.email}</Text>
           <Text style={styles.value}>{owner.email}</Text>
         </View>
         {owner.phone && (
           <View style={styles.row}>
-            <Text style={styles.label}>Téléphone</Text>
+            <Text style={styles.label}>{labels.phone}</Text>
             <Text style={styles.value}>{owner.phone}</Text>
           </View>
         )}
 
         {/* Charge details */}
-        <Text style={styles.sectionTitle}>Détails de la charge</Text>
+        <Text style={styles.sectionTitle}>{labels.chargeDetailsTitle}</Text>
         <View style={styles.row}>
-          <Text style={styles.label}>Titre</Text>
+          <Text style={styles.label}>{labels.chargeTitle}</Text>
           <Text style={styles.value}>{charge.title}</Text>
         </View>
         <View style={styles.row}>
-          <Text style={styles.label}>Catégorie</Text>
+          <Text style={styles.label}>{labels.category}</Text>
           <Text style={styles.value}>
-            {categoryLabels[charge.category] ?? charge.category}
+            {labels.categories[charge.category] ?? charge.category}
           </Text>
         </View>
         {charge.description && (
           <View style={styles.row}>
-            <Text style={styles.label}>Description</Text>
+            <Text style={styles.label}>{labels.description}</Text>
             <Text style={styles.value}>{charge.description}</Text>
           </View>
         )}
         <View style={styles.row}>
-          <Text style={styles.label}>Date d&apos;échéance</Text>
+          <Text style={styles.label}>{labels.dueDate}</Text>
           <Text style={styles.value}>{charge.dueDate}</Text>
         </View>
 
         {/* Financial table */}
-        <Text style={styles.sectionTitle}>Récapitulatif financier</Text>
+        <Text style={styles.sectionTitle}>{labels.financialSummaryTitle}</Text>
         <View style={styles.table}>
           <View style={styles.tableHeader}>
             <Text style={[styles.tableCellLeft, styles.tableHeaderCell]}>
-              Libellé
+              {labels.itemHeader}
             </Text>
             <Text style={[styles.tableCellRight, styles.tableHeaderCell]}>
-              Montant
+              {labels.amountHeader}
             </Text>
           </View>
           <View style={styles.tableRow}>
-            <Text style={styles.tableCellLeft}>Montant total</Text>
+            <Text style={styles.tableCellLeft}>{labels.totalAmount}</Text>
             <Text style={styles.tableCellRight}>
               {formatAmount(charge.totalAmount)}
             </Text>
           </View>
           <View style={styles.tableRow}>
-            <Text style={styles.tableCellLeft}>Montant payé</Text>
+            <Text style={styles.tableCellLeft}>{labels.amountPaid}</Text>
             <Text style={styles.tableCellRight}>
               {formatAmount(charge.amountPaid)}
             </Text>
           </View>
           <View style={styles.tableRowHighlight}>
             <Text style={[styles.tableCellLeft, { fontFamily: "Helvetica-Bold" }]}>
-              Solde restant
+              {labels.remainingBalance}
             </Text>
             <Text style={styles.tableCellBold}>
               {formatAmount(charge.remainingAmount)}
@@ -263,11 +279,11 @@ export function PaymentNoticeDocument({
         {/* Footer */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>
-            Document généré le {generatedAt} — {building.name},{" "}
+            {labels.generatedOn} {generatedAt} — {building.name},{" "}
             {building.address}
           </Text>
           <Text style={styles.footerText}>
-            Ce document est un avis informatif et ne constitue pas une facture.
+            {labels.informationalNotice}
           </Text>
         </View>
       </Page>

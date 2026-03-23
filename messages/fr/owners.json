@@ -40,5 +40,8 @@
     "submitting": "Archivage…",
     "submit": "Archiver",
     "success": "Copropriétaire archivé"
+  },
+  "email": {
+    "welcomeSubject": "Bienvenue sur votre espace copropriétaire"
   }
 }

@@ -3,7 +3,15 @@
     "login": "Sign in",
     "features": "Features",
     "howItWorks": "How it works",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "themeToggleLabel": "Toggle theme",
+    "mySpace": "My space",
+    "myPortal": "My portal",
+    "dashboard": "Dashboard",
+    "signOut": "Sign out",
+    "roleOwner": "Co-owner",
+    "roleSyndic": "Syndic",
+    "brandAlt": "Syndic"
   },
   "hero": {
     "badge": "Condominium management",
@@ -60,6 +68,24 @@
     "step2Description": "Create accounts — they automatically receive an email with access credentials to their personal portal.",
     "step3Title": "Manage in real-time",
     "step3Description": "Issue charges, track payments, organize assemblies and receive instant notifications via Supabase Realtime."
+  },
+  "faqSection": {
+    "badge": "FAQ",
+    "title": "Frequently asked questions",
+    "q1": "Who is Syndic for?",
+    "a1": "For condominium managers who want to modernize operations and provide a digital portal for co-owners.",
+    "q2": "Do I need to install anything?",
+    "a2": "No. It's a web app accessible from any browser on desktop, tablet, or mobile. No installation required.",
+    "q3": "Is my data secure?",
+    "a3": "Yes. Supabase PostgreSQL with Row Level Security, signed JWTs, immutable audit log, and no stored derived financial values.",
+    "q4": "How many co-owners can I manage?",
+    "a4": "There is no hard technical limit. The architecture is stateless and scalable on Vercel + Supabase.",
+    "q5": "Can co-owners make partial payments?",
+    "a5": "Yes. Partial payments are fully supported, and remaining balances are computed in real time via SQL aggregation.",
+    "q6": "Are notifications real-time?",
+    "a6": "Yes. Via Supabase Realtime, with instant updates and no page refresh.",
+    "q7": "Can I generate PDF documents?",
+    "a7": "Yes. Payment notices are generated as PDFs via @react-pdf/renderer for both syndic and co-owner flows."
   },
   "footer": {
     "brand": "Syndic — Condominium Management",

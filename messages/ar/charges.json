@@ -46,5 +46,28 @@
     "submitting": "جارٍ الحذف…",
     "submit": "حذف",
     "success": "تم حذف الرسم"
+  },
+  "noticePdf": {
+    "title": "إشعار الدفع",
+    "ownerSectionTitle": "المالك",
+    "fullName": "الاسم الكامل",
+    "apartment": "الشقة",
+    "floorPrefix": "الطابق",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف",
+    "chargeDetailsTitle": "تفاصيل الرسم",
+    "chargeTitle": "العنوان",
+    "category": "الفئة",
+    "description": "الوصف",
+    "dueDate": "تاريخ الاستحقاق",
+    "financialSummaryTitle": "الملخص المالي",
+    "itemHeader": "البيان",
+    "amountHeader": "المبلغ",
+    "totalAmount": "المبلغ الإجمالي",
+    "amountPaid": "المبلغ المدفوع",
+    "remainingBalance": "الرصيد المتبقي",
+    "generatedOn": "تم إنشاء المستند في",
+    "informationalNotice": "هذا المستند إشعار معلوماتي ولا يشكل فاتورة.",
+    "filenamePrefix": "payment-notice"
   }
 }

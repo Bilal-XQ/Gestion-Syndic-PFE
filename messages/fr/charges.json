@@ -46,5 +46,28 @@
     "submitting": "Suppression…",
     "submit": "Supprimer",
     "success": "Charge supprimée"
+  },
+  "noticePdf": {
+    "title": "AVIS DE PAIEMENT",
+    "ownerSectionTitle": "Copropriétaire",
+    "fullName": "Nom complet",
+    "apartment": "Appartement",
+    "floorPrefix": "Étage",
+    "email": "E-mail",
+    "phone": "Téléphone",
+    "chargeDetailsTitle": "Détails de la charge",
+    "chargeTitle": "Titre",
+    "category": "Catégorie",
+    "description": "Description",
+    "dueDate": "Date d'échéance",
+    "financialSummaryTitle": "Récapitulatif financier",
+    "itemHeader": "Libellé",
+    "amountHeader": "Montant",
+    "totalAmount": "Montant total",
+    "amountPaid": "Montant payé",
+    "remainingBalance": "Solde restant",
+    "generatedOn": "Document généré le",
+    "informationalNotice": "Ce document est un avis informatif et ne constitue pas une facture.",
+    "filenamePrefix": "avis-paiement"
   }
 }

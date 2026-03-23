@@ -53,6 +53,7 @@ export async function createMeeting(
 ): Promise<ActionResult<{ id: string }>> {
   // 1. Validate
   const t = await getTranslations("validation");
+  const tc = await getTranslations("common");
   const tm = await getTranslations("meetings");
   const schema = createMeetingSchema(t);
   const parsed = schema.safeParse(values);
@@ -62,11 +63,11 @@ export async function createMeeting(
 
   // 2. Authenticate
   const user = await getAuthenticatedSyndic();
-  if (!user) return { success: false, error: "Non authentifié" };
+  if (!user) return { success: false, error: tc("errors.unauthenticated") };
 
   // 3. Verify building exists
   const building = await getBuildingBySyndicId(user.id);
-  if (!building) return { success: false, error: "Immeuble introuvable" };
+  if (!building) return { success: false, error: tc("errors.buildingNotFound") };
 
   // 4. Verify all ownerIds belong to the syndic's building
   const ownerRecords = await db
@@ -221,16 +222,17 @@ export async function createMeeting(
 // Cancel meeting
 // ---------------------------------------------------------------------------
 export async function cancelMeeting(id: string): Promise<ActionResult> {
+  const tc = await getTranslations("common");
   const user = await getAuthenticatedSyndic();
-  if (!user) return { success: false, error: "Non authentifié" };
+  if (!user) return { success: false, error: tc("errors.unauthenticated") };
 
   const result = await getMeetingById(id);
   if (!result || result.meeting.syndicId !== user.id) {
-    return { success: false, error: "Réunion introuvable" };
+    return { success: false, error: tc("errors.meetingNotFound") };
   }
 
   if (result.meeting.status === "cancelled") {
-    return { success: false, error: "Cette réunion est déjà annulée" };
+    return { success: false, error: tc("errors.alreadyCancelled") };
   }
 
   await db
@@ -252,12 +254,13 @@ export async function cancelMeeting(id: string): Promise<ActionResult> {
 // Delete meeting (soft-delete)
 // ---------------------------------------------------------------------------
 export async function deleteMeeting(id: string): Promise<ActionResult> {
+  const tc = await getTranslations("common");
   const user = await getAuthenticatedSyndic();
-  if (!user) return { success: false, error: "Non authentifié" };
+  if (!user) return { success: false, error: tc("errors.unauthenticated") };
 
   const result = await getMeetingById(id);
   if (!result || result.meeting.syndicId !== user.id) {
-    return { success: false, error: "Réunion introuvable" };
+    return { success: false, error: tc("errors.meetingNotFound") };
   }
 
   await db

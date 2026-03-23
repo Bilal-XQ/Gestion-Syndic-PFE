@@ -43,6 +43,7 @@ export async function updatePhone(
 ): Promise<ActionResult> {
   // 1. Validate
   const t = await getTranslations("validation");
+  const tc = await getTranslations("common");
   const schema = createUpdatePhoneSchema(t);
   const parsed = schema.safeParse(values);
   if (!parsed.success) {
@@ -51,11 +52,11 @@ export async function updatePhone(
 
   // 2. Authenticate
   const auth = await getAuthenticatedOwner();
-  if (!auth) return { success: false, error: "Non authentifié" };
+  if (!auth) return { success: false, error: tc("errors.unauthenticated") };
 
   // 3. Resolve owner record
   const owner = await getOwnerByUserId(auth.user.id);
-  if (!owner) return { success: false, error: "Propriétaire introuvable" };
+  if (!owner) return { success: false, error: tc("errors.ownerNotFound") };
 
   // 4. Update users.phone
   await db
@@ -85,6 +86,7 @@ export async function changePassword(
 ): Promise<ActionResult> {
   // 1. Validate
   const t = await getTranslations("validation");
+  const tc = await getTranslations("common");
   const schema = createChangePasswordSchema(t);
   const parsed = schema.safeParse(values);
   if (!parsed.success) {
@@ -93,7 +95,7 @@ export async function changePassword(
 
   // 2. Authenticate
   const auth = await getAuthenticatedOwner();
-  if (!auth) return { success: false, error: "Non authentifié" };
+  if (!auth) return { success: false, error: tc("errors.unauthenticated") };
 
   // 3. Call Supabase Auth — server-side client
   const { error } = await auth.supabase.auth.updateUser({

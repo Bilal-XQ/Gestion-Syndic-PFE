@@ -26,6 +26,7 @@ export async function login(
   };
 
   const t = await getTranslations("validation");
+  const tc = await getTranslations("common");
   const parsed = createLoginSchema(t).safeParse(raw);
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0].message };
@@ -64,7 +65,7 @@ export async function login(
   if (error) {
     return {
       success: false,
-      error: "Identifiants invalides. Veuillez réessayer.",
+      error: tc("errors.invalidCredentials"),
     };
   }
 
@@ -86,10 +87,11 @@ export async function login(
 // ---------------------------------------------------------------------------
 export async function signOut(): Promise<ActionResult> {
   const supabase = await createClient();
+  const tc = await getTranslations("common");
   const { error } = await supabase.auth.signOut();
 
   if (error) {
-    return { success: false, error: "Erreur lors de la déconnexion." };
+    return { success: false, error: tc("errors.logoutFailed") };
   }
 
   redirect("/login");
@@ -141,6 +143,7 @@ export async function updatePassword(
   };
 
   const t = await getTranslations("validation");
+  const tc = await getTranslations("common");
   const parsed = createUpdatePasswordSchema(t).safeParse(raw);
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0].message };
@@ -154,7 +157,7 @@ export async function updatePassword(
   if (error) {
     return {
       success: false,
-      error: "Impossible de mettre à jour le mot de passe.",
+      error: tc("errors.passwordUpdateFailed"),
     };
   }
 

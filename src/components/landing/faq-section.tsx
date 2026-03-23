@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
+import { useTranslations } from "next-intl";
 import { BlurFade } from "@/components/ui/blur-fade";
 import {
   Accordion,
@@ -10,46 +11,25 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-const faqs = [
-  {
-    q: "À qui s'adresse Syndic ?",
-    a: "À tous les syndics de copropriété qui veulent moderniser leur gestion et offrir un portail numérique à leurs copropriétaires.",
-  },
-  {
-    q: "Faut-il installer quelque chose ?",
-    a: "Non. Application web accessible depuis tout navigateur — desktop, tablette ou mobile. Aucune installation requise.",
-  },
-  {
-    q: "Mes données sont-elles sécurisées ?",
-    a: "Oui. Supabase PostgreSQL avec Row Level Security. JWT signés, journal d'audit immutable, aucune valeur dérivée stockée.",
-  },
-  {
-    q: "Combien de copropriétaires puis-je gérer ?",
-    a: "Pas de limite technique. Architecture stateless et scalable sur Vercel + Supabase.",
-  },
-  {
-    q: "Les copropriétaires peuvent-ils effectuer des paiements partiels ?",
-    a: "Oui. Paiements partiels entièrement supportés — le solde est calculé en temps réel par agrégation SQL.",
-  },
-  {
-    q: "Les notifications sont-elles en temps réel ?",
-    a: "Oui. Via Supabase Realtime — sans rechargement de page, mise à jour instantanée.",
-  },
-  {
-    q: "Puis-je générer des documents PDF ?",
-    a: "Oui. Avis de paiement au format PDF via @react-pdf/renderer — pour le syndic comme pour le copropriétaire.",
-  },
-];
-
 export default function FaqSection() {
   const [mounted, setMounted] = useState(false);
   const { resolvedTheme } = useTheme();
+  const t = useTranslations("landing.faqSection");
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   const isDark = !mounted || resolvedTheme === "dark";
+  const faqs = [
+    { q: t("q1"), a: t("a1") },
+    { q: t("q2"), a: t("a2") },
+    { q: t("q3"), a: t("a3") },
+    { q: t("q4"), a: t("a4") },
+    { q: t("q5"), a: t("a5") },
+    { q: t("q6"), a: t("a6") },
+    { q: t("q7"), a: t("a7") },
+  ];
 
   return (
     <section
@@ -68,7 +48,7 @@ export default function FaqSection() {
             <div className="mb-6 inline-flex items-center justify-center">
               <div className="cursor-default rounded-full border border-[--border-default] bg-[--bg-card] px-4 py-1.5">
                 <span className="font-[family-name:var(--font-syne)] text-xs font-semibold uppercase tracking-widest text-[--text-secondary]">
-                  FAQ
+                  {t("badge")}
                 </span>
               </div>
             </div>
@@ -80,7 +60,7 @@ export default function FaqSection() {
                 letterSpacing: "-0.03em",
               }}
             >
-              Questions fréquentes
+              {t("title")}
             </h2>
           </div>
         </BlurFade>

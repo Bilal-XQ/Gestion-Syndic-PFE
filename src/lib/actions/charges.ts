@@ -49,18 +49,19 @@ async function createBuildingWideCharges(
   },
   syndicId: string
 ): Promise<ActionResult<{ ids: string[] }>> {
+  const tc = await getTranslations("common");
   const building = await getBuildingById(values.buildingId);
   if (!building || building.syndicId !== syndicId) {
-    return { success: false, error: "Immeuble introuvable" };
+    return { success: false, error: tc("errors.buildingNotFound") };
   }
 
   if (building.totalTantiemes <= 0) {
-    return { success: false, error: "Total tantièmes invalide pour cet immeuble" };
+    return { success: false, error: tc("errors.invalidBuildingTantiemes") };
   }
 
   const apartmentsInBuilding = await getApartmentsForBuilding(values.buildingId);
   if (apartmentsInBuilding.length === 0) {
-    return { success: false, error: "Aucun appartement actif dans cet immeuble" };
+    return { success: false, error: tc("errors.noActiveApartmentInBuilding") };
   }
 
   // Rounded proportional allocation that preserves exact total after cents distribution.
@@ -121,6 +122,7 @@ export async function createCharge(
 ): Promise<ActionResult<{ id: string }>> {
   // 1. Validate
   const t = await getTranslations("validation");
+  const tc = await getTranslations("common");
   const schema = createChargeSchema(t);
   const parsed = schema.safeParse(values);
   if (!parsed.success) {
@@ -129,12 +131,12 @@ export async function createCharge(
 
   // 2. Authenticate
   const user = await getAuthenticatedSyndic();
-  if (!user) return { success: false, error: "Non authentifié" };
+  if (!user) return { success: false, error: tc("errors.unauthenticated") };
 
   // 3. Verify selected building belongs to syndic
   const building = await getBuildingById(parsed.data.buildingId);
   if (!building || building.syndicId !== user.id) {
-    return { success: false, error: "Immeuble introuvable" };
+    return { success: false, error: tc("errors.buildingNotFound") };
   }
 
   if (parsed.data.target === "building") {
@@ -160,7 +162,7 @@ export async function createCharge(
 
   const apartment = await getApartmentById(parsed.data.apartmentId);
   if (!apartment || apartment.buildingId !== parsed.data.buildingId) {
-    return { success: false, error: "Appartement introuvable" };
+    return { success: false, error: tc("errors.apartmentNotFound") };
   }
 
   // 4. Insert
@@ -192,12 +194,13 @@ export async function createCharge(
 // Delete charge (soft-delete)
 // ---------------------------------------------------------------------------
 export async function deleteCharge(id: string): Promise<ActionResult> {
+  const tc = await getTranslations("common");
   const user = await getAuthenticatedSyndic();
-  if (!user) return { success: false, error: "Non authentifié" };
+  if (!user) return { success: false, error: tc("errors.unauthenticated") };
 
   const charge = await getChargeById(id);
   if (!charge || charge.syndicId !== user.id) {
-    return { success: false, error: "Charge introuvable" };
+    return { success: false, error: tc("errors.chargeNotFound") };
   }
 
   await db
@@ -221,17 +224,18 @@ export async function deleteCharge(id: string): Promise<ActionResult> {
 export async function sendPaymentReminder(
   chargeId: string
 ): Promise<ActionResult> {
+  const tc = await getTranslations("common");
   const user = await getAuthenticatedSyndic();
-  if (!user) return { success: false, error: "Non authentifié" };
+  if (!user) return { success: false, error: tc("errors.unauthenticated") };
 
   // Load charge with derived values
   const charge = await getChargeById(chargeId);
   if (!charge || charge.syndicId !== user.id) {
-    return { success: false, error: "Charge introuvable" };
+    return { success: false, error: tc("errors.chargeNotFound") };
   }
 
   if (Number(charge.remainingAmount) <= 0) {
-    return { success: false, error: "Cette charge est déjà payée" };
+    return { success: false, error: tc("errors.alreadyPaid") };
   }
 
   // Get owner for this apartment
@@ -239,23 +243,23 @@ export async function sendPaymentReminder(
   if (!ownerRecord) {
     return {
       success: false,
-      error: "Aucun propriétaire actif pour cet appartement",
+      error: tc("errors.noActiveOwnerForApartment"),
     };
   }
 
   const owner = await getOwnerById(ownerRecord.id);
   if (!owner) {
-    return { success: false, error: "Propriétaire introuvable" };
+    return { success: false, error: tc("errors.ownerNotFound") };
   }
 
   const apartment = await getApartmentById(charge.apartmentId);
   if (!apartment) {
-    return { success: false, error: "Appartement introuvable" };
+    return { success: false, error: tc("errors.apartmentNotFound") };
   }
 
   const building = await getBuildingById(apartment.buildingId);
   if (!building || building.syndicId !== user.id) {
-    return { success: false, error: "Immeuble introuvable" };
+    return { success: false, error: tc("errors.buildingNotFound") };
   }
 
   // Send email
@@ -301,49 +305,51 @@ export async function sendPaymentReminder(
 export async function downloadPaymentNotice(
   chargeId: string
 ): Promise<ActionResult<{ buffer: string; filename: string }>> {
+  const tc = await getTranslations("common");
+  const tCharges = await getTranslations("charges");
   // 1. Authenticate — allow both syndic and proprietaire
   const supabase = await createClient();
   const {
     data: { user },
     error,
   } = await supabase.auth.getUser();
-  if (error || !user) return { success: false, error: "Non authentifié" };
+  if (error || !user) return { success: false, error: tc("errors.unauthenticated") };
 
   const role = user.app_metadata?.user_role as string | undefined;
   if (role !== "syndic" && role !== "proprietaire") {
-    return { success: false, error: "Accès refusé" };
+    return { success: false, error: tc("errors.forbidden") };
   }
 
   // 2. Load charge
   const charge = await getChargeById(chargeId);
-  if (!charge) return { success: false, error: "Charge introuvable" };
+  if (!charge) return { success: false, error: tc("errors.chargeNotFound") };
 
   // 3. Authorize based on role
   if (role === "syndic") {
     if (charge.syndicId !== user.id) {
-      return { success: false, error: "Charge introuvable" };
+      return { success: false, error: tc("errors.chargeNotFound") };
     }
   }
   if (role === "proprietaire") {
     const ownerCheck = await getOwnerByUserId(user.id);
     if (!ownerCheck || charge.apartmentId !== ownerCheck.apartmentId) {
-      return { success: false, error: "Accès refusé" };
+      return { success: false, error: tc("errors.forbidden") };
     }
   }
 
   // 4. Load apartment and owner
   const apartment = await getApartmentById(charge.apartmentId);
-  if (!apartment) return { success: false, error: "Appartement introuvable" };
+  if (!apartment) return { success: false, error: tc("errors.apartmentNotFound") };
 
   const ownerRecord = await getOwnerByApartmentId(charge.apartmentId);
   const owner = ownerRecord ? await getOwnerById(ownerRecord.id) : null;
 
   // 5. Resolve building from the charge apartment to avoid first-building mismatches
   const building = await getBuildingById(apartment.buildingId);
-  if (!building) return { success: false, error: "Immeuble introuvable" };
+  if (!building) return { success: false, error: tc("errors.buildingNotFound") };
 
   if (role === "syndic" && building.syndicId !== user.id) {
-    return { success: false, error: "Accès refusé" };
+    return { success: false, error: tc("errors.forbidden") };
   }
 
   const buffer = await renderPaymentNotice({
@@ -374,10 +380,40 @@ export async function downloadPaymentNotice(
       address: building.address,
     },
     generatedAt: new Date().toISOString(),
+    labels: {
+      title: tCharges("noticePdf.title"),
+      ownerSectionTitle: tCharges("noticePdf.ownerSectionTitle"),
+      fullName: tCharges("noticePdf.fullName"),
+      apartment: tCharges("noticePdf.apartment"),
+      floorPrefix: tCharges("noticePdf.floorPrefix"),
+      email: tCharges("noticePdf.email"),
+      phone: tCharges("noticePdf.phone"),
+      chargeDetailsTitle: tCharges("noticePdf.chargeDetailsTitle"),
+      chargeTitle: tCharges("noticePdf.chargeTitle"),
+      category: tCharges("noticePdf.category"),
+      description: tCharges("noticePdf.description"),
+      dueDate: tCharges("noticePdf.dueDate"),
+      financialSummaryTitle: tCharges("noticePdf.financialSummaryTitle"),
+      itemHeader: tCharges("noticePdf.itemHeader"),
+      amountHeader: tCharges("noticePdf.amountHeader"),
+      totalAmount: tCharges("noticePdf.totalAmount"),
+      amountPaid: tCharges("noticePdf.amountPaid"),
+      remainingBalance: tCharges("noticePdf.remainingBalance"),
+      generatedOn: tCharges("noticePdf.generatedOn"),
+      informationalNotice: tCharges("noticePdf.informationalNotice"),
+      categories: {
+        electricity: tc("categories.electricity"),
+        water: tc("categories.water"),
+        maintenance: tc("categories.maintenance"),
+        repair: tc("categories.repair"),
+        other: tc("categories.other"),
+      },
+    },
   });
 
   const base64 = Buffer.from(buffer).toString("base64");
-  const filename = `avis-paiement-${charge.title.replace(/\s+/g, "-").toLowerCase()}.pdf`;
+  const filenamePrefix = tCharges("noticePdf.filenamePrefix");
+  const filename = `${filenamePrefix}-${charge.title.replace(/\s+/g, "-").toLowerCase()}.pdf`;
 
   return { success: true, data: { buffer: base64, filename } };
 }

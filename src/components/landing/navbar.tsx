@@ -21,6 +21,7 @@ import {
 
 export default function Navbar() {
   const t = useTranslations("landing");
+  const tc = useTranslations("common");
   const [scrolled, setScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<User | null>(null);
@@ -70,9 +71,9 @@ export default function Navbar() {
   };
 
   const localeLabels: Record<Locale, { short: string; full: string }> = {
-    fr: { short: "FR", full: "Français" },
-    en: { short: "EN", full: "English" },
-    ar: { short: "ع", full: "العربية" },
+    fr: { short: "FR", full: tc("languageSwitcher.fr") },
+    en: { short: "EN", full: tc("languageSwitcher.en") },
+    ar: { short: "ع", full: tc("languageSwitcher.ar") },
   };
 
   const isDark = !mounted || resolvedTheme === "dark";
@@ -127,7 +128,7 @@ export default function Navbar() {
           <div className="flex h-7 w-7 items-center justify-center rounded-[8px] border border-[--accent-border] bg-[--bg-card]">
             <Image
               src="/logo.svg"
-              alt="Syndic"
+              alt={t("nav.brandAlt")}
               width={20}
               height={20}
               style={{ color: "var(--text-primary)" }}
@@ -204,7 +205,7 @@ export default function Navbar() {
             <button
               onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
               className="flex h-7 w-7 items-center justify-center rounded-lg border border-[--border-subtle] bg-transparent text-[--text-muted] transition-all duration-150 hover:border-[--border-default] hover:text-[--text-secondary]"
-              aria-label="Toggle theme"
+              aria-label={t("nav.themeToggleLabel")}
             >
               {resolvedTheme === "dark" ? (
                 <Sun className="h-3.5 w-3.5" />
@@ -220,7 +221,7 @@ export default function Navbar() {
                 <DropdownMenuTrigger asChild>
                   <button
                     className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border border-[--accent-border] bg-[--accent-bg] text-[12px] font-semibold uppercase text-[--accent-muted] transition-all duration-150 hover:bg-[--accent-border] focus:outline-none focus-visible:ring-2 focus-visible:ring-[--accent-border]"
-                    title="Mon espace"
+                    title={t("nav.mySpace")}
                   >
                     {user.email?.charAt(0).toUpperCase() ?? "U"}
                   </button>
@@ -240,7 +241,9 @@ export default function Navbar() {
                       {user.email}
                     </p>
                     <p className="mt-0.5 text-[11px] font-medium capitalize text-[--accent]">
-                      {userRole === "proprietaire" ? "Copropriétaire" : "Syndic"}
+                      {userRole === "proprietaire"
+                        ? t("nav.roleOwner")
+                        : t("nav.roleSyndic")}
                     </p>
                   </div>
 
@@ -250,7 +253,9 @@ export default function Navbar() {
                       className="flex cursor-pointer items-center gap-2.5 rounded-[--radius-md] px-3 py-2 text-[13px] text-[--text-secondary] transition-colors duration-100 hover:bg-[--bg-card-hover] hover:text-[--text-primary] focus:bg-[--bg-card-hover] focus:outline-none"
                     >
                       <LayoutDashboard className="h-3.5 w-3.5 shrink-0 text-[--text-muted]" />
-                      {userRole === "proprietaire" ? "Mon portail" : "Tableau de bord"}
+                      {userRole === "proprietaire"
+                        ? t("nav.myPortal")
+                        : t("nav.dashboard")}
                     </Link>
                   </DropdownMenuItem>
 
@@ -261,7 +266,7 @@ export default function Navbar() {
                     className="flex cursor-pointer items-center gap-2.5 rounded-[--radius-md] px-3 py-2 text-[13px] text-[--status-error] transition-colors duration-100 hover:bg-[rgba(239,68,68,0.08)] hover:text-[--status-error] focus:bg-[rgba(239,68,68,0.08)] focus:outline-none"
                   >
                     <LogOut className="h-3.5 w-3.5 shrink-0" />
-                    Se déconnecter
+                    {t("nav.signOut")}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

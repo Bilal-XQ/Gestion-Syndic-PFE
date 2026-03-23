@@ -42,6 +42,8 @@ export async function createOwner(
 ): Promise<ActionResult<{ id: string; emailSent: boolean; emailError?: string }>> {
   // 1. Validate
   const t = await getTranslations("validation");
+  const tc = await getTranslations("common");
+  const to = await getTranslations("owners");
   const schema = createOwnerSchema(t);
   const parsed = schema.safeParse(values);
   if (!parsed.success) {
@@ -54,10 +56,10 @@ export async function createOwner(
     data: { user },
     error: authError,
   } = await supabase.auth.getUser();
-  if (authError || !user) return { success: false, error: "Non authentifié" };
+  if (authError || !user) return { success: false, error: tc("errors.unauthenticated") };
 
   const role = user.app_metadata?.user_role as string | undefined;
-  if (role !== "syndic") return { success: false, error: "Accès refusé" };
+  if (role !== "syndic") return { success: false, error: tc("errors.forbidden") };
 
   // 3. Verify apartment belongs to syndic and is vacant
   const apartment = await getScopedApartmentForSyndic(
@@ -65,10 +67,10 @@ export async function createOwner(
     parsed.data.apartmentId
   );
   if (!apartment) {
-    return { success: false, error: "Appartement introuvable" };
+    return { success: false, error: tc("errors.apartmentNotFound") };
   }
   if (apartment.status !== "vacant") {
-    return { success: false, error: "Appartement déjà occupé" };
+    return { success: false, error: tc("errors.apartmentAlreadyOccupied") };
   }
 
   // 4. Create auth account via admin client
@@ -87,7 +89,7 @@ export async function createOwner(
   if (createUserError || !authData.user) {
     return {
       success: false,
-      error: createUserError?.message ?? "Erreur lors de la création du compte",
+      error: createUserError?.message ?? tc("errors.accountCreationFailed"),
     };
   }
 
@@ -136,7 +138,7 @@ export async function createOwner(
     try {
       const emailResult = await sendEmail({
         to: parsed.data.email,
-        subject: "Bienvenue sur votre espace copropriétaire",
+        subject: to("email.welcomeSubject"),
         react: WelcomeEmail({
           firstName: parsed.data.firstName,
           lastName: parsed.data.lastName,
@@ -180,7 +182,7 @@ export async function createOwner(
     await db.delete(users).where(eq(users.id, authData.user.id));
     return {
       success: false,
-      error: "Erreur lors de la création du copropriétaire",
+      error: tc("errors.ownerCreationFailed"),
     };
   }
 }
@@ -194,6 +196,7 @@ export async function updateOwner(
 ): Promise<ActionResult> {
   // 1. Validate
   const t = await getTranslations("validation");
+  const tc = await getTranslations("common");
   const schema = createOwnerSchema(t);
   const parsed = schema.safeParse(values);
   if (!parsed.success) {
@@ -206,15 +209,15 @@ export async function updateOwner(
     data: { user },
     error: authError,
   } = await supabase.auth.getUser();
-  if (authError || !user) return { success: false, error: "Non authentifié" };
+  if (authError || !user) return { success: false, error: tc("errors.unauthenticated") };
 
   const role = user.app_metadata?.user_role as string | undefined;
-  if (role !== "syndic") return { success: false, error: "Accès refusé" };
+  if (role !== "syndic") return { success: false, error: tc("errors.forbidden") };
 
   // 3. Get existing owner
   const existingOwner = await getOwnerById(id);
   if (!existingOwner) {
-    return { success: false, error: "Copropriétaire introuvable" };
+    return { success: false, error: tc("errors.coOwnerNotFound") };
   }
 
   const existingApartment = await getScopedApartmentForSyndic(
@@ -222,7 +225,7 @@ export async function updateOwner(
     existingOwner.apartmentId
   );
   if (!existingApartment) {
-    return { success: false, error: "Copropriétaire introuvable" };
+    return { success: false, error: tc("errors.coOwnerNotFound") };
   }
 
   // 4. Update user record (NOT email — email is immutable after creation)
@@ -243,10 +246,10 @@ export async function updateOwner(
       parsed.data.apartmentId
     );
     if (!nextApartment) {
-      return { success: false, error: "Appartement introuvable" };
+      return { success: false, error: tc("errors.apartmentNotFound") };
     }
     if (nextApartment.status !== "vacant") {
-      return { success: false, error: "Appartement déjà occupé" };
+      return { success: false, error: tc("errors.apartmentAlreadyOccupied") };
     }
 
     // Set old apartment to vacant
@@ -298,21 +301,22 @@ export async function updateOwner(
 export async function deleteOwner(
   id: string
 ): Promise<ActionResult> {
+  const tc = await getTranslations("common");
   // 1. Authenticate
   const supabase = await createClient();
   const {
     data: { user },
     error: authError,
   } = await supabase.auth.getUser();
-  if (authError || !user) return { success: false, error: "Non authentifié" };
+  if (authError || !user) return { success: false, error: tc("errors.unauthenticated") };
 
   const role = user.app_metadata?.user_role as string | undefined;
-  if (role !== "syndic") return { success: false, error: "Accès refusé" };
+  if (role !== "syndic") return { success: false, error: tc("errors.forbidden") };
 
   // 2. Get existing owner
   const existingOwner = await getOwnerById(id);
   if (!existingOwner) {
-    return { success: false, error: "Copropriétaire introuvable" };
+    return { success: false, error: tc("errors.coOwnerNotFound") };
   }
 
   const existingApartment = await getScopedApartmentForSyndic(
@@ -320,7 +324,7 @@ export async function deleteOwner(
     existingOwner.apartmentId
   );
   if (!existingApartment) {
-    return { success: false, error: "Copropriétaire introuvable" };
+    return { success: false, error: tc("errors.coOwnerNotFound") };
   }
 
   // 3. Soft-delete owner
