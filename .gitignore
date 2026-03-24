@@ -4,6 +4,10 @@
 .idea/
 .playwright-cli
 test-results
+docs\report\rapport.aux
+docs\report\rapport.log
+docs\report\rapport.out
+docs\report\rapport.synctex.gz
 
 # dependencies
 /node_modules
@@ -50,3 +54,16 @@ next-env.d.ts
 
 # Sentry Config File
 .env.sentry-build-plugin
+docs/report/rapport.synctex.gz
+docs/report/rapport.log
+docs/report/rapport.aux
+docs/report/rapport.out
+docs/report/rapport.lof
+scripts
+.gitignore
+docs/report/rapport.toc
+screenshot.mjs
+tmp-login-error.mjs
+tmp-login-check.mjs
+download-logos.mjs
+docs/report/compile-last.txt

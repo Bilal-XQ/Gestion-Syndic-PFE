@@ -1,0 +1,1163 @@
+% !TEX program  = pdflatex
+% !TEX encoding = UTF-8
+% ─────────────────────────────────────────────────────────────────────────────
+%  Rapport de Projet de Fin d'Études
+%  Modernisation d'une Application de Gestion de Syndic
+%  EL AZZAM Bilal — CHAKOUATE Maraoune — CHAQRI Ahmed
+%  École Supérieure de Technologie — Safi | 2025/2026
+%
+%  COMPILATION :
+%    pdflatex -shell-escape rapport.tex   (deux fois pour ToC et références)
+%
+%  PRÉREQUIS :
+%    - Dossier figures/ : screenshots générés par screenshot.mjs
+%    - Dossier logos/   : PNGs générés par download-logos.mjs
+%    - PlantUML PNGs    : figures/usecase.png et figures/classdiagram.png
+% ─────────────────────────────────────────────────────────────────────────────
+
+\documentclass[12pt, a4paper]{report}
+
+% ── Encodage & Langue ────────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+
+% ── Mise en page ─────────────────────────────────────────────────────────────
+\usepackage[
+  top    = 2.5cm,
+  bottom = 2.5cm,
+  left   = 3.0cm,
+  right  = 2.5cm,
+  headsep = 0.8cm,
+]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+
+% ── Couleurs ─────────────────────────────────────────────────────────────────
+\usepackage[dvipsnames, table]{xcolor}
+\definecolor{accent}{HTML}{D4A853}       % Amber principal
+\definecolor{accentdark}{HTML}{8B6520}   % Amber foncé
+\definecolor{accentbg}{HTML}{FFF9EC}     % Fond amber très clair
+\definecolor{codebg}{HTML}{F4F4F4}       % Fond code
+\definecolor{darkbg}{HTML}{1A1A1A}       % Fond sombre (couverture)
+
+% ── Graphiques ───────────────────────────────────────────────────────────────
+\usepackage{graphicx}
+\graphicspath{{figures/}{logos/}}
+\usepackage{float}
+\usepackage{caption}
+\captionsetup{
+  labelfont   = {bf, small},
+  textfont    = {it, small},
+  labelsep    = endash,
+  justification = centering,
+  skip        = 6pt,
+}
+
+% ── TikZ ─────────────────────────────────────────────────────────────────────
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, fit, backgrounds, shadows.blur}
+
+% ── Boîtes colorées ──────────────────────────────────────────────────────────
+\usepackage{tcolorbox}
+\tcbuselibrary{skins, breakable, most}
+
+% ── Titres de chapitres ──────────────────────────────────────────────────────
+\usepackage{titlesec}
+
+\titleformat{\chapter}[display]
+  {\normalfont\Large\bfseries\color{accent}}
+  {\normalfont\normalsize\bfseries\color{accent}
+    \MakeUppercase{\chaptertitlename}\ \thechapter}
+  {8pt}
+  {\LARGE}
+  [\vspace{4pt}{\color{accent}\rule{\linewidth}{1pt}}]
+
+\titlespacing*{\chapter}{0pt}{-10pt}{24pt}
+
+\titleformat{\section}
+  {\normalfont\large\bfseries\color{accentdark}}
+  {\thesection}{1em}{}
+\titlespacing*{\section}{0pt}{18pt}{8pt}
+
+\titleformat{\subsection}
+  {\normalfont\normalsize\bfseries\color{accentdark}}
+  {\thesubsection}{0.8em}{}
+\titlespacing*{\subsection}{0pt}{12pt}{5pt}
+
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries\itshape}
+  {}{0pt}{}
+\titlespacing*{\subsubsection}{0pt}{10pt}{4pt}
+
+% ── En-têtes et pieds ────────────────────────────────────────────────────────
+\usepackage{fancyhdr}
+\setlength{\headheight}{14.1pt}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancyhead[L]{\small\textit{Rapport de Projet de Fin d'Études}}
+\fancyhead[R]{\small\textit{Application Web de Gestion de Syndic}}
+\fancyfoot[C]{\thepage}
+
+\fancypagestyle{plain}{%
+  \fancyhf{}
+  \fancyfoot[C]{\thepage}
+  \renewcommand{\headrulewidth}{0pt}
+}
+
+% ── Tableaux ─────────────────────────────────────────────────────────────────
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{multirow}
+\renewcommand{\arraystretch}{1.35}
+
+% ── Listes ───────────────────────────────────────────────────────────────────
+\usepackage{enumitem}
+\setlist[itemize,1]{
+  label      = \textcolor{accent}{\textbullet},
+  leftmargin = 1.8em,
+  itemsep    = 3pt,
+  topsep     = 4pt,
+}
+\setlist[itemize,2]{
+  label      = \textcolor{accentdark}{--},
+  leftmargin = 1.5em,
+  itemsep    = 2pt,
+}
+\setlist[enumerate,1]{leftmargin=2em, itemsep=4pt}
+
+% ── Table des matières ────────────────────────────────────────────────────────
+\usepackage{titletoc}
+\contentsmargin{0.5cm}
+
+\titlecontents{chapter}[0em]
+  {\vspace{6pt}\bfseries\color{accentdark}}
+  {\contentslabel{2.0em}}
+  {\hspace*{-2.0em}}
+  {\hfill\contentspage}
+  [\vspace{2pt}]
+
+\titlecontents{section}[2.4em]
+  {\normalsize}
+  {\contentslabel{2.4em}}{}
+  {\titlerule*[6pt]{.}\contentspage}
+
+\titlecontents{subsection}[5.2em]
+  {\small}
+  {\contentslabel{3.0em}}{}
+  {\titlerule*[6pt]{.}\contentspage}
+
+% ── Hyperliens ───────────────────────────────────────────────────────────────
+\usepackage[
+  colorlinks = true,
+  linkcolor  = accentdark,
+  urlcolor   = accentdark,
+  citecolor  = accentdark,
+  pdftitle   = {Rapport PFE — Application Web de Gestion de Syndic},
+  pdfauthor  = {EL AZZAM Bilal; CHAKOUATE Maraoune; CHAQRI Ahmed},
+]{hyperref}
+
+% ── Commandes utilitaires ─────────────────────────────────────────────────────
+\newcommand{\tech}[1]{\textbf{#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+
+% Chapitre non-numéroté avec entrée ToC
+\newcommand{\prechapter}[1]{%
+  \chapter*{#1}%
+  \addcontentsline{toc}{chapter}{#1}%
+  \thispagestyle{fancy}%
+}
+
+% Commande logo technologie
+\newcommand{\logotech}[1]{%
+  \includegraphics[height=1.1cm]{logos/#1}%
+}
+
+% Inclusion d'image avec fallback si le fichier n'existe pas
+\newcommand{\safegraphic}[3][]{%
+  \IfFileExists{#2}{\includegraphics[#1]{#2}}{%
+    \IfFileExists{#2.png}{\includegraphics[#1]{#2}}{%
+      \IfFileExists{#2.jpg}{\includegraphics[#1]{#2}}{%
+        \IfFileExists{#2.jpeg}{\includegraphics[#1]{#2}}{%
+          \IfFileExists{#2.pdf}{\includegraphics[#1]{#2}}{\includegraphics[#1]{#3}}%
+        }%
+      }%
+    }%
+  }%
+}
+
+% Commande screenshot
+\newcommand{\screenshot}[3][0.9]{%
+  \begin{figure}[H]
+    \centering
+    \safegraphic[width=#1\textwidth]{figures/#2}{figures/01-landing}
+    \caption{#3}
+    \label{fig:#2}
+  \end{figure}%
+}
+
+% Boîte de note amber
+\newtcolorbox{notebox}{
+  colback    = accentbg,
+  colframe   = accent,
+  boxrule    = 0.8pt,
+  arc        = 4pt,
+  left       = 8pt,
+  right      = 8pt,
+  top        = 6pt,
+  bottom     = 6pt,
+  fonttitle  = \bfseries\small,
+}
+
+% Boîte de section technologie
+\newtcolorbox{techcard}[1]{
+  colback    = white,
+  colframe   = accent,
+  boxrule    = 0.6pt,
+  arc        = 6pt,
+  title      = {\textbf{#1}},
+  fonttitle  = \bfseries\color{accentdark},
+  coltitle   = accentdark,
+  attach boxed title to top left={yshift=-2mm, xshift=6mm},
+  boxed title style={colback=accentbg, colframe=accent, arc=3pt},
+  left       = 8pt,
+  right      = 8pt,
+  top        = 10pt,
+  bottom     = 8pt,
+  before skip = 8pt,
+  after skip  = 8pt,
+}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\begin{document}
+% ─────────────────────────────────────────────────────────────────────────────
+
+% ════════════════════════════════════════════════════════════════════════════
+%  PAGE DE TITRE
+% ════════════════════════════════════════════════════════════════════════════
+\begin{titlepage}
+\thispagestyle{empty}
+
+% Fond sombre en haut
+\begin{tikzpicture}[remember picture, overlay]
+  \fill[darkbg] (current page.north west)
+    rectangle ([yshift=-4.5cm] current page.north east);
+  \fill[accent] ([yshift=-4.5cm] current page.north west)
+    rectangle ([yshift=-4.9cm] current page.north east);
+\end{tikzpicture}
+
+\vspace*{-1cm}
+
+% Logos sur le fond sombre
+\noindent
+\makebox[\textwidth]{%
+  \includegraphics[height=2.2cm]{logos/logo_uca.png}%
+  \hfill%
+  \includegraphics[height=2.2cm]{logos/logo_est.png}%
+}
+
+\vspace{0.9cm}
+
+% Identification institutionnelle
+\begin{center}
+  {\color{white}\large\bfseries Université Cadi Ayyad}\\[4pt]
+  {\color{white}\large\bfseries École Supérieure De Technologie --- Safi}\\[6pt]
+  {\color{white}\normalsize Département : Informatique \quad|\quad Filière : Génie Informatique}
+\end{center}
+
+\vspace{1.6cm}
+
+% Type de document
+\begin{center}
+  {\Large\bfseries\color{accentdark} Rapport de Projet de Fin d'Études}
+\end{center}
+
+\vspace{0.6cm}
+{\color{accent}\rule{\textwidth}{0.8pt}}
+\vspace{0.8cm}
+
+% Titre du projet
+\begin{center}
+  \begin{tcolorbox}[
+    colback  = accentbg,
+    colframe = accent,
+    boxrule  = 1.2pt,
+    arc      = 8pt,
+    width    = 0.85\textwidth,
+    halign   = center,
+  ]
+    \color{accentdark}
+    \LARGE\bfseries
+    Modernisation d'une Application\\[6pt]
+    de Gestion de Syndic
+  \end{tcolorbox}
+\end{center}
+
+\vspace{1.0cm}
+
+% Auteurs et encadrant
+\begin{minipage}[t]{0.47\textwidth}
+  \raggedright
+  \textit{Réalisé par :}\\[10pt]
+  \hspace*{0.4cm} M.\ \textbf{EL AZZAM Bilal}\\[5pt]
+  \hspace*{0.4cm} M.\ \textbf{CHAKOUATE Maraoune}\\[5pt]
+  \hspace*{0.4cm} M.\ \textbf{CHAQRI Ahmed}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.47\textwidth}
+  \raggedleft
+  \textit{Encadré par :}\\[10pt]
+  M.\ \textbf{HAMZANE Ibrahim}
+\end{minipage}
+
+\vfill
+
+{\color{accent}\rule{\textwidth}{1pt}}
+\vspace{0.3cm}
+\begin{center}
+  {\large\bfseries Année Universitaire : 2025/2026}
+\end{center}
+\end{titlepage}
+
+% ════════════════════════════════════════════════════════════════════════════
+%  DÉDICACE
+% ════════════════════════════════════════════════════════════════════════════
+\prechapter{Dédicace}
+
+\vspace*{2cm}
+
+\begin{center}
+  {\color{accent}\rule{0.4\textwidth}{0.6pt}}
+\end{center}
+
+\vspace{1cm}
+
+\begin{center}
+\begin{minipage}{0.75\textwidth}
+  \centering
+  \setlength{\parskip}{10pt}
+
+  À nos familles, pour leur soutien constant tout au long de notre parcours.
+
+  À notre encadrant, M.\ \textbf{HAMZANE Ibrahim}, pour sa disponibilité et ses conseils.
+
+  À tous ceux qui nous ont accompagnés, de près ou de loin, dans la réalisation de ce projet.
+\end{minipage}
+\end{center}
+
+\vspace{1cm}
+
+\begin{center}
+  {\color{accent}\rule{0.4\textwidth}{0.6pt}}
+\end{center}
+
+% ════════════════════════════════════════════════════════════════════════════
+%  REMERCIEMENTS
+% ════════════════════════════════════════════════════════════════════════════
+\prechapter{Remerciements}
+
+Nous tenons à remercier en premier lieu notre encadrant, M.\ \textbf{HAMZANE Ibrahim}, pour son suivi rigoureux et ses conseils tout au long de ce projet.
+
+Nous remercions également l'École Supérieure de Technologie de Safi pour la qualité de la formation qu'elle nous a offerte, ainsi que l'ensemble du corps enseignant du département informatique.
+
+Enfin, nous exprimons notre gratitude à nos familles pour leur soutien et leur patience durant cette période de travail intensif.
+
+% ════════════════════════════════════════════════════════════════════════════
+%  RÉSUMÉ
+% ════════════════════════════════════════════════════════════════════════════
+\prechapter{Résumé}
+
+Ce projet porte sur la modernisation d'une application de gestion de syndic. L'ancienne solution, développée sous Microsoft Access, était limitée à un seul poste de travail et ne permettait pas un accès à distance.
+
+Nous avons conçu et développé une application web complète. Elle est accessible depuis n'importe quel navigateur, sans installation nécessaire. L'application propose deux espaces distincts : un tableau de bord complet pour le syndic, et un portail personnel pour chaque copropriétaire.
+
+Le syndic peut gérer les immeubles, les appartements, les copropriétaires, les charges, les réunions et les paiements. Le copropriétaire peut consulter ses charges, effectuer des paiements, répondre aux invitations et recevoir des notifications en temps réel.
+
+L'application est construite avec \tech{Next.js 16}, \tech{Supabase} et \tech{Drizzle ORM}. Elle supporte trois langues (français, anglais et arabe) et génère des avis de paiement au format PDF.
+
+\vspace{1em}
+\noindent\textbf{Mots-clés :} Application web, gestion de syndic, copropriété, Next.js, Supabase, TypeScript, React.
+
+% ════════════════════════════════════════════════════════════════════════════
+%  TABLE DES MATIÈRES
+% ════════════════════════════════════════════════════════════════════════════
+\tableofcontents
+\thispagestyle{fancy}
+
+% ════════════════════════════════════════════════════════════════════════════
+%  TABLE DES FIGURES
+% ════════════════════════════════════════════════════════════════════════════
+\listoffigures
+\addcontentsline{toc}{chapter}{Table des figures}
+\thispagestyle{fancy}
+
+% ════════════════════════════════════════════════════════════════════════════
+%  INTRODUCTION
+% ════════════════════════════════════════════════════════════════════════════
+\prechapter{Introduction}
+
+La gestion d'une copropriété demande de la rigueur et une bonne organisation. Le syndic doit gérer plusieurs tâches en même temps : enregistrer des propriétaires, suivre les paiements, organiser des réunions et communiquer avec les copropriétaires.
+
+Jusqu'à présent, ces tâches étaient gérées avec une application développée sous Microsoft Access. Cet outil fonctionne uniquement sur un ordinateur de bureau. Il ne permet pas de travailler à distance, ni de collaborer avec plusieurs utilisateurs simultanément.
+
+Notre projet vise à remplacer cette solution par une application web moderne. Elle centralise toutes les opérations dans une seule interface accessible depuis n'importe quel navigateur. Elle propose deux espaces distincts selon le rôle de l'utilisateur.
+
+Ce rapport présente les différentes étapes du projet. Le premier chapitre décrit le contexte et les objectifs. Le deuxième analyse les besoins. Le troisième présente la conception. Le quatrième montre la réalisation. Le cinquième conclut le travail effectué.
+
+% ════════════════════════════════════════════════════════════════════════════
+%  CHAPITRE 1 — PRÉSENTATION GÉNÉRALE
+% ════════════════════════════════════════════════════════════════════════════
+\chapter{Présentation Générale}
+
+\section{Contexte du projet}
+
+La gestion de copropriété repose sur de nombreux processus administratifs et financiers. Les syndics doivent enregistrer des propriétaires, gérer des charges, organiser des assemblées générales et suivre les paiements.
+
+L'application existante a été développée sous Microsoft Access. C'est un système de gestion de bases de données relationnel de Microsoft. Il permet de créer des formulaires, des requêtes et des rapports. Cependant, son architecture est locale. Il ne fonctionne que sur un seul poste de travail, sans possibilité d'accès multi-utilisateurs ni d'accès à distance.
+
+\begin{figure}[H]
+  \centering
+  \safegraphic[height=2.0cm]{logos/access-original}{logos/logo_est}
+  \caption{Logo de Microsoft Access}
+  \label{fig:access}
+\end{figure}
+
+Face à ces limites, il était nécessaire de concevoir une solution web complète. Cette solution doit être accessible depuis tout appareil, gérer plusieurs immeubles et plusieurs rôles utilisateurs, et proposer des fonctionnalités modernes comme les notifications en temps réel et la génération de PDF.
+
+\section{Problématique}
+
+L'application actuelle pose plusieurs problèmes concrets. Elle est inaccessible depuis un autre poste que celui où elle est installée. Elle ne permet pas à plusieurs utilisateurs de travailler en même temps. Elle ne propose pas d'interface pour les copropriétaires.
+
+La problématique du projet est la suivante : \textit{comment moderniser l'application de gestion de syndic pour améliorer son accessibilité, sa fiabilité et l'expérience de tous ses utilisateurs ?}
+
+\section{Objectifs du projet}
+
+Les objectifs principaux de ce projet sont :
+
+\begin{itemize}
+  \item Créer une application web accessible depuis n'importe quel navigateur, sans installation.
+  \item Proposer deux espaces distincts : un tableau de bord pour le syndic et un portail pour le copropriétaire.
+  \item Permettre la gestion de plusieurs immeubles depuis un seul compte syndic.
+  \item Gérer les appartements, les copropriétaires, les charges et les paiements.
+  \item Organiser les assemblées générales avec invitations et suivi des réponses.
+  \item Envoyer des notifications en temps réel sans rechargement de la page.
+  \item Générer des avis de paiement au format PDF.
+  \item Exporter les données en fichiers Excel.
+  \item Supporter trois langues : français, anglais et arabe (avec interface RTL).
+\end{itemize}
+
+\section{Méthodologie adoptée : Méthode Agile}
+
+Nous avons choisi la méthode Agile pour organiser notre travail. Cette approche permet de livrer des fonctionnalités par étapes. Chaque étape est planifiée, développée, testée et validée avant de passer à la suivante.
+
+\begin{figure}[H]
+  \centering
+  \resizebox{0.90\textwidth}{!}{%
+  \begin{tikzpicture}[
+    node distance = 1.4cm,
+    box/.style = {
+      rectangle, rounded corners=6pt,
+      draw=accent, fill=accentbg,
+      text width=3.0cm, align=center,
+      font=\small\bfseries\color{accentdark},
+      minimum height=0.9cm,
+    },
+    arr/.style = {-{Stealth[length=6pt]}, color=accent, thick},
+  ]
+    \node[box] (plan)    {Planification};
+    \node[box, right=of plan]  (design)  {Conception};
+    \node[box, right=of design](dev)     {Développement};
+    \node[box, right=of dev]   (test)    {Tests};
+    \node[box, right=of test]  (deploy)  {Livraison};
+
+    \draw[arr] (plan)   -- (design);
+    \draw[arr] (design) -- (dev);
+    \draw[arr] (dev)    -- (test);
+    \draw[arr] (test)   -- (deploy);
+
+    % Flèche de retour
+    \draw[arr, bend right=40] (deploy.south) to node[below, font=\tiny\color{accentdark}]{Itération suivante} (plan.south);
+  \end{tikzpicture}
+  }
+  \caption{Processus de développement Agile}
+  \label{fig:agile}
+\end{figure}
+
+Le projet a été découpé en six phases. Chaque phase couvre un ensemble de fonctionnalités précises : la mise en place de l'infrastructure, le tableau de bord syndic, les charges et paiements, les réunions, le portail copropriétaire, et la phase finale de test et déploiement.
+
+Cette organisation nous a permis de livrer une application fonctionnelle à chaque fin de phase, tout en gardant la possibilité d'ajuster les priorités selon les retours.
+
+% ════════════════════════════════════════════════════════════════════════════
+%  CHAPITRE 2 — ANALYSE DES BESOINS
+% ════════════════════════════════════════════════════════════════════════════
+\chapter{Analyse des Besoins}
+
+\section{Présentation de l'application actuelle et ses limites}
+
+L'application actuelle est développée sous Microsoft Access. Elle permet au syndic de saisir des propriétaires, d'enregistrer des versements et de faire des recherches simples.
+
+\begin{figure}[H]
+  \centering
+  \safegraphic[width=0.88\textwidth]{figures/access-owners}{figures/04-dashboard-owners}
+  \caption{Liste des propriétaires sous Microsoft Access}
+  \label{fig:access-owners}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \safegraphic[width=0.88\textwidth]{figures/access-payments}{figures/16-dashboard-payments}
+  \caption{Liste des versements sous Microsoft Access}
+  \label{fig:access-payments}
+\end{figure}
+
+Cette solution présente plusieurs limites importantes :
+
+\begin{itemize}
+  \item \textbf{Accessibilité limitée} : l'application fonctionne uniquement sur un poste de bureau. Il n'est pas possible d'y accéder à distance.
+  \item \textbf{Interface obsolète} : l'interface n'est pas adaptée aux standards actuels. Elle est difficile à utiliser pour des non-techniciens.
+  \item \textbf{Pas de multi-utilisateurs} : plusieurs utilisateurs ne peuvent pas travailler en même temps sur les mêmes données.
+  \item \textbf{Pas de notifications} : aucun système d'alerte ou de notification pour les copropriétaires.
+  \item \textbf{Sécurité insuffisante} : Microsoft Access n'offre pas de gestion avancée des rôles ni de protection des données sensibles.
+\end{itemize}
+
+\section{Identification des besoins}
+
+\subsection{Besoins fonctionnels}
+
+Les besoins fonctionnels décrivent ce que l'application doit faire.
+
+\textbf{Pour le syndic :}
+\begin{itemize}
+  \item Gérer plusieurs immeubles depuis un seul compte.
+  \item Créer, modifier et supprimer des copropriétaires.
+  \item Gérer les appartements avec leur surface, étage, type et tantièmes.
+  \item Créer des charges et les assigner à un appartement ou répartir sur tout l'immeuble.
+  \item Envoyer des rappels de paiement par email.
+  \item Générer des avis de paiement en PDF.
+  \item Organiser des assemblées générales et inviter des copropriétaires.
+  \item Consulter l'historique global des paiements avec des filtres.
+  \item Exporter les données (propriétaires, charges, paiements) en fichier Excel.
+\end{itemize}
+
+\textbf{Pour le copropriétaire :}
+\begin{itemize}
+  \item Consulter son profil personnel et les informations de son appartement.
+  \item Voir la liste de ses charges et leur statut (payé, partiel, impayé).
+  \item Effectuer un paiement, avec support des paiements partiels.
+  \item Télécharger un avis de paiement PDF pour chaque charge.
+  \item Répondre aux invitations de réunion (accepter ou décliner).
+  \item Recevoir des notifications en temps réel.
+\end{itemize}
+
+\subsection{Besoins non fonctionnels}
+
+Les besoins non fonctionnels concernent la qualité et les performances de l'application.
+
+\begin{itemize}
+  \item \textbf{Accessibilité} : l'application doit fonctionner sur tout navigateur moderne, sur ordinateur, tablette et mobile.
+  \item \textbf{Sécurité} : chaque rôle doit accéder uniquement aux données qui le concernent. L'authentification est gérée par JWT. Les tentatives de connexion sont limitées à 5 par minute par adresse IP.
+  \item \textbf{Performance} : les pages se chargent rapidement grâce aux React Server Components. Les requêtes base de données sont optimisées avec des index explicites.
+  \item \textbf{Fiabilité financière} : tous les paiements sont effectués dans des transactions base de données. En cas d'erreur, aucune donnée partielle n'est sauvegardée.
+  \item \textbf{Internationalisation} : l'interface supporte trois langues — français, anglais et arabe. L'arabe active automatiquement l'interface RTL.
+  \item \textbf{Traçabilité} : toutes les actions sensibles sont enregistrées dans un journal d'audit immuable.
+\end{itemize}
+
+\section{Étude des solutions existantes}
+
+Nous avons analysé plusieurs types de solutions existantes sur le marché.
+
+\begin{center}
+\begin{tabularx}{\textwidth}{|>{\bfseries}l|X|X|}
+  \hline
+  \rowcolor{accentbg}
+  \textbf{Solution} & \textbf{Avantages} & \textbf{Inconvénients} \\
+  \hline
+  SaaS de syndic & Interface moderne, accès en ligne & Coûteux, peu personnalisable \\
+  \hline
+  ERP immobilier & Fonctionnalités avancées & Complexe, surdimensionné pour les petites copropriétés \\
+  \hline
+  Applications mobiles & Interface intuitive & Ne couvrent pas tous les besoins métier \\
+  \hline
+  Microsoft Access & Gratuit, simple & Local, obsolète, non collaboratif \\
+  \hline
+\end{tabularx}
+\end{center}
+
+\vspace{0.5em}
+
+Notre projet combine les avantages d'une application web avec les besoins spécifiques d'un syndic marocain. Il est personnalisable, hébergé en ligne, et accessible sans abonnement mensuel coûteux.
+
+% ════════════════════════════════════════════════════════════════════════════
+%  CHAPITRE 3 — CONCEPTION
+% ════════════════════════════════════════════════════════════════════════════
+\chapter{Conception}
+
+\section{Introduction à la modélisation UML}
+
+Nous avons utilisé UML (Unified Modeling Language) pour modéliser les différentes parties du système. La modélisation UML permet de visualiser les interactions, de définir les entités et leurs relations, et de planifier l'architecture avant de coder.
+
+Nous avons réalisé deux diagrammes principaux : le diagramme de cas d'utilisation et le diagramme de classes.
+
+\section{Diagramme de cas d'utilisation}
+
+Le diagramme de cas d'utilisation décrit les interactions entre les acteurs et le système. Il montre quelles fonctionnalités sont accessibles à chaque rôle.
+
+L'application a deux acteurs principaux : le \textbf{Syndic} et le \textbf{Copropriétaire}. Le syndic gère toute la partie administrative. Le copropriétaire accède uniquement à ses propres données.
+
+\begin{figure}[H]
+  \centering
+  \safegraphic[width=\textwidth]{figures/usecase}{figures/03-dashboard-overview}
+  \caption{Diagramme de cas d'utilisation}
+  \label{fig:usecase}
+\end{figure}
+
+\section{Diagramme de classes}
+
+Le diagramme de classes représente la structure de la base de données. Il montre les entités et leurs relations.
+
+L'application utilise dix tables principales : \code{users}, \code{buildings}, \code{apartments}, \code{owners}, \code{charges}, \code{payments}, \code{meetings}, \code{meeting\_invitations}, \code{notifications} et \code{audit\_logs}.
+
+\begin{figure}[H]
+  \centering
+  \safegraphic[width=\textwidth]{figures/classdiagram}{figures/10-dashboard-charges}
+  \caption{Diagramme de classes}
+  \label{fig:classdiagram}
+\end{figure}
+
+Un point important : les valeurs \code{amount\_paid}, \code{remaining\_amount} et le statut d'une charge ne sont jamais stockés en base. Ils sont calculés dynamiquement à chaque requête par agrégation sur la table \code{payments}. Cela garantit une cohérence permanente des données financières.
+
+\section{Architecture technique}
+
+L'application suit une architecture web moderne, organisée en trois couches principales.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.90\textwidth}{!}{%
+\begin{tikzpicture}[
+  node distance = 0.7cm and 1.4cm,
+  box/.style = {
+    rectangle, rounded corners=6pt,
+    draw=#1!70!black, fill=#1!10,
+    text width=3.2cm, align=center,
+    font=\small\bfseries,
+    minimum height=1.0cm,
+    drop shadow={opacity=0.15},
+  },
+  groupbox/.style = {
+    rectangle, rounded corners=8pt,
+    draw=#1!60!black, fill=#1!5,
+    inner sep=10pt,
+    font=\small\bfseries\color{#1!60!black},
+  },
+  arr/.style = {-{Stealth[length=6pt]}, thick, color=gray!60},
+  arrlab/.style = {font=\tiny\itshape, color=gray!70},
+]
+
+% Client
+\node[box=blue] (browser) {Navigateur\\{\tiny HTML + JS}};
+
+% Edge
+\node[box=orange, right=1.6cm of browser] (middleware) {Middleware\\{\tiny JWT + Rate Limit}};
+
+% Next.js
+\node[box=accent, right=1.6cm of middleware] (nextjs) {Next.js 16\\{\tiny Vercel}};
+
+% Supabase group
+\node[box=green!60!black, right=1.6cm of nextjs, yshift=1.2cm] (auth)   {Supabase Auth\\{\tiny JWT + Hook}};
+\node[box=green!60!black, right=1.6cm of nextjs, yshift=0cm]   (db)     {PostgreSQL\\{\tiny Drizzle + RLS}};
+\node[box=green!60!black, right=1.6cm of nextjs, yshift=-1.2cm](rt)     {Realtime\\{\tiny Notifications}};
+
+% Services externes
+\node[box=red!60!black, below=1.4cm of nextjs, xshift=-1.4cm] (email) {Nodemailer\\{\tiny Gmail SMTP}};
+\node[box=red!60!black, below=1.4cm of nextjs, xshift=1.4cm]  (sentry){Sentry\\{\tiny Monitoring}};
+
+% Arrows
+\draw[arr] (browser)    -- (middleware);
+\draw[arr] (middleware) -- (nextjs);
+\draw[arr] (nextjs)     -- (auth);
+\draw[arr] (nextjs)     -- (db);
+\draw[arr] (nextjs)     -- (rt);
+\draw[arr] (rt.west)    -- ++(-0.5,0) |- (browser.south);
+\draw[arr] (nextjs.south) -- (email.north);
+\draw[arr] (nextjs.south) -- (sentry.north);
+
+% Labels
+\node[arrlab, above=0.1cm of middleware, xshift=-0.6cm] {Session};
+\node[arrlab, above=0.1cm of nextjs, xshift=-0.6cm]     {Rôle JWT};
+\node[arrlab, right=0.1cm of rt, font=\tiny\itshape\color{gray!60}] (rtlabel) {};
+
+\end{tikzpicture}
+}
+\caption{Architecture technique de l'application}
+\label{fig:architecture}
+\end{figure}
+
+Le navigateur communique avec le middleware Next.js qui vérifie le JWT à chaque requête. Selon le rôle (\code{syndic} ou \code{proprietaire}), l'accès est accordé ou refusé avant même que la page se charge. Les données sont stockées dans Supabase avec des politiques RLS qui isolent les données par utilisateur au niveau de la base de données.
+
+\section{Choix technologiques}
+
+\subsection{Framework et frontend}
+
+\begin{minipage}[t]{0.14\textwidth}
+  \vspace{0pt}
+  \centering
+  \logotech{nextjs-original}\\[4pt]
+  \small\textbf{Next.js 16}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.82\textwidth}
+  \vspace{0pt}
+  \textbf{Next.js 16} est le framework principal de l'application. Il utilise l'App Router avec les React Server Components. Les pages se chargent côté serveur par défaut, ce qui améliore les performances. Les mutations sont gérées par des Server Actions.
+\end{minipage}
+
+\vspace{1em}
+
+\begin{minipage}[t]{0.14\textwidth}
+  \vspace{0pt}
+  \centering
+  \logotech{react-original}\\[4pt]
+  \small\textbf{React 19}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.82\textwidth}
+  \vspace{0pt}
+  \textbf{React 19} est la bibliothèque d'interface utilisateur. Les composants client sont utilisés uniquement quand l'interaction navigateur est nécessaire.
+\end{minipage}
+
+\vspace{1em}
+
+\begin{minipage}[t]{0.14\textwidth}
+  \vspace{0pt}
+  \centering
+  \logotech{typescript-original}\\[4pt]
+  \small\textbf{TypeScript}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.82\textwidth}
+  \vspace{0pt}
+  \textbf{TypeScript 5} ajoute le typage statique. Il détecte les erreurs avant l'exécution et améliore la qualité du code sur l'ensemble du projet.
+\end{minipage}
+
+\vspace{1em}
+
+\begin{minipage}[t]{0.14\textwidth}
+  \vspace{0pt}
+  \centering
+  \logotech{tailwindcss-original}\\[4pt]
+  \small\textbf{Tailwind v4}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.82\textwidth}
+  \vspace{0pt}
+  \textbf{Tailwind CSS v4} gère tous les styles de l'application. Il est utilisé avec \textbf{shadcn/ui}, une bibliothèque de composants accessibles et personnalisables.
+\end{minipage}
+
+\subsection{Base de données et backend}
+
+\begin{minipage}[t]{0.14\textwidth}
+  \vspace{0pt}
+  \centering
+  \logotech{supabase-original}\\[4pt]
+  \small\textbf{Supabase}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.82\textwidth}
+  \vspace{0pt}
+  \textbf{Supabase} fournit la base de données PostgreSQL, l'authentification et les abonnements temps réel. Un Custom Access Token Hook injecte le rôle de l'utilisateur directement dans le JWT à la connexion.
+\end{minipage}
+
+\vspace{1em}
+
+\begin{minipage}[t]{0.14\textwidth}
+  \vspace{0pt}
+  \centering
+  \logotech{drizzle-original}\\[4pt]
+  \small\textbf{Drizzle ORM}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.82\textwidth}
+  \vspace{0pt}
+  \textbf{Drizzle ORM} est l'ORM principal. Il génère des requêtes SQL typées avec TypeScript. Toutes les opérations financières s'exécutent dans des transactions Drizzle pour garantir l'intégrité des données.
+\end{minipage}
+
+\vspace{1em}
+
+\begin{minipage}[t]{0.14\textwidth}
+  \vspace{0pt}
+  \centering
+  \logotech{postgresql-original}\\[4pt]
+  \scriptsize\textbf{PostgreSQL}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.82\textwidth}
+  \vspace{0pt}
+  \textbf{PostgreSQL} est le moteur de base de données. Les politiques Row Level Security (RLS) isolent les données de chaque utilisateur directement au niveau base de données.
+\end{minipage}
+
+\subsection{Fonctionnalités complémentaires}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{|l|X|}
+  \hline
+  \rowcolor{accentbg}
+  \textbf{Bibliothèque} & \textbf{Rôle} \\
+  \hline
+  TanStack Query v5 & Gestion du cache et revalidation côté client \\
+  \hline
+  Zustand & État de l'interface (sidebar, état ouvert/fermé) \\
+  \hline
+  React Hook Form + Zod v4 & Validation des formulaires côté client et serveur \\
+  \hline
+  next-intl v4 & Internationalisation (FR / EN / AR + RTL) \\
+  \hline
+  Nodemailer & Envoi d'emails transactionnels via SMTP Gmail \\
+  \hline
+  @react-pdf/renderer & Génération des avis de paiement en PDF \\
+  \hline
+  Upstash Redis & Limitation des tentatives de connexion (5/min/IP) \\
+  \hline
+  SheetJS (xlsx) & Export des données en fichiers Excel \\
+  \hline
+  Sentry & Suivi des erreurs en production \\
+  \hline
+\end{tabularx}
+\end{center}
+
+\subsection{Déploiement}
+
+\begin{minipage}[t]{0.14\textwidth}
+  \vspace{0pt}
+  \centering
+  \logotech{vercel-original}\\[4pt]
+  \small\textbf{Vercel}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.82\textwidth}
+  \vspace{0pt}
+  \textbf{Vercel} héberge l'application Next.js. Il gère le déploiement automatique à chaque push sur la branche principale. L'application est accessible à l'adresse \url{https://syndico.vercel.app}.
+\end{minipage}
+
+\section{Outils de travail}
+
+\begin{minipage}[t]{0.14\textwidth}
+  \vspace{0pt}
+  \centering
+  \logotech{vscode-original}\\[4pt]
+  \small\textbf{VS Code}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.82\textwidth}
+  \vspace{0pt}
+  \textbf{Visual Studio Code} est l'éditeur principal. Il offre une intégration complète avec TypeScript, les extensions ESLint et Prettier, et le support de LaTeX pour la rédaction de ce rapport.
+\end{minipage}
+
+\vspace{1em}
+
+\begin{minipage}[t]{0.14\textwidth}
+  \vspace{0pt}
+  \centering
+  \logotech{github-original}\\[4pt]
+  \small\textbf{GitHub Copilot}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.82\textwidth}
+  \vspace{0pt}
+  \textbf{GitHub Copilot} en mode Agent a été utilisé pour accélérer l'implémentation des fonctionnalités. Il génère du code dans le contexte exact du projet en lisant les fichiers sources.
+\end{minipage}
+
+\vspace{1em}
+
+\begin{minipage}[t]{0.14\textwidth}
+  \vspace{0pt}
+  \centering
+  \logotech{git-original}\\[4pt]
+  \small\textbf{Git}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.82\textwidth}
+  \vspace{0pt}
+  \textbf{Git} et \textbf{GitHub} gèrent le versionnement du code. Le dépôt est hébergé sur GitHub. Chaque fonctionnalité est développée dans une branche dédiée.
+\end{minipage}
+
+\vspace{1em}
+
+\begin{minipage}[t]{0.14\textwidth}
+  \vspace{0pt}
+  \centering
+  \logotech{drizzle-original}\\[4pt]
+  \small\textbf{Drizzle Kit}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.82\textwidth}
+  \vspace{0pt}
+  \textbf{Drizzle Kit} génère et applique les migrations de base de données. \textbf{Drizzle Studio} offre une interface visuelle pour inspecter les tables et les données en développement.
+\end{minipage}
+
+% ════════════════════════════════════════════════════════════════════════════
+%  CHAPITRE 4 — RÉALISATION
+% ════════════════════════════════════════════════════════════════════════════
+\chapter{Réalisation}
+
+\section{La landing page}
+
+La landing page est la page publique de présentation. Elle décrit les fonctionnalités de l'application pour les deux rôles. Un bouton d'accès principal redirige vers la page de connexion.
+
+\screenshot{01-landing}{La landing page}
+
+\section{La page de connexion}
+
+La page de connexion présente un formulaire simple avec un champ email et un champ mot de passe. Il n'y a pas de sélecteur de rôle. Le serveur lit le rôle depuis le JWT et redirige automatiquement : le syndic vers \code{/dashboard}, le copropriétaire vers \code{/portal}.
+
+Un lien "Mot de passe oublié" permet de lancer la procédure de réinitialisation via Supabase Auth.
+
+\screenshot{02-login}{La page de connexion}
+
+\section{Le tableau de bord du syndic}
+
+\subsection{Vue d'ensemble}
+
+La page d'accueil du syndic affiche plusieurs indicateurs calculés sur l'ensemble des immeubles : nombre de copropriétaires actifs, total des appartements, appartements occupés et vacants, charges actives, et total des paiements collectés.
+
+En dessous des indicateurs, un tableau liste toutes les charges impayées ou en retard. Ces valeurs sont calculées dynamiquement par agrégation sur la table \code{payments}. Aucune valeur dérivée n'est stockée en base de données.
+
+\screenshot{03-dashboard-overview}{Vue d'ensemble du tableau de bord syndic}
+
+\subsection{Gestion des immeubles}
+
+Cette page liste tous les immeubles gérés par le syndic. Le syndic peut créer plusieurs immeubles depuis un seul compte. Chaque immeuble a un nom, une adresse et un total de tantièmes.
+
+\screenshot{17-dashboard-immeubles}{Page de gestion des immeubles}
+
+\subsection{Gestion des copropriétaires}
+
+La page des copropriétaires affiche la liste de tous les copropriétaires actifs. On peut rechercher par nom, filtrer, modifier ou supprimer un copropriétaire.
+
+\screenshot{04-dashboard-owners}{Liste des copropriétaires}
+
+\subsubsection{Ajout d'un copropriétaire}
+
+Un clic sur le bouton d'ajout ouvre un panneau latéral. Le formulaire demande : prénom, nom, email, téléphone, immeuble, appartement et date d'entrée. À la validation, le système crée automatiquement un compte Supabase Auth pour le copropriétaire et lui envoie un email de bienvenue avec ses identifiants.
+
+\screenshot{05-dashboard-owners-add-sheet}{Formulaire d'ajout d'un copropriétaire}
+
+\subsubsection{Modification d'un copropriétaire}
+
+Le formulaire de modification s'ouvre dans le même panneau latéral. Il est pré-rempli avec les informations existantes. Toute modification est enregistrée dans le journal d'audit.
+
+\screenshot{06-dashboard-owners-edit-sheet}{Formulaire de modification d'un copropriétaire}
+
+\subsection{Gestion des appartements}
+
+Les appartements sont affichés par immeuble dans des sections repliables. Chaque appartement indique son numéro, son étage, sa surface, son type (Studio, T1, T2, T3, T4+), ses tantièmes et son statut d'occupation.
+
+\screenshot{08-dashboard-apartments}{Liste des appartements}
+
+\subsubsection{Ajout d'un appartement}
+
+Le formulaire d'ajout d'appartement s'ouvre dans un panneau latéral. Le statut d'occupation se met à jour automatiquement selon l'assignation des copropriétaires.
+
+\screenshot{09-dashboard-apartments-add-sheet}{Formulaire d'ajout d'un appartement}
+
+\subsection{Gestion des charges}
+
+La page des charges liste toutes les charges créées par le syndic. Pour chaque charge, le statut (payé / partiel / impayé), le montant total, le montant payé et le solde restant sont calculés dynamiquement.
+
+Pour les charges avec un solde restant, deux actions sont disponibles : envoyer un rappel email au copropriétaire ou télécharger un avis de paiement PDF.
+
+\screenshot{10-dashboard-charges}{Liste des charges}
+
+\subsubsection{Création d'une charge}
+
+Le formulaire de création permet de définir le titre, la description, la catégorie, le montant, la date d'échéance et la cible. La cible peut être un appartement spécifique ou tout l'immeuble. Dans ce dernier cas, le montant est distribué proportionnellement aux tantièmes de chaque appartement.
+
+\screenshot{11-dashboard-charges-add-sheet}{Formulaire de création d'une charge}
+
+\subsection{Gestion des réunions}
+
+La page des réunions liste toutes les assemblées générales planifiées. On peut consulter le statut (planifiée, complétée, annulée) et le nombre d'invités.
+
+\screenshot{12-dashboard-meetings}{Liste des réunions}
+
+\subsubsection{Création d'une réunion}
+
+Le formulaire de création demande le titre, la description, la date, l'heure de début, l'heure de fin et le lieu.
+
+\screenshot{13-dashboard-meetings-create-sheet}{Formulaire de création d'une réunion}
+
+\subsubsection{Détail d'une réunion}
+
+La page détail affiche toutes les informations de la réunion. En dessous, la liste des copropriétaires invités avec leur statut de réponse (invité, accepté, décliné).
+
+\screenshot{14-dashboard-meetings-detail}{Page de détail d'une réunion}
+
+\subsubsection{Invitation des copropriétaires}
+
+Un bouton permet d'ajouter des copropriétaires à la liste des invités. Chaque invitation déclenche un email et une notification in-app pour le copropriétaire concerné.
+
+\screenshot{15-dashboard-meetings-invite-dialog}{Dialogue d'invitation des copropriétaires}
+
+\subsection{Historique des paiements}
+
+Cette page affiche l'historique global de tous les paiements. Des filtres permettent de rechercher par date, par copropriétaire et par catégorie de charge. Un résumé en haut indique le total émis, le total collecté et le solde restant.
+
+\screenshot{16-dashboard-payments}{Historique global des paiements}
+
+\subsection{Paramètres du bâtiment}
+
+La page paramètres permet au syndic de configurer les informations de l'immeuble sélectionné : nom, adresse et coordonnées de contact. Ces informations apparaissent sur tous les PDF générés par l'application.
+
+\screenshot{18-dashboard-settings}{Page des paramètres de l'immeuble}
+
+\section{Le portail copropriétaire}
+
+\subsection{Mon espace}
+
+La page d'accueil du copropriétaire affiche trois indicateurs : le solde restant de ses charges, la prochaine réunion et le nombre de notifications non lues. En dessous, ses informations personnelles, les détails de son appartement (avec ses tantièmes) et les informations de l'immeuble.
+
+Le copropriétaire peut modifier son numéro de téléphone directement sur cette page et changer son mot de passe.
+
+\screenshot{19-portal-profile}{Page Mon espace du copropriétaire}
+
+\subsection{Mes paiements}
+
+\subsubsection{Onglet charges}
+
+Cet onglet liste toutes les charges assignées à l'appartement du copropriétaire. Chaque charge affiche son titre, sa catégorie, son montant total, le montant payé, le solde restant et son statut. Un bouton "Télécharger l'avis PDF" est disponible pour chaque charge.
+
+\screenshot{20-portal-payments-charges}{Liste des charges du copropriétaire}
+
+\subsubsection{Effectuer un paiement}
+
+Un clic sur "Payer" ouvre un formulaire de paiement. Le copropriétaire saisit le montant (les paiements partiels sont supportés), la méthode de paiement (virement, chèque ou espèces) et une référence. La transaction s'exécute dans une transaction base de données. En cas d'erreur, aucune donnée partielle n'est sauvegardée.
+
+\screenshot{21-portal-payments-pay-dialog}{Formulaire de paiement}
+
+\subsubsection{Onglet historique}
+
+L'onglet historique liste tous les paiements effectués par le copropriétaire, avec la date, le montant, la méthode et la référence. Un bouton d'export permet de télécharger l'historique en fichier Excel.
+
+\screenshot{22-portal-payments-history}{Historique des paiements du copropriétaire}
+
+\subsection{Mes réunions}
+
+La page des réunions propose deux onglets : les réunions à venir et les réunions passées.
+
+\subsubsection{Réunions à venir}
+
+Pour chaque réunion planifiée, le copropriétaire voit le titre, la date, l'heure, le lieu et l'ordre du jour. Si il n'a pas encore répondu, deux boutons lui permettent d'accepter ou de décliner l'invitation.
+
+\screenshot{23-portal-meetings-upcoming}{Réunions à venir du copropriétaire}
+
+\subsubsection{Réunions passées}
+
+L'onglet des réunions passées affiche les assemblées générales archivées. Il sert de référence historique.
+
+\screenshot{24-portal-meetings-past}{Réunions passées du copropriétaire}
+
+\subsection{Notifications}
+
+La page des notifications affiche toutes les notifications en ordre chronologique inverse. Les notifications non lues ont une bordure colorée. Un clic sur une notification la marque automatiquement comme lue.
+
+Les notifications de type invitation de réunion incluent des boutons "Accepter" et "Décliner" directement dans la notification. Les notifications arrivent en temps réel via Supabase Realtime, sans rechargement de la page.
+
+\screenshot{25-portal-notifications}{Page des notifications}
+
+\section{Avis de paiement PDF}
+
+L'application génère des avis de paiement formels au format PDF. Ils peuvent être téléchargés par le syndic (depuis la page des charges) et par le copropriétaire (depuis son portail).
+
+Le document contient : les informations du destinataire, les informations de l'immeuble, le détail de la charge, l'état des paiements et les instructions de paiement (virement, chèque, espèces). Les informations de l'immeuble sont lues depuis la table \code{buildings}, ce qui garantit que les PDF sont toujours à jour.
+
+\screenshot[0.85]{27-pdf-notice-preview}{Avis de paiement généré en PDF}
+
+\section{Internationalisation et support RTL}
+
+L'application supporte trois langues : le français (par défaut), l'anglais et l'arabe. L'utilisateur peut changer la langue depuis l'icône de langue dans la barre de navigation.
+
+Pour l'arabe, l'interface bascule automatiquement en mode RTL (de droite à gauche). Tous les éléments de la page — textes, icônes, marges, disposition — s'inversent correctement.
+
+\screenshot{26-rtl-arabic}{Interface en arabe avec disposition RTL}
+
+% ════════════════════════════════════════════════════════════════════════════
+%  CHAPITRE 5 — CONCLUSION
+% ════════════════════════════════════════════════════════════════════════════
+\chapter{Conclusion}
+
+Ce projet nous a permis de moderniser une application de gestion de syndic vieillissante et de la transformer en une solution web complète et accessible.
+
+Nous avons remplacé une application locale Microsoft Access par une plateforme web hébergée, accessible depuis n'importe quel navigateur. Le syndic dispose d'un tableau de bord centralisé pour gérer plusieurs immeubles, des copropriétaires, des charges, des réunions et des paiements. Le copropriétaire dispose d'un portail personnel pour suivre ses charges, effectuer des paiements et répondre aux invitations.
+
+Sur le plan technique, ce projet nous a permis de mettre en pratique des technologies modernes : Next.js 16 avec l'App Router, Supabase pour l'authentification et la base de données, Drizzle ORM pour l'accès aux données typé, et les React Server Components pour des performances optimales.
+
+Nous avons respecté plusieurs contraintes techniques importantes : les valeurs financières dérivées ne sont jamais stockées en base, les suppressions sont toujours logiques (soft delete), les mutations financières s'exécutent dans des transactions, et les rôles sont lus depuis le JWT sans requête base de données.
+
+L'application est déployée en production sur Vercel et accessible à l'adresse \url{https://syndico.vercel.app}.
+
+Pour la suite, plusieurs améliorations sont envisageables : l'ajout d'un tableau de bord analytique avec des graphiques d'évolution des paiements, la gestion de documents (procès-verbaux de réunions), et une application mobile pour les copropriétaires.
+
+Ce projet a été une expérience enrichissante. Il nous a permis d'aborder des problématiques réelles de gestion de données, de sécurité et de performance dans un contexte applicatif professionnel.
+
+% ════════════════════════════════════════════════════════════════════════════
+%  WEBOGRAPHIE
+% ════════════════════════════════════════════════════════════════════════════
+\prechapter{Webographie}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{|l|X|}
+  \hline
+  \rowcolor{accentbg}
+  \textbf{Outil / Technologie} & \textbf{Source} \\
+  \hline
+  Next.js           & \url{https://nextjs.org/docs} \\
+  \hline
+  React             & \url{https://react.dev} \\
+  \hline
+  TypeScript        & \url{https://www.typescriptlang.org/docs} \\
+  \hline
+  Tailwind CSS      & \url{https://tailwindcss.com/docs} \\
+  \hline
+  shadcn/ui         & \url{https://ui.shadcn.com} \\
+  \hline
+  Supabase          & \url{https://supabase.com/docs} \\
+  \hline
+  Drizzle ORM       & \url{https://orm.drizzle.team/docs} \\
+  \hline
+  TanStack Query    & \url{https://tanstack.com/query/latest/docs} \\
+  \hline
+  Zustand           & \url{https://docs.pmnd.rs/zustand/getting-started/introduction} \\
+  \hline
+  Zod               & \url{https://zod.dev} \\
+  \hline
+  React Hook Form   & \url{https://react-hook-form.com} \\
+  \hline
+  Nodemailer        & \url{https://nodemailer.com/about} \\
+  \hline
+  @react-pdf/renderer & \url{https://react-pdf.org} \\
+  \hline
+  Upstash Redis     & \url{https://upstash.com/docs/redis} \\
+  \hline
+  Sentry            & \url{https://docs.sentry.io/platforms/javascript/guides/nextjs} \\
+  \hline
+  next-intl         & \url{https://next-intl-docs.vercel.app} \\
+  \hline
+  SheetJS           & \url{https://sheetjs.com} \\
+  \hline
+  Vercel            & \url{https://vercel.com/docs} \\
+  \hline
+  PlantUML          & \url{https://plantuml.com} \\
+  \hline
+  Devicon           & \url{https://devicon.dev} \\
+  \hline
+\end{tabularx}
+\end{center}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\end{document}
