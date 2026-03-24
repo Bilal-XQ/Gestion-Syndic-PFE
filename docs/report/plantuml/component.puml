@@ -1,0 +1,84 @@
+@startuml component
+!theme plain
+skinparam backgroundColor #FFFDF7
+skinparam component {
+  BackgroundColor #FFF9EC
+  BorderColor #D4A853
+  FontSize 11
+}
+skinparam package {
+  BackgroundColor #FFFDF7
+  BorderColor #D4A853
+  FontColor #8B6520
+}
+skinparam arrow {
+  Color #8B6520
+}
+skinparam database {
+  BackgroundColor #FFF9EC
+  BorderColor #D4A853
+}
+skinparam node {
+  BackgroundColor #FFF9EC
+  BorderColor #D4A853
+}
+
+node "Navigateur" {
+  [React Client Components] as RCC
+  [TanStack Query Cache] as TQ
+  [Supabase Realtime\n(WebSocket)] as RT_CLIENT
+}
+
+node "Vercel (Edge + Serverless)" {
+  [Middleware\nJWT + Rate Limit] as MW
+  [React Server Components] as RSC
+  [Server Actions] as SA
+  [API Route Handlers] as API
+}
+
+package "Supabase Cloud" {
+  database "PostgreSQL\n+ RLS" as PG
+  [Supabase Auth\n+ Custom Hook] as AUTH
+  [Supabase Realtime\n(Broadcast)] as RT_SERVER
+}
+
+node "Services externes" {
+  [Upstash Redis\n(Rate limiting)] as REDIS
+  [Gmail SMTP\n(Nodemailer)] as SMTP
+  [Sentry\n(Monitoring)] as SENTRY
+}
+
+' Client ↔ Vercel
+RCC --> MW : requêtes HTTP
+MW --> RSC : accès accordé
+RSC --> SA : mutations
+SA --> API : données
+
+' Vercel ↔ Supabase
+SA --> PG : Drizzle ORM (transactions)
+RSC --> PG : Drizzle ORM (requêtes)
+MW --> AUTH : vérifie JWT (SSR client)
+SA --> AUTH : création comptes
+
+' Realtime
+RT_SERVER --> RT_CLIENT : INSERT notifications\n(WebSocket)
+RT_CLIENT --> TQ : invalide cache notifications
+
+' Services
+MW --> REDIS : sliding window (5/min/IP)
+SA --> SMTP : emails transactionnels
+SA --> SENTRY : erreurs capturées
+
+note right of SA
+  Tous les paiements s'exécutent
+  dans des transactions Drizzle.
+  Aucun état partiel n'est sauvegardé.
+end note
+
+note bottom of PG
+  Row Level Security (RLS) :
+  les politiques utilisent auth.uid()
+  et auth.jwt() ->> 'user_role'.
+end note
+
+@enduml

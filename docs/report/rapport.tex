@@ -12,7 +12,7 @@
 %  PRÉREQUIS :
 %    - Dossier figures/ : screenshots générés par screenshot.mjs
 %    - Dossier logos/   : PNGs générés par download-logos.mjs
-%    - PlantUML PNGs    : figures/usecase.png et figures/classdiagram.png
+%    - Dossier diagrams/ : PlantUML PNGs générés par generate-diagrams.mjs
 % ─────────────────────────────────────────────────────────────────────────────
 
 \documentclass[12pt, a4paper]{report}
@@ -21,6 +21,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[french]{babel}
+\frenchsetup{SmallCapsFigTabCaptions=false}
 \usepackage{lmodern}
 \usepackage{microtype}
 
@@ -47,7 +48,7 @@
 
 % ── Graphiques ───────────────────────────────────────────────────────────────
 \usepackage{graphicx}
-\graphicspath{{figures/}{logos/}}
+\graphicspath{{figures/}{logos/}{diagrams/}}
 \usepackage{float}
 \usepackage{caption}
 \captionsetup{
@@ -246,12 +247,10 @@
 \begin{titlepage}
 \thispagestyle{empty}
 
-% Fond sombre en haut
+% Bandeau décoratif en haut
 \begin{tikzpicture}[remember picture, overlay]
-  \fill[darkbg] (current page.north west)
+  \fill[white] (current page.north west)
     rectangle ([yshift=-4.5cm] current page.north east);
-  \fill[accent] ([yshift=-4.5cm] current page.north west)
-    rectangle ([yshift=-4.9cm] current page.north east);
 \end{tikzpicture}
 
 \vspace*{-1cm}
@@ -268,9 +267,9 @@
 
 % Identification institutionnelle
 \begin{center}
-  {\color{white}\large\bfseries Université Cadi Ayyad}\\[4pt]
-  {\color{white}\large\bfseries École Supérieure De Technologie --- Safi}\\[6pt]
-  {\color{white}\normalsize Département : Informatique \quad|\quad Filière : Génie Informatique}
+  {\color{accentdark}\large\bfseries Université Cadi Ayyad}\\[4pt]
+  {\color{accentdark}\large\bfseries École Supérieure De Technologie --- Safi}\\[6pt]
+  {\color{accentdark}\normalsize Département : Informatique \quad|\quad Filière : Génie Informatique}
 \end{center}
 
 \vspace{1.6cm}
@@ -308,7 +307,7 @@
   \raggedright
   \textit{Réalisé par :}\\[10pt]
   \hspace*{0.4cm} M.\ \textbf{EL AZZAM Bilal}\\[5pt]
-  \hspace*{0.4cm} M.\ \textbf{CHAKOUATE Maraoune}\\[5pt]
+  \hspace*{0.4cm} M.\ \textbf{CHAKOUAT Maraoune}\\[5pt]
   \hspace*{0.4cm} M.\ \textbf{CHAQRI Ahmed}
 \end{minipage}
 \hfill
@@ -575,7 +574,7 @@ Les besoins non fonctionnels concernent la qualité et les performances de l'app
 Nous avons analysé plusieurs types de solutions existantes sur le marché.
 
 \begin{center}
-\begin{tabularx}{\textwidth}{|>{\bfseries}l|X|X|}
+\begin{tabularx}{\textwidth}{|>{\bfseries}l|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
   \hline
   \rowcolor{accentbg}
   \textbf{Solution} & \textbf{Avantages} & \textbf{Inconvénients} \\
@@ -600,39 +599,124 @@ Notre projet combine les avantages d'une application web avec les besoins spéci
 % ════════════════════════════════════════════════════════════════════════════
 \chapter{Conception}
 
-\section{Introduction à la modélisation UML}
+\section{Introduction à la modélisation}
 
-Nous avons utilisé UML (Unified Modeling Language) pour modéliser les différentes parties du système. La modélisation UML permet de visualiser les interactions, de définir les entités et leurs relations, et de planifier l'architecture avant de coder.
+Nous avons utilisé l'UML (Unified Modeling Language) et les diagrammes C4 pour modéliser les différentes parties du système. Ces approches permettent de visualiser les interactions, de définir les entités, leurs relations, et de planifier l'architecture avant l'implémentation.
 
-Nous avons réalisé deux diagrammes principaux : le diagramme de cas d'utilisation et le diagramme de classes.
+Nous avons réalisé quatre diagrammes conformes aux meilleures pratiques :
+\begin{itemize}
+  \item Le \textbf{diagramme de cas d'utilisation} qui décrit les interactions acteur-système
+  \item Le \textbf{diagramme de classes} qui modélise la structure de la base de données
+  \item Le \textbf{diagramme d'activité} qui illustre le flux de paiement
+  \item Le \textbf{diagramme de composants} qui montre l'architecture technique
+\end{itemize}
 
 \section{Diagramme de cas d'utilisation}
 
-Le diagramme de cas d'utilisation décrit les interactions entre les acteurs et le système. Il montre quelles fonctionnalités sont accessibles à chaque rôle.
+Le diagramme de cas d'utilisation (UML Use Case) décrit les interactions entre les acteurs et le système. Il énumère les fonctionnalités accessibles à chaque rôle utilisateur.
 
-L'application a deux acteurs principaux : le \textbf{Syndic} et le \textbf{Copropriétaire}. Le syndic gère toute la partie administrative. Le copropriétaire accède uniquement à ses propres données.
+L'application dispose de deux acteurs principaux :
+\begin{itemize}
+  \item Le \textbf{Syndic} : gère l'ensemble de l'administration (bâtiments, appartements, copropriétaires, charges, réunions)
+  \item Le \textbf{Copropriétaire} : accède uniquement à ses données personnelles (charges, paiements, notifications, réunions)
+\end{itemize}
 
 \begin{figure}[H]
   \centering
-  \safegraphic[width=\textwidth]{figures/usecase}{figures/03-dashboard-overview}
-  \caption{Diagramme de cas d'utilisation}
+  \includegraphics[width=\textwidth]{diagrams/usecase}
+  \caption{Diagramme de cas d'utilisation — Acteurs et fonctionnalités}
   \label{fig:usecase}
 \end{figure}
 
 \section{Diagramme de classes}
 
-Le diagramme de classes représente la structure de la base de données. Il montre les entités et leurs relations.
+Le diagramme de classes (UML Class) représente la structure logique de la base de données PostgreSQL. Il met en évidence les entités principales, leurs attributs et leurs relations.
 
-L'application utilise dix tables principales : \code{users}, \code{buildings}, \code{apartments}, \code{owners}, \code{charges}, \code{payments}, \code{meetings}, \code{meeting\_invitations}, \code{notifications} et \code{audit\_logs}.
+L'application utilise dix tables principales organisées selon le domaine métier :
+\begin{itemize}
+  \item \textbf{Authentification} : \code{users}
+  \item \textbf{Immeubles} : \code{buildings}, \code{apartments}
+  \item \textbf{Copropriétaires} : \code{owners}
+  \item \textbf{Finances} : \code{charges}, \code{payments}
+  \item \textbf{Réunions} : \code{meetings}, \code{meeting\_invitations}
+  \item \textbf{Audit} : \code{notifications}, \code{audit\_logs}
+\end{itemize}
 
 \begin{figure}[H]
   \centering
-  \safegraphic[width=\textwidth]{figures/classdiagram}{figures/10-dashboard-charges}
-  \caption{Diagramme de classes}
+  \includegraphics[width=\textwidth]{diagrams/classdiagram}
+  \caption{Diagramme de classes — Structure de la base de données PostgreSQL}
   \label{fig:classdiagram}
 \end{figure}
 
-Un point important : les valeurs \code{amount\_paid}, \code{remaining\_amount} et le statut d'une charge ne sont jamais stockés en base. Ils sont calculés dynamiquement à chaque requête par agrégation sur la table \code{payments}. Cela garantit une cohérence permanente des données financières.
+\textbf{Point critique de conception} : les valeurs calculées \code{amount\_paid}, \code{remaining\_amount} et le \code{status} d'une charge ne sont \textit{jamais} stockées en base de données. Elles sont calculées dynamiquement à chaque requête par agrégation sur la table \code{payments} via Drizzle ORM. Cela garantit la cohérence perpétuelle des données financières, même en cas de correction ultérieure de paiements.
+
+\section{Diagramme d'activité — Flux de paiement}
+
+Le diagramme d'activité modélise le flux de travail spécifique au processus de paiement d'une charge. Il montre les étapes critiques de validation, de transaction, et d'audit qui doivent se dérouler sans erreur.
+
+Le flux de paiement suit ces étapes :
+\begin{enumerate}
+  \item Validation du formulaire côté client (React Hook Form + Zod)
+  \item Transmission au Server Action
+  \item Validation côté serveur (Zod) et vérification du rôle JWT
+  \item Démarrage d'une transaction Drizzle
+  \item Insertion atomique du paiement
+  \item Insertion de l'audit log (en dehors de la transaction)
+  \item Retour du succès au client
+\end{enumerate}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{diagrams/activity}
+  \caption{Diagramme d'activité — Flux de paiement d'une charge}
+  \label{fig:activity}
+\end{figure}
+
+Le point clé est l'utilisation obligatoire de \textbf{transactions Drizzle} pour tous les paiements. Aucun état partiel n'est jamais commis à la base de données.
+
+\section{Diagramme de séquence — Authentification}
+
+Le diagramme de séquence illustre les interactions chronologiques lors du processus d'authentification. Il trace le flux du JWT et l'injection du rôle utilisateur.
+
+Le flux d'authentification suit cette séquence :
+\begin{enumerate}
+  \item L'utilisateur soumet ses identifiants (email + mot de passe)
+  \item Supabase Auth authentifie l'utilisateur
+  \item La base de données exécute le \textbf{Custom Access Token Hook}
+  \item Le Hook récupère le rôle (\code{syndic} ou \code{proprietaire}) depuis la table \code{users}
+  \item Le rôle est injecté dans le JWT en tant que claim \code{user\_role}
+  \item Le Server Action lit le rôle depuis le JWT (aucune requête DB supplémentaire)
+  \item L'utilisateur est redirigé vers son tableau de bord (syndic → \code{/dashboard}, copropriétaire → \code{/portal})
+  \item Le Middleware vérifie le JWT à chaque requête sans interroger la base de données
+\end{enumerate}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{diagrams/sequence}
+  \caption{Diagramme de séquence — Flux d'authentification et injection du rôle JWT}
+  \label{fig:sequence}
+\end{figure}
+
+\section{Diagramme de composants — Architecture technique}
+
+Le diagramme de composants offre une vue d'ensemble de l'architecture en montrant les interactions entre les différentes couches (client, serveur, cloud) et les services externes.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{diagrams/component}
+  \caption{Diagramme de composants — Architecture système complète}
+  \label{fig:component}
+\end{figure}
+
+L'architecture suit ces principes :
+\begin{itemize}
+  \item \textbf{Client (Navigateur)} : Exécute React Server Components, gère les requêtes HTTP et les WebSockets Realtime
+  \item \textbf{Middleware (Edge)} : Vérifie le JWT et applique la limitation de débit (5 tentatives/min/IP)
+  \item \textbf{Serveur (Next.js)} : Traite les Server Actions, applique les règles métier, gère les transactions
+  \item \textbf{Base de données (Supabase PostgreSQL)} : Stocke les données avec RLS, exécute les hooks JWT personnalisés
+  \item \textbf{Services externes} : Upstash Redis (rate limiting), Nodemailer (emails), Sentry (monitoring)
+\end{itemize}
 
 \section{Architecture technique}
 
@@ -805,7 +889,7 @@ Le navigateur communique avec le middleware Next.js qui vérifie le JWT à chaqu
 \subsection{Fonctionnalités complémentaires}
 
 \begin{center}
-\begin{tabularx}{\textwidth}{|l|X|}
+\begin{tabularx}{\textwidth}{|l|>{\raggedright\arraybackslash}X|}
   \hline
   \rowcolor{accentbg}
   \textbf{Bibliothèque} & \textbf{Rôle} \\
@@ -1111,7 +1195,7 @@ Ce projet a été une expérience enrichissante. Il nous a permis d'aborder des 
 \prechapter{Webographie}
 
 \begin{center}
-\begin{tabularx}{\textwidth}{|l|X|}
+\begin{tabularx}{\textwidth}{|l|>{\raggedright\arraybackslash}X|}
   \hline
   \rowcolor{accentbg}
   \textbf{Outil / Technologie} & \textbf{Source} \\

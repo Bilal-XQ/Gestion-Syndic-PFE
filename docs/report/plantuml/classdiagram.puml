@@ -1,0 +1,148 @@
+@startuml classdiagram
+!theme plain
+skinparam backgroundColor #FFFDF7
+skinparam class {
+  BackgroundColor #FFF9EC
+  BorderColor #D4A853
+  FontSize 11
+  HeaderBackgroundColor #D4A853
+  HeaderFontColor #FFFFFF
+}
+skinparam arrow {
+  Color #8B6520
+}
+
+class users {
+  + id : uuid <<PK>>
+  --
+  email : text
+  first_name : text
+  last_name : text
+  phone : text
+  role : text
+  deleted_at : timestamp
+}
+
+class buildings {
+  + id : uuid <<PK>>
+  --
+  syndic_id : uuid <<FK>>
+  name : text
+  address : text
+  total_tantiemes : integer
+}
+
+class apartments {
+  + id : uuid <<PK>>
+  --
+  building_id : uuid <<FK>>
+  unit_number : text
+  floor : integer
+  surface_area : numeric
+  room_count : integer
+  type : text
+  tantiemes : integer
+  status : text
+}
+
+class owners {
+  + id : uuid <<PK>>
+  --
+  user_id : uuid <<FK>>
+  apartment_id : uuid <<FK>>
+  ownership_date : date
+  deleted_at : timestamp
+}
+
+class charges {
+  + id : uuid <<PK>>
+  --
+  syndic_id : uuid <<FK>>
+  apartment_id : uuid <<FK>>
+  title : text
+  category : text
+  total_amount : numeric
+  due_date : date
+  deleted_at : timestamp
+  ..dérivées (non stockées)..
+  amount_paid : calculé
+  remaining_amount : calculé
+  status : calculé
+}
+
+class payments {
+  + id : uuid <<PK>>
+  --
+  charge_id : uuid <<FK>>
+  owner_id : uuid <<FK>>
+  amount : numeric
+  payment_date : date
+  method : text
+  reference : text
+}
+
+class meetings {
+  + id : uuid <<PK>>
+  --
+  syndic_id : uuid <<FK>>
+  title : text
+  meeting_date : date
+  start_time : time
+  end_time : time
+  location : text
+  status : text
+  deleted_at : timestamp
+}
+
+class meeting_invitations {
+  + id : uuid <<PK>>
+  --
+  meeting_id : uuid <<FK>>
+  owner_id : uuid <<FK>>
+  status : text
+  responded_at : timestamp
+}
+
+class notifications {
+  + id : uuid <<PK>>
+  --
+  user_id : uuid <<FK>>
+  type : text
+  title : text
+  message : text
+  metadata : jsonb
+  is_read : boolean
+}
+
+class audit_logs {
+  + id : uuid <<PK>>
+  --
+  user_id : uuid <<FK>>
+  action : text
+  entity_type : text
+  entity_id : uuid
+  metadata : jsonb
+  created_at : timestamp
+}
+
+' Relations
+users "1" --> "0..*" buildings : gère
+buildings "1" --> "0..*" apartments : contient
+users "1" --> "0..*" owners : est
+owners "1" --> "1" apartments : occupe
+apartments "1" --> "0..*" charges : reçoit
+charges "1" --> "0..*" payments : est payée par
+owners "1" --> "0..*" payments : effectue
+users "1" --> "0..*" meetings : crée
+meetings "1" --> "0..*" meeting_invitations : génère
+owners "1" --> "0..*" meeting_invitations : reçoit
+users "1" --> "0..*" notifications : reçoit
+users "1" --> "0..*" audit_logs : génère
+
+note bottom of charges
+  amount_paid, remaining_amount et status
+  ne sont jamais stockés. Ils sont calculés
+  par agrégation sur la table payments.
+end note
+
+@enduml

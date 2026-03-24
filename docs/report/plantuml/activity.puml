@@ -1,0 +1,64 @@
+@startuml activity
+!theme plain
+skinparam backgroundColor #FFFDF7
+skinparam activity {
+  BackgroundColor #FFF9EC
+  BorderColor #D4A853
+  FontSize 11
+  DiamondBackgroundColor #FFF9EC
+  DiamondBorderColor #D4A853
+  StartColor #D4A853
+  EndColor #8B6520
+}
+skinparam arrow {
+  Color #8B6520
+}
+skinparam swimlane {
+  BorderColor #D4A853
+  TitleFontColor #8B6520
+}
+
+|Copropriétaire|
+start
+:Ouvre l'onglet "Mes charges";
+:Sélectionne une charge impayée ou partielle;
+:Clique sur "Payer";
+
+|Navigateur (Client)|
+:Affiche le formulaire de paiement\n(montant, méthode, référence);
+:Validation Zod côté client\n(React Hook Form);
+
+if (Formulaire valide ?) then (non)
+  :Affiche les erreurs de validation;
+  stop
+else (oui)
+endif
+:Soumet vers le Server Action;
+
+|Server Action (Serveur)|
+:Validation Zod côté serveur;
+:Résolution de l'owner_id depuis le JWT\n(jamais depuis le client);
+
+:Début de transaction Drizzle;
+:INSERT INTO payments\n(charge_id, owner_id, amount, method, reference);
+
+if (Transaction réussie ?) then (non)
+  :Rollback complet;
+  :Retourne erreur au client;
+  stop
+else (oui)
+endif
+
+:INSERT INTO audit_logs\n(action = CREATE_PAYMENT);
+:Fin de transaction;
+
+|Navigateur (Client)|
+:TanStack Query invalide le cache\n"portal/charges";
+:TanStack Query invalide le cache\n"portal/payments";
+:Affiche message de succès (toast);
+
+|Copropriétaire|
+:Voit la charge mise à jour\n(statut : Payé ou Partiel);
+stop
+
+@enduml

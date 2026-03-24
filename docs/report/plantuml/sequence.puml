@@ -1,0 +1,56 @@
+@startuml sequence
+!theme plain
+skinparam backgroundColor #FFFDF7
+skinparam sequence {
+  ParticipantBackgroundColor #FFF9EC
+  ParticipantBorderColor #D4A853
+  ArrowColor #8B6520
+  LifeLineBorderColor #D4A853
+  LifeLineBackgroundColor #FFFDF7
+  ActorBackgroundColor #FFF9EC
+  ActorBorderColor #D4A853
+  NoteBackgroundColor #FFF9EC
+  NoteBorderColor #D4A853
+}
+
+actor "Utilisateur" as U
+participant "Navigateur\n(Next.js)" as B
+participant "Server Action\nauth.ts" as SA
+participant "Supabase Auth" as AUTH
+participant "Custom Access\nToken Hook\n(PostgreSQL)" as HOOK
+database "public.users" as DB
+participant "Middleware\nmiddleware.ts" as MW
+participant "Dashboard /\nPortal" as PAGE
+
+U -> B : Saisit email + mot de passe
+B -> SA : signIn({ email, password })
+SA -> AUTH : signInWithPassword(...)
+AUTH -> HOOK : déclenche hook JWT
+HOOK -> DB : SELECT role WHERE id = user_id
+DB --> HOOK : role = "syndic" | "proprietaire"
+HOOK --> AUTH : injecte user_role dans JWT
+AUTH --> SA : JWT signé + session
+SA -> SA : lit user_role depuis JWT\n(aucune requête DB)
+
+alt user_role = "syndic"
+  SA --> B : redirect("/dashboard")
+else user_role = "proprietaire"
+  SA --> B : redirect("/portal")
+else invalide
+  SA --> B : erreur générique
+end
+
+B -> MW : GET /dashboard (ou /portal)
+MW -> MW : vérifie JWT + user_role\n(aucune requête DB)
+MW --> PAGE : accès accordé
+PAGE --> U : page chargée
+
+note over AUTH, HOOK
+  Le Custom Access Token Hook est une
+  fonction PostgreSQL enregistrée dans
+  Authentication → Hooks de Supabase.
+  Le rôle est lu UNE SEULE FOIS à la
+  connexion, puis embarqué dans le JWT.
+end note
+
+@enduml

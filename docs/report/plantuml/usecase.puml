@@ -1,0 +1,114 @@
+@startuml usecase
+!theme plain
+skinparam backgroundColor #FFFDF7
+skinparam actorStyle awesome
+skinparam usecase {
+  BackgroundColor #FFF9EC
+  BorderColor #D4A853
+  FontSize 12
+}
+skinparam arrow {
+  Color #8B6520
+}
+skinparam actor {
+  BackgroundColor #FFF9EC
+  BorderColor #D4A853
+}
+
+left to right direction
+
+actor "Syndic" as S #FFF9EC
+actor "Copropriétaire" as C #FFF9EC
+
+rectangle "Application Syndic" {
+
+  package "Authentification" {
+    usecase "Se connecter" as UC_LOGIN
+    usecase "Réinitialiser mot de passe" as UC_RESET
+  }
+
+  package "Gestion des immeubles" {
+    usecase "Créer un immeuble" as UC_BLDG_CREATE
+    usecase "Modifier un immeuble" as UC_BLDG_EDIT
+    usecase "Configurer paramètres" as UC_SETTINGS
+  }
+
+  package "Gestion des copropriétaires" {
+    usecase "Ajouter un copropriétaire" as UC_OWN_ADD
+    usecase "Modifier un copropriétaire" as UC_OWN_EDIT
+    usecase "Supprimer un copropriétaire" as UC_OWN_DEL
+    usecase "Envoyer email bienvenue" as UC_OWN_MAIL
+  }
+
+  package "Gestion des appartements" {
+    usecase "Ajouter un appartement" as UC_APT_ADD
+    usecase "Modifier un appartement" as UC_APT_EDIT
+    usecase "Supprimer un appartement" as UC_APT_DEL
+  }
+
+  package "Charges et paiements" {
+    usecase "Créer une charge" as UC_CHG_ADD
+    usecase "Distribuer sur immeuble" as UC_CHG_DIST
+    usecase "Envoyer relance email" as UC_CHG_REMIND
+    usecase "Télécharger avis PDF" as UC_PDF
+    usecase "Consulter historique paiements" as UC_PAY_HIST
+    usecase "Effectuer un paiement" as UC_PAY_DO
+    usecase "Export Excel" as UC_EXPORT
+  }
+
+  package "Réunions" {
+    usecase "Créer une réunion" as UC_MTG_ADD
+    usecase "Inviter des copropriétaires" as UC_MTG_INVITE
+    usecase "Consulter détail réunion" as UC_MTG_DETAIL
+    usecase "Répondre à l'invitation" as UC_MTG_RESP
+  }
+
+  package "Portail copropriétaire" {
+    usecase "Consulter son profil" as UC_PROF
+    usecase "Modifier son téléphone" as UC_PROF_PHONE
+    usecase "Changer mot de passe" as UC_PASS
+    usecase "Consulter ses charges" as UC_MY_CHG
+    usecase "Consulter notifications" as UC_NOTIF
+  }
+}
+
+' Syndic actions
+S --> UC_LOGIN
+S --> UC_BLDG_CREATE
+S --> UC_BLDG_EDIT
+S --> UC_SETTINGS
+S --> UC_OWN_ADD
+S --> UC_OWN_EDIT
+S --> UC_OWN_DEL
+S --> UC_APT_ADD
+S --> UC_APT_EDIT
+S --> UC_APT_DEL
+S --> UC_CHG_ADD
+S --> UC_CHG_REMIND
+S --> UC_PDF
+S --> UC_PAY_HIST
+S --> UC_MTG_ADD
+S --> UC_MTG_INVITE
+S --> UC_MTG_DETAIL
+S --> UC_EXPORT
+
+' Copropriétaire actions
+C --> UC_LOGIN
+C --> UC_RESET
+C --> UC_PROF
+C --> UC_PROF_PHONE
+C --> UC_PASS
+C --> UC_MY_CHG
+C --> UC_PAY_DO
+C --> UC_PDF
+C --> UC_MTG_DETAIL
+C --> UC_MTG_RESP
+C --> UC_NOTIF
+C --> UC_EXPORT
+
+' Include relations
+UC_OWN_ADD .> UC_OWN_MAIL : <<include>>
+UC_CHG_ADD .> UC_CHG_DIST : <<extend>>
+UC_PAY_DO .> UC_PDF : <<extend>>
+
+@enduml
