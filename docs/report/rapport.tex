@@ -3,7 +3,7 @@
 % ─────────────────────────────────────────────────────────────────────────────
 %  Rapport de Projet de Fin d'Études
 %  Modernisation d'une Application de Gestion de Syndic
-%  EL AZZAM Bilal — CHAKOUATE Maraoune — CHAQRI Ahmed
+%  EL AZZAM Bilal — CHAKOUAT Maraoune — CHAQRI Ahmed
 %  École Supérieure de Technologie — Safi | 2025/2026
 %
 %  COMPILATION :
@@ -163,7 +163,7 @@
   urlcolor   = accentdark,
   citecolor  = accentdark,
   pdftitle   = {Rapport PFE — Application Web de Gestion de Syndic},
-  pdfauthor  = {EL AZZAM Bilal; CHAKOUATE Maraoune; CHAQRI Ahmed},
+  pdfauthor  = {EL AZZAM Bilal; CHAKOUAT Maraoune; CHAQRI Ahmed},
 ]{hyperref}
 
 % ── Commandes utilitaires ─────────────────────────────────────────────────────
@@ -501,31 +501,45 @@ Cette organisation nous a permis de livrer une application fonctionnelle à chaq
 
 \section{Présentation de l'application actuelle et ses limites}
 
-L'application actuelle est développée sous Microsoft Access. Elle permet au syndic de saisir des propriétaires, d'enregistrer des versements et de faire des recherches simples.
+L'application actuelle, développée sous Microsoft Access, permet aux syndics de gérer certaines tâches administratives et financières des copropriétés. Toutefois, cette solution présente plusieurs limites qui freinent son adoption et son efficacité :
+
+\begin{itemize}
+  \item \textbf{Accessibilité limitée} : l'application est uniquement disponible sur un environnement de bureau, empêchant une gestion mobile et à distance.
+  \item \textbf{Ergonomie obsolète} : l'interface utilisateur manque d'intuitivité et de modernité, rendant son utilisation complexe pour les nouveaux utilisateurs.
+  \item \textbf{Gestion des mises à jour} : l'application ne permet pas d'évoluer facilement et nécessite des interventions manuelles pour ajouter des fonctionnalités ou corriger des erreurs.
+  \item \textbf{Absence d'une synchronisation en temps réel} : les utilisateurs ne peuvent pas accéder aux données simultanément depuis plusieurs appareils.
+  \item \textbf{Sécurité des données} : Microsoft Access ne propose pas une architecture robuste en matière de sécurité et de gestion des accès, ce qui représente un risque pour les informations sensibles.
+\end{itemize}
+
+Les captures d'écran ci-dessous présentent l'interface de l'application de gestion de syndic réalisée avec Microsoft Access :
 
 \begin{figure}[H]
   \centering
-  \safegraphic[width=0.88\textwidth]{figures/access-owners}{figures/04-dashboard-owners}
-  \caption{Liste des propriétaires sous Microsoft Access}
+  \safegraphic[width=0.88\textwidth]{access-photos/5}{figures/04-dashboard-owners}
+  \caption{Liste des propriétaires sous Access}
   \label{fig:access-owners}
 \end{figure}
 
 \begin{figure}[H]
   \centering
-  \safegraphic[width=0.88\textwidth]{figures/access-payments}{figures/16-dashboard-payments}
-  \caption{Liste des versements sous Microsoft Access}
+  \safegraphic[width=0.88\textwidth]{access-photos/6}{figures/16-dashboard-payments}
+  \caption{Liste des versements sous Access}
   \label{fig:access-payments}
 \end{figure}
 
-Cette solution présente plusieurs limites importantes :
+\begin{figure}[H]
+  \centering
+  \safegraphic[width=0.88\textwidth]{access-photos/7}{figures/04-dashboard-owners}
+  \caption{Formulaire de recherche d'un propriétaire sous Access}
+  \label{fig:access-search-owner}
+\end{figure}
 
-\begin{itemize}
-  \item \textbf{Accessibilité limitée} : l'application fonctionne uniquement sur un poste de bureau. Il n'est pas possible d'y accéder à distance.
-  \item \textbf{Interface obsolète} : l'interface n'est pas adaptée aux standards actuels. Elle est difficile à utiliser pour des non-techniciens.
-  \item \textbf{Pas de multi-utilisateurs} : plusieurs utilisateurs ne peuvent pas travailler en même temps sur les mêmes données.
-  \item \textbf{Pas de notifications} : aucun système d'alerte ou de notification pour les copropriétaires.
-  \item \textbf{Sécurité insuffisante} : Microsoft Access n'offre pas de gestion avancée des rôles ni de protection des données sensibles.
-\end{itemize}
+\begin{figure}[H]
+  \centering
+  \safegraphic[width=0.88\textwidth]{access-photos/8}{figures/16-dashboard-payments}
+  \caption{Formulaire pour effectuer un versement sous Access}
+  \label{fig:access-payment-form}
+\end{figure}
 
 \section{Identification des besoins}
 
@@ -623,7 +637,7 @@ L'application dispose de deux acteurs principaux :
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\textwidth]{diagrams/usecase}
+  \includegraphics[width=\textwidth,height=0.78\textheight,keepaspectratio]{diagrams/usecase}
   \caption{Diagramme de cas d'utilisation — Acteurs et fonctionnalités}
   \label{fig:usecase}
 \end{figure}
@@ -644,7 +658,7 @@ L'application utilise dix tables principales organisées selon le domaine métie
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\textwidth]{diagrams/classdiagram}
+  \includegraphics[width=\textwidth,height=0.78\textheight,keepaspectratio]{diagrams/classdiagram}
   \caption{Diagramme de classes — Structure de la base de données PostgreSQL}
   \label{fig:classdiagram}
 \end{figure}
@@ -668,7 +682,7 @@ Le flux de paiement suit ces étapes :
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\textwidth]{diagrams/activity}
+  \includegraphics[width=\textwidth,height=0.78\textheight,keepaspectratio]{diagrams/activity}
   \caption{Diagramme d'activité — Flux de paiement d'une charge}
   \label{fig:activity}
 \end{figure}
@@ -693,7 +707,7 @@ Le flux d'authentification suit cette séquence :
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\textwidth]{diagrams/sequence}
+  \includegraphics[width=\textwidth,height=0.78\textheight,keepaspectratio]{diagrams/sequence}
   \caption{Diagramme de séquence — Flux d'authentification et injection du rôle JWT}
   \label{fig:sequence}
 \end{figure}
@@ -704,7 +718,7 @@ Le diagramme de composants offre une vue d'ensemble de l'architecture en montran
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\textwidth]{diagrams/component}
+  \includegraphics[width=\textwidth,height=0.78\textheight,keepaspectratio]{diagrams/component}
   \caption{Diagramme de composants — Architecture système complète}
   \label{fig:component}
 \end{figure}
@@ -1032,11 +1046,6 @@ Un clic sur le bouton d'ajout ouvre un panneau latéral. Le formulaire demande :
 
 \screenshot{05-dashboard-owners-add-sheet}{Formulaire d'ajout d'un copropriétaire}
 
-\subsubsection{Modification d'un copropriétaire}
-
-Le formulaire de modification s'ouvre dans le même panneau latéral. Il est pré-rempli avec les informations existantes. Toute modification est enregistrée dans le journal d'audit.
-
-\screenshot{06-dashboard-owners-edit-sheet}{Formulaire de modification d'un copropriétaire}
 
 \subsection{Gestion des appartements}
 
@@ -1082,11 +1091,6 @@ La page détail affiche toutes les informations de la réunion. En dessous, la l
 
 \screenshot{14-dashboard-meetings-detail}{Page de détail d'une réunion}
 
-\subsubsection{Invitation des copropriétaires}
-
-Un bouton permet d'ajouter des copropriétaires à la liste des invités. Chaque invitation déclenche un email et une notification in-app pour le copropriétaire concerné.
-
-\screenshot{15-dashboard-meetings-invite-dialog}{Dialogue d'invitation des copropriétaires}
 
 \subsection{Historique des paiements}
 
