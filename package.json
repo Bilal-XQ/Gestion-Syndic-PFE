@@ -71,6 +71,7 @@
     "eslint": "latest",
     "eslint-config-next": "16.1.6",
     "playwright": "^1.58.2",
+    "pptxgenjs": "^4.0.1",
     "prettier": "3.8.1",
     "shadcn": "^4.0.2",
     "tsx": "latest",
