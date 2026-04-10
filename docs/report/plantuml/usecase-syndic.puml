@@ -1,0 +1,43 @@
+@startuml usecase_syndic
+!theme plain
+skinparam backgroundColor #FFFDF7
+skinparam actorStyle awesome
+skinparam usecase {
+  BackgroundColor #FFF9EC
+  BorderColor #D4A853
+  FontSize 12
+}
+skinparam arrow {
+  Color #8B6520
+}
+skinparam actor {
+  BackgroundColor #FFF9EC
+  BorderColor #D4A853
+}
+
+left to right direction
+
+actor "Syndic" as S
+
+rectangle "Application Syndic - Espace Syndic" {
+  usecase "Se connecter" as UC_LOGIN
+  usecase "Gerer immeubles" as UC_BLDG
+  usecase "Gerer coproprietaires" as UC_OWNER
+  usecase "Gerer appartements" as UC_APT
+  usecase "Gerer charges" as UC_CHARGE
+  usecase "Consulter paiements" as UC_PAY_HIST
+  usecase "Gerer reunions" as UC_MEETING
+  usecase "Telecharger avis PDF" as UC_PDF
+  usecase "Exporter en Excel" as UC_EXPORT
+}
+
+S --> UC_LOGIN
+S --> UC_BLDG
+S --> UC_OWNER
+S --> UC_APT
+S --> UC_CHARGE
+S --> UC_PAY_HIST
+S --> UC_MEETING
+S --> UC_PDF
+S --> UC_EXPORT
+@enduml

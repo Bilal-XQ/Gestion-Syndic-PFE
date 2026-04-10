@@ -48,7 +48,6 @@
 
 % ── Graphiques ───────────────────────────────────────────────────────────────
 \usepackage{graphicx}
-\graphicspath{{figures/}{logos/}{diagrams/}}
 \usepackage{float}
 \usepackage{caption}
 \captionsetup{
@@ -306,15 +305,15 @@
 \begin{minipage}[t]{0.47\textwidth}
   \raggedright
   \textit{Réalisé par :}\\[10pt]
-  \hspace*{0.4cm} M.\ \textbf{EL AZZAM Bilal}\\[5pt]
-  \hspace*{0.4cm} M.\ \textbf{CHAKOUAT Maraoune}\\[5pt]
-  \hspace*{0.4cm} M.\ \textbf{CHAQRI Ahmed}
+  \hspace*{0.4cm} M.\ \textbf{Bilal EL AZZAM}\\[5pt]
+  \hspace*{0.4cm} M.\ \textbf{Maraoune CHAKOUAT }\\[5pt]
+  \hspace*{0.4cm} M.\ \textbf{Ahmed CHAQRI}
 \end{minipage}
 \hfill
 \begin{minipage}[t]{0.47\textwidth}
   \raggedleft
   \textit{Encadré par :}\\[10pt]
-  M.\ \textbf{HAMZANE Ibrahim}
+  M.\ \textbf{Ibrahim HAMZANE }
 \end{minipage}
 
 \vfill
@@ -441,7 +440,7 @@ La problématique du projet est la suivante : \textit{comment moderniser l'appli
 
 Les objectifs principaux de ce projet sont :
 
-\begin{itemize}
+\begin{itemize}[itemsep=0pt, topsep=0pt]
   \item Créer une application web accessible depuis n'importe quel navigateur, sans installation.
   \item Proposer deux espaces distincts : un tableau de bord pour le syndic et un portail pour le copropriétaire.
   \item Permettre la gestion de plusieurs immeubles depuis un seul compte syndic.
@@ -459,40 +458,12 @@ Nous avons choisi la méthode Agile pour organiser notre travail. Cette approche
 
 \begin{figure}[H]
   \centering
-  \resizebox{0.90\textwidth}{!}{%
-  \begin{tikzpicture}[
-    node distance = 1.4cm,
-    box/.style = {
-      rectangle, rounded corners=6pt,
-      draw=accent, fill=accentbg,
-      text width=3.0cm, align=center,
-      font=\small\bfseries\color{accentdark},
-      minimum height=0.9cm,
-    },
-    arr/.style = {-{Stealth[length=6pt]}, color=accent, thick},
-  ]
-    \node[box] (plan)    {Planification};
-    \node[box, right=of plan]  (design)  {Conception};
-    \node[box, right=of design](dev)     {Développement};
-    \node[box, right=of dev]   (test)    {Tests};
-    \node[box, right=of test]  (deploy)  {Livraison};
-
-    \draw[arr] (plan)   -- (design);
-    \draw[arr] (design) -- (dev);
-    \draw[arr] (dev)    -- (test);
-    \draw[arr] (test)   -- (deploy);
-
-    % Flèche de retour
-    \draw[arr, bend right=40] (deploy.south) to node[below, font=\tiny\color{accentdark}]{Itération suivante} (plan.south);
-  \end{tikzpicture}
-  }
+  \safegraphic[width=0.37\textwidth]{logos/agile}{figures/01-landing}
   \caption{Processus de développement Agile}
   \label{fig:agile}
 \end{figure}
-
-Le projet a été découpé en six phases. Chaque phase couvre un ensemble de fonctionnalités précises : la mise en place de l'infrastructure, le tableau de bord syndic, les charges et paiements, les réunions, le portail copropriétaire, et la phase finale de test et déploiement.
-
-Cette organisation nous a permis de livrer une application fonctionnelle à chaque fin de phase, tout en gardant la possibilité d'ajuster les priorités selon les retours.
+\vspace{-8pt}
+Le projet a été découpé en six phases : infrastructure, tableau de bord syndic, charges et paiements, réunions, portail copropriétaire, puis tests et déploiement. Cette organisation permet de livrer une version fonctionnelle à chaque phase, avec ajustement continu des priorités.
 
 % ════════════════════════════════════════════════════════════════════════════
 %  CHAPITRE 2 — ANALYSE DES BESOINS
@@ -540,6 +511,8 @@ Les captures d'écran ci-dessous présentent l'interface de l'application de ges
   \caption{Formulaire pour effectuer un versement sous Access}
   \label{fig:access-payment-form}
 \end{figure}
+
+\newpage
 
 \section{Identification des besoins}
 
@@ -617,29 +590,36 @@ Notre projet combine les avantages d'une application web avec les besoins spéci
 
 Nous avons utilisé l'UML (Unified Modeling Language) et les diagrammes C4 pour modéliser les différentes parties du système. Ces approches permettent de visualiser les interactions, de définir les entités, leurs relations, et de planifier l'architecture avant l'implémentation.
 
-Nous avons réalisé quatre diagrammes conformes aux meilleures pratiques :
+Nous avons réalisé plusieurs diagrammes complémentaires pour couvrir les vues fonctionnelles, logiques et techniques du système :
 \begin{itemize}
-  \item Le \textbf{diagramme de cas d'utilisation} qui décrit les interactions acteur-système
+  \item Les \textbf{diagrammes de cas d'utilisation} (vue \textit{Syndic} et vue \textit{Copropriétaire}) qui décrivent les interactions acteur-système
   \item Le \textbf{diagramme de classes} qui modélise la structure de la base de données
   \item Le \textbf{diagramme d'activité} qui illustre le flux de paiement
+  \item Le \textbf{diagramme de séquence} qui décrit le flux d'authentification
   \item Le \textbf{diagramme de composants} qui montre l'architecture technique
+  \item Le \textbf{schéma d'architecture} qui synthétise les couches principales du déploiement
 \end{itemize}
 
 \section{Diagramme de cas d'utilisation}
 
-Le diagramme de cas d'utilisation (UML Use Case) décrit les interactions entre les acteurs et le système. Il énumère les fonctionnalités accessibles à chaque rôle utilisateur.
+Le diagramme de cas d'utilisation (UML Use Case) présente les interactions entre les acteurs et les fonctionnalités de l'application. Pour améliorer la lisibilité, la modélisation est scindée en deux vues.
 
-L'application dispose de deux acteurs principaux :
-\begin{itemize}
-  \item Le \textbf{Syndic} : gère l'ensemble de l'administration (bâtiments, appartements, copropriétaires, charges, réunions)
-  \item Le \textbf{Copropriétaire} : accède uniquement à ses données personnelles (charges, paiements, notifications, réunions)
-\end{itemize}
+La \textbf{vue Syndic} regroupe les cas d'utilisation liés à l'administration globale : se connecter, gérer les immeubles, gérer les copropriétaires, gérer les appartements, gérer les charges, consulter les paiements, gérer les réunions, télécharger les avis PDF et exporter en Excel.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\textwidth,height=0.78\textheight,keepaspectratio]{diagrams/usecase}
-  \caption{Diagramme de cas d'utilisation — Acteurs et fonctionnalités}
-  \label{fig:usecase}
+  \includegraphics[width=\textwidth,height=0.78\textheight,keepaspectratio]{diagrams/usecasesyndic}
+  \caption{Diagramme de cas d'utilisation — Vue Syndic}
+  \label{fig:usecase-syndic}
+\end{figure}
+
+La \textbf{vue Copropriétaire} montre les fonctionnalités du portail personnel : se connecter, réinitialiser le mot de passe, consulter le profil, consulter les charges, effectuer un paiement, télécharger un avis PDF, consulter les réunions, répondre aux invitations et consulter les notifications.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth,height=0.78\textheight,keepaspectratio]{diagrams/usecaseprop}
+  \caption{Diagramme de cas d'utilisation — Vue Copropriétaire}
+  \label{fig:usecase-coproprietaire}
 \end{figure}
 
 \section{Diagramme de classes}
@@ -676,7 +656,8 @@ Le flux de paiement suit ces étapes :
   \item Validation côté serveur (Zod) et vérification du rôle JWT
   \item Démarrage d'une transaction Drizzle
   \item Insertion atomique du paiement
-  \item Insertion de l'audit log (en dehors de la transaction)
+  \item Insertion de l'audit log
+  \item Fin de transaction
   \item Retour du succès au client
 \end{enumerate}
 
@@ -725,9 +706,9 @@ Le diagramme de composants offre une vue d'ensemble de l'architecture en montran
 
 L'architecture suit ces principes :
 \begin{itemize}
-  \item \textbf{Client (Navigateur)} : Exécute React Server Components, gère les requêtes HTTP et les WebSockets Realtime
+  \item \textbf{Client (Navigateur)} : Exécute React Client Components, gère les requêtes HTTP et les WebSockets Realtime
   \item \textbf{Middleware (Edge)} : Vérifie le JWT et applique la limitation de débit (5 tentatives/min/IP)
-  \item \textbf{Serveur (Next.js)} : Traite les Server Actions, applique les règles métier, gère les transactions
+  \item \textbf{Serveur (Next.js)} : Rend les React Server Components, traite les Server Actions, applique les règles métier et gère les transactions
   \item \textbf{Base de données (Supabase PostgreSQL)} : Stocke les données avec RLS, exécute les hooks JWT personnalisés
   \item \textbf{Services externes} : Upstash Redis (rate limiting), Nodemailer (emails), Sentry (monitoring)
 \end{itemize}
@@ -737,65 +718,10 @@ L'architecture suit ces principes :
 L'application suit une architecture web moderne, organisée en trois couches principales.
 
 \begin{figure}[H]
-\centering
-\resizebox{0.90\textwidth}{!}{%
-\begin{tikzpicture}[
-  node distance = 0.7cm and 1.4cm,
-  box/.style = {
-    rectangle, rounded corners=6pt,
-    draw=#1!70!black, fill=#1!10,
-    text width=3.2cm, align=center,
-    font=\small\bfseries,
-    minimum height=1.0cm,
-    drop shadow={opacity=0.15},
-  },
-  groupbox/.style = {
-    rectangle, rounded corners=8pt,
-    draw=#1!60!black, fill=#1!5,
-    inner sep=10pt,
-    font=\small\bfseries\color{#1!60!black},
-  },
-  arr/.style = {-{Stealth[length=6pt]}, thick, color=gray!60},
-  arrlab/.style = {font=\tiny\itshape, color=gray!70},
-]
-
-% Client
-\node[box=blue] (browser) {Navigateur\\{\tiny HTML + JS}};
-
-% Edge
-\node[box=orange, right=1.6cm of browser] (middleware) {Middleware\\{\tiny JWT + Rate Limit}};
-
-% Next.js
-\node[box=accent, right=1.6cm of middleware] (nextjs) {Next.js 16\\{\tiny Vercel}};
-
-% Supabase group
-\node[box=green!60!black, right=1.6cm of nextjs, yshift=1.2cm] (auth)   {Supabase Auth\\{\tiny JWT + Hook}};
-\node[box=green!60!black, right=1.6cm of nextjs, yshift=0cm]   (db)     {PostgreSQL\\{\tiny Drizzle + RLS}};
-\node[box=green!60!black, right=1.6cm of nextjs, yshift=-1.2cm](rt)     {Realtime\\{\tiny Notifications}};
-
-% Services externes
-\node[box=red!60!black, below=1.4cm of nextjs, xshift=-1.4cm] (email) {Nodemailer\\{\tiny Gmail SMTP}};
-\node[box=red!60!black, below=1.4cm of nextjs, xshift=1.4cm]  (sentry){Sentry\\{\tiny Monitoring}};
-
-% Arrows
-\draw[arr] (browser)    -- (middleware);
-\draw[arr] (middleware) -- (nextjs);
-\draw[arr] (nextjs)     -- (auth);
-\draw[arr] (nextjs)     -- (db);
-\draw[arr] (nextjs)     -- (rt);
-\draw[arr] (rt.west)    -- ++(-0.5,0) |- (browser.south);
-\draw[arr] (nextjs.south) -- (email.north);
-\draw[arr] (nextjs.south) -- (sentry.north);
-
-% Labels
-\node[arrlab, above=0.1cm of middleware, xshift=-0.6cm] {Session};
-\node[arrlab, above=0.1cm of nextjs, xshift=-0.6cm]     {Rôle JWT};
-\node[arrlab, right=0.1cm of rt, font=\tiny\itshape\color{gray!60}] (rtlabel) {};
-
-\end{tikzpicture}
-}
-\caption{Architecture technique de l'application}
-\label{fig:architecture}
+  \centering
+  \includegraphics[width=\textwidth,height=0.78\textheight,keepaspectratio]{diagrams/architecture}
+  \caption{Architecture technique — Client, Middleware, Serveur, Base de données}
+  \label{fig:architecture}
 \end{figure}
 
 Le navigateur communique avec le middleware Next.js qui vérifie le JWT à chaque requête. Selon le rôle (\code{syndic} ou \code{proprietaire}), l'accès est accordé ou refusé avant même que la page se charge. Les données sont stockées dans Supabase avec des politiques RLS qui isolent les données par utilisateur au niveau de la base de données.
@@ -940,7 +866,7 @@ Le navigateur communique avec le middleware Next.js qui vérifie le JWT à chaqu
 \hfill
 \begin{minipage}[t]{0.82\textwidth}
   \vspace{0pt}
-  \textbf{Vercel} héberge l'application Next.js. Il gère le déploiement automatique à chaque push sur la branche principale. L'application est accessible à l'adresse \url{https://syndico.vercel.app}.
+  \textbf{Vercel} est une plateforme d'hébergement d'applications web. Dans ce projet, elle permet de publier l'application Next.js sur Internet, d'automatiser le déploiement à chaque mise à jour du code et de rendre l'application accessible en ligne de manière continue.
 \end{minipage}
 
 \section{Outils de travail}
@@ -963,12 +889,12 @@ Le navigateur communique avec le middleware Next.js qui vérifie le JWT à chaqu
   \vspace{0pt}
   \centering
   \logotech{github-original}\\[4pt]
-  \small\textbf{GitHub Copilot}
+  \small\textbf{GitHub}
 \end{minipage}
 \hfill
 \begin{minipage}[t]{0.82\textwidth}
   \vspace{0pt}
-  \textbf{GitHub Copilot} en mode Agent a été utilisé pour accélérer l'implémentation des fonctionnalités. Il génère du code dans le contexte exact du projet en lisant les fichiers sources.
+  \textbf{GitHub} a servi d'hébergement du dépôt et de plateforme de collaboration pour centraliser le code source et suivre l'avancement du projet.
 \end{minipage}
 
 \vspace{1em}
@@ -982,7 +908,7 @@ Le navigateur communique avec le middleware Next.js qui vérifie le JWT à chaqu
 \hfill
 \begin{minipage}[t]{0.82\textwidth}
   \vspace{0pt}
-  \textbf{Git} et \textbf{GitHub} gèrent le versionnement du code. Le dépôt est hébergé sur GitHub. Chaque fonctionnalité est développée dans une branche dédiée.
+  \textbf{Git} a été utilisé pour le versionnement local : suivi de l'historique, création de branches dédiées par fonctionnalité et gestion des commits.
 \end{minipage}
 
 \vspace{1em}
@@ -1146,15 +1072,15 @@ Pour chaque réunion planifiée, le copropriétaire voit le titre, la date, l'he
 
 \subsubsection{Réunions passées}
 
-L'onglet des réunions passées affiche les assemblées générales archivées. Il sert de référence historique.
+L'onglet des réunions passées est dédié à l'historique des assemblées générales. Sur cette capture, aucune réunion passée n'est encore disponible.
 
 \screenshot{24-portal-meetings-past}{Réunions passées du copropriétaire}
 
 \subsection{Notifications}
 
-La page des notifications affiche toutes les notifications en ordre chronologique inverse. Les notifications non lues ont une bordure colorée. Un clic sur une notification la marque automatiquement comme lue.
+La page des notifications affiche les éléments en ordre chronologique inverse, avec leur titre, leur contenu et leur date relative. Un indicateur du nombre de notifications non lues est affiché, ainsi qu'une action pour tout marquer comme lu.
 
-Les notifications de type invitation de réunion incluent des boutons "Accepter" et "Décliner" directement dans la notification. Les notifications arrivent en temps réel via Supabase Realtime, sans rechargement de la page.
+Les notifications incluent notamment les nouvelles charges, les invitations de réunion et les confirmations de paiement. Les mises à jour arrivent en temps réel via Supabase Realtime, sans rechargement de la page.
 
 \screenshot{25-portal-notifications}{Page des notifications}
 
@@ -1162,7 +1088,7 @@ Les notifications de type invitation de réunion incluent des boutons "Accepter"
 
 L'application génère des avis de paiement formels au format PDF. Ils peuvent être téléchargés par le syndic (depuis la page des charges) et par le copropriétaire (depuis son portail).
 
-Le document contient : les informations du destinataire, les informations de l'immeuble, le détail de la charge, l'état des paiements et les instructions de paiement (virement, chèque, espèces). Les informations de l'immeuble sont lues depuis la table \code{buildings}, ce qui garantit que les PDF sont toujours à jour.
+Le document contient : les informations du destinataire, les informations de l'immeuble, le détail de la charge et un récapitulatif financier (montant total, montant payé, solde restant). Selon le cas, il peut aussi inclure des instructions de paiement. Les informations de l'immeuble sont lues depuis la table \code{buildings}, ce qui garantit que les PDF sont toujours à jour.
 
 \screenshot[0.85]{27-pdf-notice-preview}{Avis de paiement généré en PDF}
 
@@ -1187,7 +1113,7 @@ Sur le plan technique, ce projet nous a permis de mettre en pratique des technol
 
 Nous avons respecté plusieurs contraintes techniques importantes : les valeurs financières dérivées ne sont jamais stockées en base, les suppressions sont toujours logiques (soft delete), les mutations financières s'exécutent dans des transactions, et les rôles sont lus depuis le JWT sans requête base de données.
 
-L'application est déployée en production sur Vercel et accessible à l'adresse \url{https://syndico.vercel.app}.
+L'application est déployée en production sur Vercel et accessible en ligne.
 
 Pour la suite, plusieurs améliorations sont envisageables : l'ajout d'un tableau de bord analytique avec des graphiques d'évolution des paiements, la gestion de documents (procès-verbaux de réunions), et une application mobile pour les copropriétaires.
 

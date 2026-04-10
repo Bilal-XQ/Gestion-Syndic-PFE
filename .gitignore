@@ -68,3 +68,12 @@ tmp-login-check.mjs
 download-logos.mjs
 docs/report/compile-last.txt
 docs/report/docs/report/texput.log
+docs/report/rapport.tex
+rapport.log
+rapport.aux
+rapport.lof
+rapport.out
+rapport.toc
+docs/report/svg-inkscape/classdiagram_svg-tex.pdf_tex
+docs/report/svg-inkscape/classdiagram_svg-tex.pdf
+docs/report/rapport.synctex(busy)
