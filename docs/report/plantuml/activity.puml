@@ -49,8 +49,8 @@ if (Transaction réussie ?) then (non)
 else (oui)
 endif
 
-:INSERT INTO audit_logs\n(action = CREATE_PAYMENT);
-:Fin de transaction;
+:Fin de transaction (commit);
+:INSERT INTO audit_logs\n(action = CREATE_PAYMENT)\n(hors transaction);
 
 |Navigateur (Client)|
 :TanStack Query invalide le cache\n"portal/charges";

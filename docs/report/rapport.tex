@@ -626,14 +626,14 @@ La \textbf{vue Copropriétaire} montre les fonctionnalités du portail personnel
 
 Le diagramme de classes (UML Class) représente la structure logique de la base de données PostgreSQL. Il met en évidence les entités principales, leurs attributs et leurs relations.
 
-L'application utilise dix tables principales organisées selon le domaine métier :
+L'application repose sur dix entités principales (noms UML affichés sur la figure), chacune mappée à une table PostgreSQL :
 \begin{itemize}
-  \item \textbf{Authentification} : \code{users}
-  \item \textbf{Immeubles} : \code{buildings}, \code{apartments}
-  \item \textbf{Copropriétaires} : \code{owners}
-  \item \textbf{Finances} : \code{charges}, \code{payments}
-  \item \textbf{Réunions} : \code{meetings}, \code{meeting\_invitations}
-  \item \textbf{Audit} : \code{notifications}, \code{audit\_logs}
+  \item \textbf{Authentification} : \code{Utilisateur} $\rightarrow$ \code{users}
+  \item \textbf{Immeubles} : \code{Immeuble}, \code{Appartement} $\rightarrow$ \code{buildings}, \code{apartments}
+  \item \textbf{Copropriétaires} : \code{Proprietaire} $\rightarrow$ \code{owners}
+  \item \textbf{Finances} : \code{Charge}, \code{Paiement} $\rightarrow$ \code{charges}, \code{payments}
+  \item \textbf{Réunions} : \code{Reunion}, \code{InvitationReunion} $\rightarrow$ \code{meetings}, \code{meeting\_invitations}
+  \item \textbf{Audit} : \code{Notification}, \code{JournalAudit} $\rightarrow$ \code{notifications}, \code{audit\_logs}
 \end{itemize}
 
 \begin{figure}[H]
@@ -656,8 +656,8 @@ Le flux de paiement suit ces étapes :
   \item Validation côté serveur (Zod) et vérification du rôle JWT
   \item Démarrage d'une transaction Drizzle
   \item Insertion atomique du paiement
-  \item Insertion de l'audit log
-  \item Fin de transaction
+  \item Fin de transaction (commit)
+  \item Insertion de l'audit log (hors transaction)
   \item Retour du succès au client
 \end{enumerate}
 
@@ -668,7 +668,7 @@ Le flux de paiement suit ces étapes :
   \label{fig:activity}
 \end{figure}
 
-Le point clé est l'utilisation obligatoire de \textbf{transactions Drizzle} pour tous les paiements. Aucun état partiel n'est jamais commis à la base de données.
+Le point clé est l'utilisation obligatoire de \textbf{transactions Drizzle} pour tous les paiements. Aucun état partiel n'est jamais commis à la base de données. Le journal d'audit est inséré \textbf{après} la transaction, afin de préserver la traçabilité même en cas de rollback de l'opération financière.
 
 \section{Diagramme de séquence — Authentification}
 
